@@ -16,6 +16,7 @@ class CidadesSchema extends Schema {
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
       table.string('iso_ddd', 50).notNullable()
+      table.string('title', 100).notNullable()
       table.string('status', 50).notNullable()
       table.string('slug', 50).notNullable()
       table.string('population', 50).notNullable()
