@@ -247,7 +247,6 @@ class EstadoSeeder {
       slug: 'tocantins',
       population: '1532902',
     })
-    
   }
 }
 

@@ -77983,7 +77983,6 @@ class CidadeSeeder {
       long:'-53.01280850',
       income_per_capita:'500.00',
   })
-  
   }
 }
 
