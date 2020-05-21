@@ -31,7 +31,7 @@ class ContratanteSchema extends Schema {
       .integer('cidade_id')
       .unsigned()
       .references('id')
-      .inTable('cidade')
+      .inTable('cidades')
       .onUpdate('CASCADE')
       .onDelete('SET NULL')
       table.string('endereco', 500).notNullable()
