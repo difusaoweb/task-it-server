@@ -9,20 +9,32 @@ class ProfissionalController {
     return profissionals
   }
 
-  async store ({ request }) {
-    const data = request.only(['name', 'cpf', 'rg', 'endereco', 'referencia',
-    'telCelular', 'telComercial', 'telOutro', 'site', 'email', 'habilidades', 
-    'experiencia', 'cursosExtras'])
+  async store ({ request, response }) {
+    const data = request.only(['nome', 'cpf', 'rg', 'endereco', 'referencia',
+      'telCelular', 'telComercial', 'telOutro', 'site', 'email', 'habilidades',
+      'experiencia', 'cursosExtras', 'cidade_id', 'escolaridade_id', 'area_atuacao_id', 'vaga_desejada_id'])
+
+    const profissionalExists = await Profissional.findBy('email', data.email)
+
+    if (profissionalExists) {
+      return response.status(400).send({ error: 'Profissional already exists.' })
+    }
 
     const profissional = await Profissional.create(data)
 
     return profissional
   }
 
+  async show ({ params }) {
+    const profissionals = await Profissional.findOrFail(params.id)
+
+    return profissionals
+  }
+
   async update ({ request, params }) {
-    const data = request.only(['name', 'cpf', 'rg', 'endereco', 'referencia',
-    'telCelular', 'telComercial', 'telOutro', 'site', 'email', 'habilidades', 
-    'experiencia', 'cursosExtras'])
+    const data = request.only(['nome', 'cpf', 'rg', 'endereco', 'referencia',
+      'telCelular', 'telComercial', 'telOutro', 'site', 'email', 'habilidades',
+      'experiencia', 'cursosExtras', 'cidade_id', 'escolaridade_id', 'area_atuacao_id', 'vaga_desejada_id'])
 
     const profissional = await Profissional.findOrFail(params.id)
 

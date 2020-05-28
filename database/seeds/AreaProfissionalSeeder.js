@@ -5,23 +5,23 @@ const AreaProfissional = use('App/Models/AreaProfissional')
 class AreaProfissionalSeeder {
   async run () {
     await AreaProfissional.create(
-      {          
-        title: 'Profissional',
+      {
+        title: 'Profissional'
       }
     )
     await AreaProfissional.create(
-      {          
-        title: 'Estagiário',
+      {
+        title: 'Estagiário'
       }
     )
     await AreaProfissional.create(
-      {          
-        title: 'Temporário',
+      {
+        title: 'Temporário'
       }
     )
     await AreaProfissional.create(
-      {          
-        title: 'Terceiro',
+      {
+        title: 'Terceiro'
       }
     )
   }

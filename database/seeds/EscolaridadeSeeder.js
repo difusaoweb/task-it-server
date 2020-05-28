@@ -5,56 +5,56 @@ const Escolaridades = use('App/Models/Escolaridade')
 class EscolaridadeSeeder {
   async run () {
     await Escolaridades.create(
-      {   
-        title: 'Ensino médio incompleto',
+      {
+        title: 'Ensino médio incompleto'
       }
     )
 
     await Escolaridades.create(
-      {   
-        title: 'Ensino médio completo',
+      {
+        title: 'Ensino médio completo'
       }
     )
 
     await Escolaridades.create(
-      {   
-        title: 'Formando',
+      {
+        title: 'Formando'
       }
     )
 
     await Escolaridades.create(
-      {   
-        title: 'Formado',
+      {
+        title: 'Formado'
       }
     )
 
     await Escolaridades.create(
-      {   
-        title: 'Pós Graduação',
+      {
+        title: 'Pós Graduação'
       }
     )
 
     await Escolaridades.create(
-      {   
-        title: 'Especialista',
+      {
+        title: 'Especialista'
       }
     )
 
     await Escolaridades.create(
-      {   
-        title: 'MBA',
-      }
-    )    
-
-    await Escolaridades.create(
-      {   
-        title: 'Mestrado',
+      {
+        title: 'MBA'
       }
     )
 
     await Escolaridades.create(
-      {   
-        title: 'Doutorado',
+      {
+        title: 'Mestrado'
+      }
+    )
+
+    await Escolaridades.create(
+      {
+        title: 'Doutorado'
       }
     )
   }
