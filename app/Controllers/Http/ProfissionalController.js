@@ -10,6 +10,7 @@ class ProfissionalController {
   }
 
   async store ({ request, response }) {
+
     const data = request.only(['nome', 'cpf', 'rg', 'endereco', 'referencia',
       'telCelular', 'telComercial', 'telOutro', 'site', 'email', 'habilidades',
       'experiencia', 'cursosExtras', 'cidade_id', 'escolaridade_id', 'area_atuacao_id', 'vaga_desejada_id'])

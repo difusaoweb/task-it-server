@@ -1,6 +1,7 @@
 'use strict'
 
 const Contratante = use('App/Models/Contratante')
+const Vagas = use('App/Models/Vagas')
 
 class ContratanteController {
   async index () {
@@ -9,9 +10,13 @@ class ContratanteController {
   }
 
   async store ({ request, response }) {
+
     const data = request.only(['name', 'razaoSocial', 'descricaoEmpresa', 'endereco', 'cnpj',
       'telCelular', 'telComercial', 'telOutro', 'site', 'email', 'responsavel',
       'emailResponsavel', 'porte_empresa_id', 'setor_empresa_id', 'cidade_id'])
+
+    const dadosVaga = request.only(['area_profissional_id', 'especializacao_id', 'tipo_salario',
+      'valor_comissao', 'beneficios', 'carga_horaria', 'descricao_cargo', 'cargo_id', 'valor_salario', 'title', 'empresa_id', 'cidade_id'])
 
     const contratanteExists = await Contratante.findBy('email', data.email)
 
@@ -21,7 +26,14 @@ class ContratanteController {
 
     const contratante = await Contratante.create(data)
 
-    return contratante
+    const vagad = {empresa_id: contratante.id, ...dadosVaga}
+
+    const vaga = await Vagas.create(vagad)
+
+    return {
+      contratante,
+      vaga
+    }
   }
 
   async update ({ request, params }) {
