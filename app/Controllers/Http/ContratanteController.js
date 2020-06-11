@@ -18,11 +18,11 @@ class ContratanteController {
     const dadosVaga = request.only(['area_profissional_id', 'especializacao_id', 'tipo_salario',
       'valor_comissao', 'beneficios', 'carga_horaria', 'descricao_cargo', 'cargo_id', 'valor_salario', 'title', 'empresa_id', 'cidade_id'])
 
-    const contratanteExists = await Contratante.findBy('email', data.email)
+    // const contratanteExists = await Contratante.findBy('email', data.email)
 
-    if (contratanteExists) {
-      return response.status(400).send({ error: 'Contratante already exists.' })
-    }
+    // if (contratanteExists) {
+    //   return response.status(400).send({ error: 'Contratante already exists.' })
+    // }
 
     const contratante = await Contratante.create(data)
 
