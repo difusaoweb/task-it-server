@@ -15,7 +15,7 @@ class VagasSchema extends Schema {
         .inTable('contratantes')
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
-        table
+      table
         .integer('cidade_id')
         .unsigned()
         .references('id')
@@ -36,7 +36,7 @@ class VagasSchema extends Schema {
         .inTable('escolaridades')
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
-      
+
       table.integer('tipo_salario')
       table.float('valor_salario').notNullable()
       table.float('valor_comissao')

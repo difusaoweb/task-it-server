@@ -1,21 +1,16 @@
 'use strict'
 
+const Vagas = use('App/Models/Vagas')
+
 const Database = use('Database')
 
-class SearchVagaController {
+class DetailVagasController {
   async index () {
-    const vaga = await Database.select('vagases.title', 'vagases.cidade_id', 'vagases.empresa_id', 'vagases.id',
-      'contratantes.name as empresa', 'vagases.valor_salario', 'vagases.descricao_cargo', 'cidades.title as cidade',
-      'cidades.state_id', 'estados.letter as uf')
-      .table('vagases')
-      .limit(5).orderBy('vagases.id', 'desc')
-      .innerJoin('contratantes', 'vagases.empresa_id', 'contratantes.id')
-      .innerJoin('cidades', 'vagases.cidade_id', 'cidades.id')
-      .innerJoin('estados', 'cidades.state_id', 'estados.id')
+    const vagas = await Vagas.all()
+    return vagas
 
-    return vaga
   }
-
+  
   async show ({ params }) {
     const vaga = await Database.select('vagases.title', 'vagases.cidade_id', 'vagases.empresa_id', 'vagases.id',
       'contratantes.name as empresa', 'vagases.valor_salario', 'setor_empresas.title as setor', 'contratantes.telCelular',
@@ -37,4 +32,4 @@ class SearchVagaController {
   }
 }
 
-module.exports = SearchVagaController
+module.exports = DetailVagasController

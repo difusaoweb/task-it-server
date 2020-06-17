@@ -4,17 +4,15 @@ const Vagas = use('App/Models/Vagas')
 
 const Database = use('Database')
 
-
 class VagaController {
   async index () {
     const vaga = await Database.select('vagases.title', 'vagases.cidade_id', 'vagases.empresa_id', 'vagases.id',
-      'contratantes.name as empresa', 'vagases.valor_salario',
-      'vagases.descricao_cargo', 'cidades.title as cidade', 'cidades.state_id', 'estados.letter as uf' ).table('vagases')
-    .limit(6).orderBy('vagases.id', 'desc')
-                        .innerJoin('contratantes', 'vagases.empresa_id', 'contratantes.id')
-                        .innerJoin('cidades', 'vagases.cidade_id', 'cidades.id')
-                        .innerJoin('estados', 'cidades.state_id', 'estados.id')
-                        
+      'contratantes.name as empresa', 'vagases.valor_salario', 'vagases.descricao_cargo', 'cidades.title as cidade',
+      'cidades.state_id', 'estados.letter as uf').table('vagases')
+      .limit(6).orderBy('vagases.id', 'desc')
+      .innerJoin('contratantes', 'vagases.empresa_id', 'contratantes.id')
+      .innerJoin('cidades', 'vagases.cidade_id', 'cidades.id')
+      .innerJoin('estados', 'cidades.state_id', 'estados.id')
 
     return vaga
   }
