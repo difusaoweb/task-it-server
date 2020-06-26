@@ -11,18 +11,18 @@ class ContratanteController {
 
   async store ({ request, response }) {
 
-    const data = request.only(['name', 'razaoSocial', 'descricaoEmpresa', 'endereco', 'cnpj',
+    const data = request.only(['name', 'nome_fantasia', 'descricaoEmpresa', 'endereco', 'cnpj',
       'telCelular', 'telComercial', 'telOutro', 'site', 'email', 'responsavel',
       'emailResponsavel', 'porte_empresa_id', 'setor_empresa_id', 'cidade_id'])
 
     const dadosVaga = request.only(['area_profissional_id', 'especializacao_id', 'tipo_salario',
       'valor_comissao', 'beneficios', 'carga_horaria', 'descricao_cargo', 'cargo_id', 'valor_salario', 'title', 'empresa_id', 'cidade_id'])
 
-    // const contratanteExists = await Contratante.findBy('email', data.email)
+    const contratanteExists = await Contratante.findBy('email', data.email)
 
-    // if (contratanteExists) {
-    //   return response.status(400).send({ error: 'Contratante already exists.' })
-    // }
+    if (contratanteExists) {
+      return response.status(400).send({ error: 'Contratante already exists.' })
+    }
 
     const contratante = await Contratante.create(data)
 
@@ -31,15 +31,24 @@ class ContratanteController {
     const vaga = await Vagas.create(vagad)
 
     return {
-      contratante,
-      vaga
+      data,
+      dadosVaga
     }
   }
 
   async update ({ request, params }) {
-    const data = request.only(['name', 'razaoSocial', 'descricaoEmpresa', 'endereco', 'cnpj',
+    const data = request.only(['name', 'nome_fantasia', 'descricaoEmpresa', 'endereco', 'cnpj',
       'telCelular', 'telComercial', 'telOutro', 'site', 'email', 'responsavel',
       'emailResponsavel', 'porte_empresa_id', 'setor_empresa_id', 'cidade_id'])
+
+    const dadosVaga = request.only(['area_profissional_id', 'especializacao_id', 'tipo_salario',
+      'valor_comissao', 'beneficios', 'carga_horaria', 'descricao_cargo', 'cargo_id', 'valor_salario', 'title', 'empresa_id', 'cidade_id'])
+
+
+    if(dadosVaga.valor_salario !== ''){
+
+      const vaga = await Vagas.create(dadosVaga)
+    }
 
     const contratante = await Contratante.findOrFail(params.id)
 
@@ -47,7 +56,7 @@ class ContratanteController {
 
     await contratante.save()
 
-    return contratante
+    return {data, dadosVaga}
   }
 
   async show ({ params }) {
