@@ -1,5 +1,6 @@
 'use strict'
 
+const Database = use('Database')
 const Profissional = use('App/Models/Profissional')
 
 class ProfissionalController {
@@ -13,7 +14,7 @@ class ProfissionalController {
 
     const data = request.only(['nome', 'cpf', 'rg', 'endereco', 'referencia',
       'telCelular', 'telComercial', 'telOutro', 'site', 'email', 'habilidades',
-      'experiencia', 'cursosExtras', 'cidade_id', 'escolaridade_id', 'area_atuacao_id', 'vaga_desejada_id'])
+      'experiencia', 'cursosExtras', 'cidade_id', 'escolaridade_id', 'area_atuacao_id', 'vaga_desejada_id', 'user_id'])
 
     const profissionalExists = await Profissional.findBy('email', data.email)
 
@@ -27,15 +28,21 @@ class ProfissionalController {
   }
 
   async show ({ params }) {
-    const profissionals = await Profissional.findOrFail(params.id)
+    const profissional = await Database.select('profissionals.*', 'cidades.title as nomeCidade', 'escolaridades.title as escolaridade',
+          'area_profissionals.title as area_profissional')
+        .table('profissionals')
+        .innerJoin('cidades', 'profissionals.cidade_id', 'cidades.id')
+        .innerJoin('escolaridades', 'escolaridades.id', 'profissionals.escolaridade_id')
+        .innerJoin('area_profissionals', 'profissionals.area_atuacao_id', 'area_profissionals.id')
 
-    return profissionals
+
+    return profissional
   }
 
   async update ({ request, params }) {
     const data = request.only(['nome', 'cpf', 'rg', 'endereco', 'referencia',
       'telCelular', 'telComercial', 'telOutro', 'site', 'email', 'habilidades',
-      'experiencia', 'cursosExtras', 'cidade_id', 'escolaridade_id', 'area_atuacao_id', 'vaga_desejada_id'])
+      'experiencia', 'cursosExtras', 'cidade_id', 'escolaridade_id', 'area_atuacao_id', 'vaga_desejada_id', 'user_id'])
 
     const profissional = await Profissional.findOrFail(params.id)
 

@@ -16,6 +16,13 @@ class ProfissionalSchema extends Schema {
         .inTable('cidades')
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
+      table
+        .integer('user_id')
+        .unsigned()
+        .references('id')
+        .inTable('users')
+        .onUpdate('CASCADE')
+        .onDelete('SET NULL')
       table.string('endereco', 500).notNullable()
       table.string('referencia', 500).notNullable()
       table.string('telCelular', 15).notNullable()

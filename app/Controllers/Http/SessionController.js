@@ -2,6 +2,7 @@
 
 const User = use('App/Models/User')
 
+const Database = use('Database')
 
 class SessionController {
   async store ({ request, response, auth }) {
@@ -9,15 +10,13 @@ class SessionController {
 
     const token = await auth.attempt(email, password)
 
-
-    const user = await User.findBy('email', email)
-
+    const user = await Database.select('users.username', 'users.type', 'users.id', 'profissionals.id as profissional_id')
+        .from('users').where('users.email', email)
+        .leftJoin('profissionals', 'profissionals.user_id', 'users.id')
 
     const data = {
     	...token,
-    	username: user.username,
-        type: user.type,
-    	id: user.id,
+    	...user[0],
     }
 
     return data

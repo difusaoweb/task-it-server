@@ -25,13 +25,13 @@ class SearchVagaController {
       .table('vagases')
       .where('vagases.id', params.id)
       .orderBy('vagases.id', 'desc')
-      .innerJoin('contratantes', 'vagases.empresa_id', 'contratantes.id')
-      .innerJoin('cidades', 'vagases.cidade_id', 'cidades.id')
-      .innerJoin('estados', 'cidades.state_id', 'estados.id')
-      .innerJoin('setor_empresas', 'contratantes.setor_empresa_id', 'setor_empresas.id')
-      .innerJoin('porte_empresas', 'contratantes.porte_empresa_id', 'porte_empresas.id')
-      .innerJoin('area_profissionals', 'vagases.area_profissional_id', 'area_profissionals.id')
-      .innerJoin('escolaridades', 'vagases.escolaridade_id', 'escolaridades.id')
+      .leftJoin('contratantes', 'vagases.empresa_id', 'contratantes.id')
+      .leftJoin('cidades', 'vagases.cidade_id', 'cidades.id')
+      .leftJoin('estados', 'cidades.state_id', 'estados.id')
+      .leftJoin('setor_empresas', 'contratantes.setor_empresa_id', 'setor_empresas.id')
+      .leftJoin('porte_empresas', 'contratantes.porte_empresa_id', 'porte_empresas.id')
+      .leftJoin('area_profissionals', 'vagases.area_profissional_id', 'area_profissionals.id')
+      .leftJoin('escolaridades', 'vagases.escolaridade_id', 'escolaridades.id')
 
     return vaga
   }

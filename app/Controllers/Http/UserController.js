@@ -12,11 +12,18 @@ class UserController {
       return response.status(400).send({ error: 'User already exists.' })
     }
 
+    const userNameExists = await User.findBy('username', data.username)
+
+    if (userNameExists) {
+      return response.status(400).send({ error: 'Username already exists.' })
+    }
+
     const emp = request.only(['name', 'nome_fantasia', 'email'])
 
     const user = await User.create(data)
 
-    if (emp.name !== '') {
+    if (emp.name) {
+
     	const empresa = await Empresa.create({...emp, user_id: user.id});
 
     	return {
