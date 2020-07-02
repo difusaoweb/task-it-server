@@ -41,7 +41,14 @@ class VagaController {
   }
 
   async show ({ params }) {
-    const vaga = await Vagas.findOrFail(params.id)
+
+     const vaga = await Database.select('vagases.*', 'cidades.title as nomeCidade', 'escolaridades.title as escolaridade',
+      'area_profissionals.title as area_profissional')
+      .from('vagases').where('vagases.id', params.id)
+      .innerJoin('cidades', 'vagases.cidade_id', 'cidades.id')
+      .innerJoin('escolaridades', 'escolaridades.id', 'vagases.escolaridade_id')
+      .innerJoin('area_profissionals', 'vagases.area_profissional_id', 'area_profissionals.id')
+
     return vaga
   }
 

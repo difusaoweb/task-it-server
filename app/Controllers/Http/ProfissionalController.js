@@ -31,6 +31,7 @@ class ProfissionalController {
     const profissional = await Database.select('profissionals.*', 'cidades.title as nomeCidade', 'escolaridades.title as escolaridade',
           'area_profissionals.title as area_profissional')
         .table('profissionals')
+        .where('profissionals.id', params.id)
         .innerJoin('cidades', 'profissionals.cidade_id', 'cidades.id')
         .innerJoin('escolaridades', 'escolaridades.id', 'profissionals.escolaridade_id')
         .innerJoin('area_profissionals', 'profissionals.area_atuacao_id', 'area_profissionals.id')
