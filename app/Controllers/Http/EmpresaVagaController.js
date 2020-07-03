@@ -1,12 +1,12 @@
 'use strict'
 
-const Database = use('Database')
+const Contratante = use('App/Models/Contratante')
 
 class EmpresaVagaController {
 
 	async show ({ params }) {
 
-		const empresa = await Database.table('contratantes').where('user_id', params.id)
+		const empresa = await Contratante.findOrFail(params.id)
 
 		return empresa
 	}

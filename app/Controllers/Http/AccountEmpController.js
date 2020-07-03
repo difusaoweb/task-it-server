@@ -4,11 +4,12 @@ const Database = use('Database')
 
 class AccountController {
 
-	async index(){
+	async show({params}){
 		const vaga = await Database.select('applies.id', 'vagases.title', 'contratantes.name as empresa', 'cidades.title as cidade', 
 			'estados.letter as uf', 'area_profissionals.title as areaProfissional', 'vagases.tipo_salario', 'applies.vaga_id',
 			'applies.candidato_id', 'profissionals.nome as nomeCandidato', 'contratantes.id as empresa_id',)
 	      .table('applies')
+	      .where('contratantes.id', params.id)
 	      .innerJoin('vagases', 'vagases.id', 'applies.vaga_id')
 	      .innerJoin('profissionals', 'profissionals.id', 'applies.candidato_id')
 	      .innerJoin('cidades', 'profissionals.cidade_id', 'cidades.id')
