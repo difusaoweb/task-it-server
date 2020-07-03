@@ -18,7 +18,7 @@ class VagaController {
   }
 
   async store ({ request }) {
-    const data = request.only(['area_profissional_id', 'tipo_salario',
+    const data = request.only(['area_profissional_id', 'tipo_salario', 'escolaridade_id',
       'valor_comissao', 'beneficios', 'carga_horaria', 'descricao_cargo', 'cargo_id', 'valor_salario', 'title', 'empresa_id', 'cidade_id', 'desc_carga_horaria'])
 
     const vaga = await Vagas.create(data)
