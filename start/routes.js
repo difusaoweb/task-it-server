@@ -25,3 +25,6 @@ Route.get('vaga_desejada', 'VagaDesejadaController.index')
 Route.get('vagas_empresa', 'VagasEmpresaController.index')
 Route.get('area_profissional', 'AreaProfissionalController.index')
 Route.get('search_vaga_params', 'SearchVagasParamController.index')
+
+Route.get('curriculos', 'CurriculoController.index')
+Route.get('curriculos/:id', 'CurriculoController.show')
