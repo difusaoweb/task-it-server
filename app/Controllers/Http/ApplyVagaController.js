@@ -6,8 +6,9 @@ const Profissional = use('App/Models/Profissional')
 class ApplyVagaController {
 
   async index () {
-    const contratante = await Contratante.all()
-    return contratante
+    const applyVaga = await ApplyVaga.all()
+
+    return applyVaga
   }
 
   async store ({ request, response }) {

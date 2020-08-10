@@ -28,3 +28,4 @@ Route.get('search_vaga_params', 'SearchVagasParamController.index')
 
 Route.get('curriculos', 'CurriculoController.index')
 Route.get('curriculos/:id', 'CurriculoController.show')
+Route.post('discs', 'DiscController.store')

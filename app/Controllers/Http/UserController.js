@@ -3,6 +3,8 @@ const User = use('App/Models/User')
 const Empresa = use('App/Models/Contratante')
 const Database = use('Database')
 
+const Mail = use('Mail')
+
 class UserController {
   async store ({ request, response }) {
     const data = request.only(['username', 'email', 'password', 'type'])
@@ -25,6 +27,17 @@ class UserController {
 
     if (emp.name) {
 
+      await Mail.send(
+        ['emails.boas_vindas_emp'],
+        {email: data.email},
+        message => {
+          message
+            .to(data.email)
+            .from('boavindas@brainfit.com', 'Olá | BRAIN FIT')
+            .subject('Boas Vindas!')
+        }
+      )
+
     	const empresa = await Empresa.create({...emp, user_id: user.id});
 
     	return {
@@ -32,6 +45,18 @@ class UserController {
     		empresa,
     	}
     }
+
+
+    await Mail.send(
+      ['emails.boas_vindas'],
+      {email: data.email},
+      message => {
+        message
+          .to(data.email)
+          .from('boavindas@brainfit.com', 'Olá | BRAIN FIT')
+          .subject('Boas Vindas!')
+      }
+    )
 
     return user
   }
