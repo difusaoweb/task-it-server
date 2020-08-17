@@ -3,22 +3,22 @@
 /** @type {import('@adonisjs/lucid/src/Schema')} */
 const Schema = use('Schema')
 
-class AppliePlacesSchema extends Schema {
+class CargosPesquisaSalarioSchema extends Schema {
   up () {
-    this.create('applies', (table) => {
+    this.create('cargos_pesquisa_salarios', (table) => {
       table.increments()
       table
-        .integer('candidato_id')
+        .integer('id_pesquisa_salario')
         .unsigned()
         .references('id')
-        .inTable('profissionals')
+        .inTable('pesquisa_salarios')
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
       table
-        .integer('vaga_id')
+        .integer('id_cargo')
         .unsigned()
         .references('id')
-        .inTable('vagases')
+        .inTable('vaga_desejadas')
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
       table.timestamps()
@@ -26,8 +26,8 @@ class AppliePlacesSchema extends Schema {
   }
 
   down () {
-    this.drop('applies')
+    this.drop('cargos_pesquisa_salarios')
   }
 }
 
-module.exports = AppliePlacesSchema
+module.exports = CargosPesquisaSalarioSchema

@@ -8,7 +8,6 @@ const Mail = use('Mail')
 class UserController {
   async store ({ request, response }) {
     const data = request.only(['username', 'email', 'password', 'type'])
-
     const userExists = await User.findBy('email', data.email)
 
     if (userExists) {
@@ -26,34 +25,32 @@ class UserController {
     const user = await User.create(data)
 
     if (emp.name) {
-
       await Mail.send(
         ['emails.boas_vindas_emp'],
-        {email: data.email},
+        { email: data.email },
         message => {
           message
             .to(data.email)
-            .from('boavindas@brainfit.com', 'Olá | BRAIN FIT')
+            .from('boavindas@matdevs.com', 'Olá | BRAIN FIT')
             .subject('Boas Vindas!')
         }
       )
 
-    	const empresa = await Empresa.create({...emp, user_id: user.id});
+      const empresa = await Empresa.create({ ...emp, user_id: user.id })
 
-    	return {
-    		user,
-    		empresa,
-    	}
+      return {
+        user,
+        empresa
+      }
     }
-
 
     await Mail.send(
       ['emails.boas_vindas'],
-      {email: data.email},
+      { email: data.email },
       message => {
         message
           .to(data.email)
-          .from('boavindas@brainfit.com', 'Olá | BRAIN FIT')
+          .from('boavindas@matdevs.com', 'Olá | BRAIN FIT')
           .subject('Boas Vindas!')
       }
     )
@@ -62,16 +59,15 @@ class UserController {
   }
 
   async show ({ params }) {
-
-   const user = await Database.select('id', 'username', 'email')
-        .table('users')
-        .where('users.id', params.id)
+    const user = await Database.select('id', 'username', 'email')
+      .table('users')
+      .where('users.id', params.id)
     return user
   }
 
   async update ({ request, params }) {
     const data = request.only(['username', 'email', 'password'])
-    
+
     const user = await User.findOrFail(params.id)
 
     user.merge(data)

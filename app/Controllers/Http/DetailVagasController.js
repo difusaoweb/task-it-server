@@ -8,9 +8,8 @@ class DetailVagasController {
   async index () {
     const vagas = await Vagas.all()
     return vagas
-
   }
-  
+
   async show ({ params }) {
     const vaga = await Database.select('vagases.title', 'vagases.cidade_id', 'vagases.empresa_id', 'vagases.id',
       'contratantes.name as empresa', 'vagases.valor_salario', 'setor_empresas.title as setor', 'contratantes.telCelular',

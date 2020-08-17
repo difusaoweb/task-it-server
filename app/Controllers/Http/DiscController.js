@@ -39,13 +39,12 @@ class DiscController {
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
-
-    const data = request.only(["aberto", "acomodado", "analitico", "assertivo", "aventureiro", "c", "competitivo",
-      "confiante_em_si", "consistente", "contestador", "contido", "cuidadoso", "curioso", "d", "decisivo", "desafiador",
-      "direcionado", "educado", "emotivo", "entusiasmado", "equilibrado", "estavel", "experimentador", "facil_de_conviver",
-      "falador", "i", "impulsivel", "incansavel", "indeciso", "influente", "logico", "modesto", "otimista", "paciente",
-      "perfeccionista", "persuasivo", "preciso", "previsivel", "profissional_id", "protetor", "rigoroso", "s", "sedutor",
-      "sensivel", "sincero"])
+    const data = request.only(['aberto', 'acomodado', 'analitico', 'assertivo', 'aventureiro', 'c', 'competitivo',
+      'confiante_em_si', 'consistente', 'contestador', 'contido', 'cuidadoso', 'curioso', 'd', 'decisivo', 'desafiador',
+      'direcionado', 'educado', 'emotivo', 'entusiasmado', 'equilibrado', 'estavel', 'experimentador', 'facil_de_conviver',
+      'falador', 'i', 'impulsivel', 'incansavel', 'indeciso', 'influente', 'logico', 'modesto', 'otimista', 'paciente',
+      'perfeccionista', 'persuasivo', 'preciso', 'previsivel', 'profissional_id', 'protetor', 'rigoroso', 's', 'sedutor',
+      'sensivel', 'sincero'])
 
     const disc = await Disc.create(data)
 

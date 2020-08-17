@@ -41,7 +41,6 @@ class ContratanteSchema extends Schema {
         .inTable('cidades')
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
-
       table.string('endereco', 500)
       table.string('responsavel', 250)
       table.string('emailResponsavel', 100)

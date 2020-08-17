@@ -11,13 +11,13 @@ class SessionController {
     const token = await auth.attempt(email, password)
 
     const user = await Database.select('users.username', 'users.type', 'users.id', 'profissionals.id as profissional_id', 'contratantes.id as empresa_id')
-        .from('users').where('users.email', email)
-        .leftJoin('profissionals', 'profissionals.user_id', 'users.id')
-        .leftJoin('contratantes', 'contratantes.user_id', 'users.id')
+      .from('users').where('users.email', email)
+      .leftJoin('profissionals', 'profissionals.user_id', 'users.id')
+      .leftJoin('contratantes', 'contratantes.user_id', 'users.id')
 
     const data = {
     	...token,
-    	...user[0],
+    	...user[0]
     }
 
     return data
