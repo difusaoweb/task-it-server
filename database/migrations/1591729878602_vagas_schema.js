@@ -38,10 +38,11 @@ class VagasSchema extends Schema {
         .onDelete('SET NULL')
 
       table.integer('tipo_salario').notNullable()
-      table.float('valor_salario')
-      table.float('valor_comissao')
+      table.double('valor_salario')
+      table.double('valor_comissao')
       table.string('beneficios')
       table.integer('carga_horaria')
+      table.string('endereco', 350).notNullable()
       table.string('desc_carga_horaria', 200).notNullable()
       table.string('descricao_cargo', 1000)
       table

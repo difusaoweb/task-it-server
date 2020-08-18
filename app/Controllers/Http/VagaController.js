@@ -19,18 +19,16 @@ class VagaController {
 
   async store ({ request }) {
     const data = request.only(['area_profissional_id', 'tipo_salario', 'escolaridade_id',
-      'valor_comissao', 'beneficios', 'carga_horaria', 'descricao_cargo', 'cargo_id', 'valor_salario', 'title', 'empresa_id', 'cidade_id', 'desc_carga_horaria'])
+      'valor_comissao', 'beneficios', 'carga_horaria', 'descricao_cargo', 'cargo_id', 'valor_salario', 'title', 'empresa_id', 'cidade_id', 'desc_carga_horaria', 'endereco'])
 
     const vaga = await Vagas.create(data)
 
     return vaga
-    
   }
 
   async update ({ request, params }) {
     const data = request.only(['area_profissional_id', 'tipo_salario', 'escolaridade_id',
-      'valor_comissao', 'beneficios', 'carga_horaria', 'descricao_cargo', 'cargo_id', 'valor_salario', 'title', 'empresa_id', 'cidade_id',
-       'desc_carga_horaria'])
+      'valor_comissao', 'beneficios', 'carga_horaria', 'descricao_cargo', 'cargo_id', 'valor_salario', 'title', 'empresa_id', 'cidade_id', 'desc_carga_horaria', 'endereco'])
 
     const vaga = await Vagas.findOrFail(params.id)
 
@@ -42,8 +40,7 @@ class VagaController {
   }
 
   async show ({ params }) {
-
-     const vaga = await Database.select('vagases.*', 'cidades.title as nomeCidade', 'escolaridades.title as escolaridade',
+    const vaga = await Database.select('vagases.*', 'cidades.title as nomeCidade', 'escolaridades.title as escolaridade',
       'area_profissionals.title as area_profissional')
       .from('vagases').where('vagases.id', params.id)
       .leftJoin('cidades', 'vagases.cidade_id', 'cidades.id')
