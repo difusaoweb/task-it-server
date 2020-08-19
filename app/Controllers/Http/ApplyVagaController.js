@@ -16,7 +16,10 @@ class ApplyVagaController {
     const candidatoExists = await Profissional.findBy({ user_id: data.user_id })
 
     if (!candidatoExists) {
-      return response.status(400).send({ error: 'Candidato não cadastrado!' })
+      return response.status(400).send({
+        error: 'Candidato não cadastrado!',
+        cadastrado: false
+      })
     }
 
     const applyExists = await ApplyVaga.findBy({ vaga_id: data.vaga_id, candidato_id: candidatoExists.id })

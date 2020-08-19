@@ -37,7 +37,13 @@ class VagasSchema extends Schema {
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
 
-      table.integer('tipo_salario').notNullable()
+      table
+        .integer('tipo_salario')
+        .unsigned()
+        .references('id')
+        .inTable('payment_types')
+        .onUpdate('CASCADE')
+        .onDelete('SET NULL')
       table.double('valor_salario')
       table.double('valor_comissao')
       table.string('beneficios')

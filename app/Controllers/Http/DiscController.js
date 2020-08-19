@@ -46,6 +46,12 @@ class DiscController {
       'perfeccionista', 'persuasivo', 'preciso', 'previsivel', 'profissional_id', 'protetor', 'rigoroso', 's', 'sedutor',
       'sensivel', 'sincero'])
 
+    const discExists = await Disc.findBy('profissional_id', data.profissional_id)
+
+    if (discExists) {
+      return response.status(400).send({ error: 'Avaliação ja cadastrada.' })
+    }
+
     const disc = await Disc.create(data)
 
     return disc

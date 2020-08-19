@@ -2,11 +2,10 @@
 const Database = use('Database')
 
 class CidadeController {
-  async index ({request}) {
+  async index ({ request }) {
+    const { title } = request.all()
 
-	const {title} = request.all()
-	
-    const cidades = await Database.table('cidades').where('title', 'ILIKE', '%'+title+'%').limit(10)
+    const cidades = await Database.table('cidades').where('title', 'ILIKE', '%' + title + '%').limit(10)
     return cidades
   }
 }
