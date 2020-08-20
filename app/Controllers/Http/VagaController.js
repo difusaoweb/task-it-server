@@ -41,11 +41,12 @@ class VagaController {
 
   async show ({ params }) {
     const vaga = await Database.select('vagases.*', 'cidades.title as nomeCidade', 'escolaridades.title as escolaridade',
-      'area_profissionals.title as area_profissional')
+      'area_profissionals.title as area_profissional', 'payment_types.title as tipoSalario')
       .from('vagases').where('vagases.id', params.id)
       .leftJoin('cidades', 'vagases.cidade_id', 'cidades.id')
       .leftJoin('escolaridades', 'escolaridades.id', 'vagases.escolaridade_id')
       .leftJoin('area_profissionals', 'vagases.area_profissional_id', 'area_profissionals.id')
+      .leftJoin('payment_types', 'vagases.tipo_salario', 'payment_types.id')
 
     return vaga
   }

@@ -3,6 +3,8 @@
 const Database = use('Database')
 const Profissional = use('App/Models/Profissional')
 
+const axios = require('axios')
+
 class ProfissionalController {
   async index () {
     const profissionals = await Profissional.all()
@@ -21,9 +23,55 @@ class ProfissionalController {
       return response.status(400).send({ error: 'Profissional already exists.' })
     }
 
-    const profissional = await Profissional.create(data)
+    // const profissional = await Profissional.create(data)
 
-    return profissional
+    const areaProfissional = await Database.select('vaga_desejadas.type_departament').table('vaga_desejadas').where('id', data.vaga_desejada_id)
+
+    try {
+      const headers = {
+        accept: 'application/json',
+        'content-type': 'application/json',
+        'api-key': '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'
+      }
+
+      const api = await axios.post('https://api.sendinblue.com/v3/contacts', {
+        email: data.email
+      }, {
+        headers: headers
+      })
+
+      if (areaProfissional[0].type_departament === 1) {
+        await axios.post('https://api.sendinblue.com/v3/contacts/lists/5/contacts/add', {
+          emails: [data.email]
+        }, {
+          headers: headers
+        })
+      }
+
+      if (areaProfissional[0].type_departament === 2) {
+        await axios.post('https://api.sendinblue.com/v3/contacts/lists/6/contacts/add', {
+          emails: [data.email]
+        }, {
+          headers: headers
+        })
+      }
+
+      if (areaProfissional[0].type_departament === 3) {
+        await axios.post('https://api.sendinblue.com/v3/contacts/lists/7/contacts/add', {
+          emails: [data.email]
+        }, {
+          headers: headers
+        })
+      }
+
+      return api.data
+    } catch (err) {
+      if (err.response.data.code === 'duplicate_parameter') {
+        return data
+      }
+
+      return err.response.data.message
+    }
   }
 
   async show ({ params }) {

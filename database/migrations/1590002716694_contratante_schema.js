@@ -43,6 +43,7 @@ class ContratanteSchema extends Schema {
         .onDelete('SET NULL')
       table.string('endereco', 500)
       table.string('responsavel', 250)
+      table.integer('type_responsavel')
       table.string('emailResponsavel', 100)
       table.string('telComercial', 50)
       table.string('telCelular', 50)

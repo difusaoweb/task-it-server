@@ -1,8 +1,9 @@
 'use strict'
 
 const Contratante = use('App/Models/Contratante')
-const Vagas = use('App/Models/Vagas')
 const Database = use('Database')
+
+const axios = require('axios')
 
 class ContratanteController {
   async index () {
@@ -13,7 +14,7 @@ class ContratanteController {
   async store ({ request, response }) {
     const data = request.only(['name', 'nome_fantasia', 'descricaoEmpresa', 'endereco', 'cnpj',
       'telCelular', 'telComercial', 'telOutro', 'site', 'email', 'responsavel',
-      'emailResponsavel', 'porte_empresa_id', 'setor_empresa_id', 'cidade_id'])
+      'emailResponsavel', 'porte_empresa_id', 'setor_empresa_id', 'cidade_id', 'type_responsavel'])
 
     const contratanteExists = await Contratante.findBy('email', data.email)
 
@@ -29,13 +30,56 @@ class ContratanteController {
   async update ({ request, params }) {
     const data = request.only(['name', 'nome_fantasia', 'descricaoEmpresa', 'endereco', 'cnpj',
       'telCelular', 'telComercial', 'telOutro', 'site', 'email', 'responsavel',
-      'emailResponsavel', 'porte_empresa_id', 'setor_empresa_id', 'cidade_id'])
+      'emailResponsavel', 'porte_empresa_id', 'setor_empresa_id', 'cidade_id', 'type_responsavel'])
 
     const contratante = await Contratante.findOrFail(params.id)
 
     contratante.merge(data)
 
     await contratante.save()
+
+    const first = request.only(['first'])
+
+    if (first === true) {
+      try {
+        const headers = {
+          accept: 'application/json',
+          'content-type': 'application/json',
+          'api-key': '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'
+        }
+
+        await axios.post('https://api.sendinblue.com/v3/contacts', {
+          email: data.email,
+          name: data.name
+        }, {
+          headers: headers
+        })
+
+        if (data.type_responsavel === 1) {
+          await axios.post('https://api.sendinblue.com/v3/contacts/lists/4/contacts/add', {
+            emails: [data.email]
+          }, {
+            headers: headers
+          })
+        }
+
+        if (data.type_responsavel === 2) {
+          await axios.post('https://api.sendinblue.com/v3/contacts/lists/3/contacts/add', {
+            emails: [data.email]
+          }, {
+            headers: headers
+          })
+        }
+
+        return contratante
+      } catch (err) {
+        if (err.response.data.code === 'duplicate_parameter') {
+          return contratante
+        }
+
+        return err.response.data.message
+      }
+    }
 
     return contratante
   }
