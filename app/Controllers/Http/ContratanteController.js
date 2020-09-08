@@ -38,9 +38,10 @@ class ContratanteController {
 
     await contratante.save()
 
-    const first = request.only(['first'])
+    const {first} = request.only(['first'])
 
     if (first === true) {
+
       try {
         const headers = {
           accept: 'application/json',
@@ -50,7 +51,10 @@ class ContratanteController {
 
         await axios.post('https://api.sendinblue.com/v3/contacts', {
           email: data.email,
-          name: data.name
+          attributes: {
+            NOME: data.name,
+            SMS: '55'+data.telCelular,
+          }
         }, {
           headers: headers
         })

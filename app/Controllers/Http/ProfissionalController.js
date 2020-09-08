@@ -35,7 +35,11 @@ class ProfissionalController {
       }
 
       const api = await axios.post('https://api.sendinblue.com/v3/contacts', {
-        email: data.email
+        email: data.email,
+        attributes: {
+            NOME: data.nome,
+            SMS: '55'+data.telCelular,
+          }
       }, {
         headers: headers
       })
