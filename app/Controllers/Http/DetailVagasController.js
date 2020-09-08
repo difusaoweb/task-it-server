@@ -11,8 +11,8 @@ class DetailVagasController {
   }
 
   async show ({ params }) {
-    const vaga = await Database.select('vagases.title', 'vagases.cidade_id', 'vagases.empresa_id', 'vagases.id',
-      'contratantes.name as empresa', 'vagases.valor_salario', 'setor_empresas.title as setor', 'contratantes.telCelular',
+    const vaga = await Database.select('vagases.title', 'vagases.cidade_id', 'vagases.empresa_id', 'vagases.id', 'vagases.tipo_salario', 'vagases.desc_carga_horaria', 'vagases.endereco as enderecoVaga',
+      'contratantes.name as empresa', 'vagases.valor_salario', 'setor_empresas.title as setor', 'contratantes.telCelular', 'contratantes.descricaoEmpresa',
       'porte_empresas.title as porte', 'contratantes.endereco as enderecoEmp', 'area_profissionals.title as areaProfissional',
       'escolaridades.title as escolaridade', 'vagases.valor_comissao', 'vagases.carga_horaria', 'vagases.beneficios',
       'vagases.descricao_cargo', 'cidades.title as cidade', 'cidades.state_id', 'estados.letter as uf')
