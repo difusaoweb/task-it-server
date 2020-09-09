@@ -32,3 +32,8 @@ Route.get('curriculos', 'CurriculoController.index')
 Route.get('curriculos/:id', 'CurriculoController.show')
 Route.post('discs', 'DiscController.store')
 Route.get('dados_cadastro', 'DadosCadastroController.index')
+
+Route.post('passwords', 'ForgotPasswordController.store')
+Route.put('passwords', 'ForgotPasswordController.update')
+Route.get('passwords', 'ForgotPasswordController.show')
+Route.get('validation_mail', 'ValidateEmailController.update')

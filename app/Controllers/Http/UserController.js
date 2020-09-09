@@ -2,6 +2,7 @@
 const User = use('App/Models/User')
 const Empresa = use('App/Models/Contratante')
 const Database = use('Database')
+const crypto = require('crypto')
 
 const Mail = use('Mail')
 
@@ -22,21 +23,25 @@ class UserController {
 
     const emp = request.only(['name', 'nome_fantasia', 'email'])
 
+    data.token = crypto.randomBytes(10).toString('hex')
+    data.token_created_at = new Date()
+
     const user = await User.create(data)
 
     if (emp.name) {
-      await Mail.send(
-        ['emails.boas_vindas_emp'],
-        { email: data.email },
-        message => {
-          message
-            .to(data.email)
-            .from('boavindas@matdevs.com', 'Olá | BRAIN FIT')
-            .subject('Boas Vindas!')
-        }
-      )
-
       const empresa = await Empresa.create({ ...emp, user_id: user.id })
+
+      await Mail.send(['emails.validacao_email'], {
+        email: data.email,
+        token: user.token,
+        link: `${request.input('redirect_url')}?token=${user.token}`
+      },
+      message => {
+        message
+          .to(user.email)
+          .from('mateus@gmail.com', 'Mateus | Matdevs')
+          .subject('Ativar cadastro')
+      })
 
       return {
         user,
@@ -44,16 +49,17 @@ class UserController {
       }
     }
 
-    await Mail.send(
-      ['emails.boas_vindas'],
-      { email: data.email },
-      message => {
-        message
-          .to(data.email)
-          .from('boavindas@matdevs.com', 'Olá | BRAIN FIT')
-          .subject('Boas Vindas!')
-      }
-    )
+    await Mail.send(['emails.validacao_email'], {
+      email: data.email,
+      token: user.token,
+      link: `${request.input('redirect_url')}?token=${user.token}`
+    },
+    message => {
+      message
+        .to(user.email)
+        .from('mateus@gmail.com', 'Mateus | Matdevs')
+        .subject('Ativar cadastro')
+    })
 
     return user
   }
