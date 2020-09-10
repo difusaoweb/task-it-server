@@ -4,7 +4,8 @@ const Empresa = use('App/Models/Contratante')
 const Database = use('Database')
 const crypto = require('crypto')
 
-const Mail = use('Mail')
+const Kue = use('Kue')
+const Job = use('App/Jobs/ConfirmationUserMail')
 
 class UserController {
   async store ({ request, response }) {
@@ -28,20 +29,12 @@ class UserController {
 
     const user = await User.create(data)
 
+    const redirect_url = request.input('redirect_url')
+
     if (emp.name) {
       const empresa = await Empresa.create({ ...emp, user_id: user.id })
 
-      await Mail.send(['emails.validacao_email'], {
-        email: data.email,
-        token: user.token,
-        link: `${request.input('redirect_url')}?token=${user.token}`
-      },
-      message => {
-        message
-          .to(user.email)
-          .from('mateus@gmail.com', 'Mateus | Matdevs')
-          .subject('Ativar cadastro')
-      })
+      Kue.dispatch(Job.key, { email: user.email, token: user.token, redirect_url, type: 'e' }, { attempts: 3 })
 
       return {
         user,
@@ -49,17 +42,7 @@ class UserController {
       }
     }
 
-    await Mail.send(['emails.validacao_email'], {
-      email: data.email,
-      token: user.token,
-      link: `${request.input('redirect_url')}?token=${user.token}`
-    },
-    message => {
-      message
-        .to(user.email)
-        .from('mateus@gmail.com', 'Mateus | Matdevs')
-        .subject('Ativar cadastro')
-    })
+    Kue.dispatch(Job.key, { email: user.email, token: user.token, redirect_url, type: 'c' }, { attempts: 3 })
 
     return user
   }
