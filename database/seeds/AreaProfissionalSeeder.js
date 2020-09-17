@@ -6,7 +6,7 @@ class AreaProfissionalSeeder {
   async run () {
     await AreaProfissional.create(
       {
-        title: 'Profissional'
+        title: 'Integral'
       }
     )
     await AreaProfissional.create(
@@ -22,6 +22,11 @@ class AreaProfissionalSeeder {
     await AreaProfissional.create(
       {
         title: 'Terceiro'
+      }
+    )
+    await AreaProfissional.create(
+      {
+        title: 'Home office'
       }
     )
   }

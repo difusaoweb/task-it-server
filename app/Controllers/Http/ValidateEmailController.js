@@ -1,6 +1,8 @@
 'use strict'
 const User = use('App/Models/User')
-const Mail = use('Mail')
+
+const Kue = use('Kue')
+const Job = use('App/Jobs/BoasVindasMail')
 
 class ValidateEmailController {
   async update ({ request, response }) {
@@ -26,29 +28,11 @@ class ValidateEmailController {
       await user.save()
 
       if (user.type === 'e') {
-        await Mail.send(
-          ['emails.boas_vindas_emp'],
-          { email: user.email },
-          message => {
-            message
-              .to(user.email)
-              .from('boavindas@matdevs.com', 'Olá | BRAIN FIT')
-              .subject('Boas Vindas!')
-          }
-        )
+        Kue.dispatch(Job.key, { email: user.email, user: user.username, type: 'e' }, { attempts: 3 })
       }
 
       if (user.type === 'c') {
-        await Mail.send(
-          ['emails.boas_vindas'],
-          { email: user.email },
-          message => {
-            message
-              .to(user.email)
-              .from('boavindas@matdevs.com', 'Olá | BRAIN FIT')
-              .subject('Boas Vindas!')
-          }
-        )
+        Kue.dispatch(Job.key, { email: user.email, user: user.username, type: 'c' }, { attempts: 3 })
       }
 
       return {

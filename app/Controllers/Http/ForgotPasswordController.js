@@ -25,7 +25,7 @@ class ForgotPasswordController {
       message => {
         message
           .to(user.email)
-          .from('mateus@gmail.com', 'Mateus | Matdevs')
+          .from('nao-responda@brainfit.com', 'Nao | BrainFit')
           .subject('Recumperação de senha')
       })
     } catch (err) {

@@ -37,3 +37,7 @@ Route.post('passwords', 'ForgotPasswordController.store')
 Route.put('passwords', 'ForgotPasswordController.update')
 Route.get('passwords', 'ForgotPasswordController.show')
 Route.get('validation_mail', 'ValidateEmailController.update')
+
+// teste
+
+Route.get('sendmail', 'SendMailController.index')
