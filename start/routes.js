@@ -38,6 +38,6 @@ Route.put('passwords', 'ForgotPasswordController.update')
 Route.get('passwords', 'ForgotPasswordController.show')
 Route.get('validation_mail', 'ValidateEmailController.update')
 
-// teste
+// testes
 
 Route.get('sendmail', 'SendMailController.index')
