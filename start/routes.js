@@ -36,7 +36,9 @@ Route.get('dados_cadastro', 'DadosCadastroController.index')
 Route.post('passwords', 'ForgotPasswordController.store')
 Route.put('passwords', 'ForgotPasswordController.update')
 Route.get('passwords', 'ForgotPasswordController.show')
+
 Route.get('validation_mail', 'ValidateEmailController.update')
+Route.post('validation_mail', 'ValidateEmailController.store')
 
 // testes
 
