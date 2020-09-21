@@ -23,7 +23,7 @@ class ProfissionalController {
       return response.status(400).send({ error: 'Profissional already exists.' })
     }
 
-    // const profissional = await Profissional.create(data)
+    await Profissional.create(data)
 
     const areaProfissional = await Database.select('vaga_desejadas.type_departament').table('vaga_desejadas').where('id', data.vaga_desejada_id)
 
@@ -31,15 +31,15 @@ class ProfissionalController {
       const headers = {
         accept: 'application/json',
         'content-type': 'application/json',
-        'api-key': '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'
+        'api-key': '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'
       }
 
       const api = await axios.post('https://api.sendinblue.com/v3/contacts', {
         email: data.email,
         attributes: {
-            NOME: data.nome,
-            SMS: '55'+data.telCelular,
-          }
+          NOME: data.nome,
+          SMS: '55' + data.telCelular
+        }
       }, {
         headers: headers
       })

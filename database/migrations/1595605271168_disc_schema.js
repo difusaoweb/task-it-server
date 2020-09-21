@@ -11,7 +11,7 @@ class DiscSchema extends Schema {
         .integer('profissional_id')
         .unsigned()
         .references('id')
-        .inTable('profissionals')
+        .inTable('users')
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
       table.integer('d').notNullable()

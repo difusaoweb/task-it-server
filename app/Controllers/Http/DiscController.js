@@ -1,6 +1,10 @@
 'use strict'
 
 const Disc = use('App/Models/Disc')
+const User = use('App/Models/User')
+
+const Kue = use('Kue')
+const Job = use('App/Jobs/MailDisc')
 
 /**
  * Resourceful controller for interacting with discs
@@ -53,6 +57,13 @@ class DiscController {
     }
 
     const disc = await Disc.create(data)
+
+    const user = await User.find(data.profissional_id)
+
+    Kue.dispatch(Job.key, {
+      email: user.email,
+      candidato: user.usuario
+    }, { attempts: 3 })
 
     return disc
   }

@@ -71,7 +71,8 @@ const commands = []
 
 const jobs = [
   'App/Jobs/ConfirmationUserMail',
-  'App/Jobs/BoasVindasMail'
+  'App/Jobs/BoasVindasMail',
+  'App/Jobs/MailDisc'
 ]
 
 module.exports = { providers, aceProviders, aliases, commands, jobs }
