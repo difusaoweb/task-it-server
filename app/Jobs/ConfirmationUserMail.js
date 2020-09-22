@@ -27,7 +27,7 @@ class ConfirmationUserMail {
       message => {
         message
           .to(email)
-          .from('nao-responda@brainfit.com.br', 'Sitema | BrainFit')
+          .from('nao-responda@brainfit.com.br', 'Sistema | BrainFit')
           .subject('Ativar cadastro')
       })
     }
@@ -41,7 +41,7 @@ class ConfirmationUserMail {
       message => {
         message
           .to(email)
-          .from('nao-responda@brainfit.com.br', 'Sitema | BrainFit')
+          .from('nao-responda@brainfit.com.br', 'Sistema | BrainFit')
           .subject('Ativar cadastro')
       })
     }
