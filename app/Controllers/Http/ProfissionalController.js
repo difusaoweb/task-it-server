@@ -23,7 +23,7 @@ class ProfissionalController {
       return response.status(400).send({ error: 'Profissional already exists.' })
     }
 
-    await Profissional.create(data)
+    const profissional = await Profissional.create(data)
 
     const areaProfissional = await Database.select('vaga_desejadas.type_departament').table('vaga_desejadas').where('id', data.vaga_desejada_id)
 
@@ -34,7 +34,7 @@ class ProfissionalController {
         'api-key': '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'
       }
 
-      const api = await axios.post('https://api.sendinblue.com/v3/contacts', {
+      await axios.post('https://api.sendinblue.com/v3/contacts', {
         email: data.email,
         attributes: {
           NOME: data.nome,
@@ -68,10 +68,10 @@ class ProfissionalController {
         })
       }
 
-      return api.data
+      return profissional
     } catch (err) {
       if (err.response.data.code === 'duplicate_parameter') {
-        return data
+        return profissional
       }
 
       return err.response.data.message
