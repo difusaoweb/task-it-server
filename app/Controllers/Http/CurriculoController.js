@@ -34,8 +34,8 @@ class CurriculoController {
 
     const curriculos = await Database.select('profissionals.*', 'cidades.title as cidade','estados.letter as uf')
       .table('profissionals')      
-      .innerJoin('cidades', 'profissionals.cidade_id', 'cidades.id')
-      .innerJoin('estados', 'cidades.state_id', 'estados.id')
+      .leftJoin('cidades', 'profissionals.cidade_id', 'cidades.id')
+      .leftJoin('estados', 'cidades.state_id', 'estados.id')
 
     return curriculos
   }
