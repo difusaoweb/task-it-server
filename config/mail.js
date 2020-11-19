@@ -12,8 +12,8 @@ module.exports = {
   | define a driver too.
   |
   */
-  // connection: Env.get('MAIL_CONNECTION', 'mailgun'),
-  connection: Env.get('MAIL_CONNECTION', 'smtp'),
+  connection: Env.get('MAIL_CONNECTION', 'mailgun'),
+  // connection: Env.get('MAIL_CONNECTION', 'smtp'),
 
   /*
   |--------------------------------------------------------------------------
