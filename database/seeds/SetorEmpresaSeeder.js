@@ -5,88 +5,88 @@ const SetorEmpresa = use('App/Models/SetorEmpresa')
 class SetorEmpresaSeeder {
   async run () {
     await SetorEmpresa.create(
-      {          
-        title: 'Academia de Ginástica',
+      {
+        title: 'Academia de Ginástica'
       }
     )
     await SetorEmpresa.create(
-      {   
-        title: 'Academia de Dança',
+      {
+        title: 'Academia de Dança'
       }
     )
     await SetorEmpresa.create(
-      {           
-        title: 'Academia de Lutas',
+      {
+        title: 'Academia de Lutas'
       }
     )
     await SetorEmpresa.create(
-      {           
-        title: 'Academia de Natação',
+      {
+        title: 'Academia de Natação'
       }
     )
     await SetorEmpresa.create(
-      {           
-        title: 'Fitness Center',
+      {
+        title: 'Fitness Center'
       }
     )
     await SetorEmpresa.create(
-      {           
-        title: 'Estúdio de Pilates',
+      {
+        title: 'Estúdio de Pilates'
       }
     )
     await SetorEmpresa.create(
-      {           
-        title: 'Estúdio de Personal',
+      {
+        title: 'Estúdio de Personal'
       }
     )
     await SetorEmpresa.create(
-      {           
-        title: 'Clube',
+      {
+        title: 'Clube'
       }
     )
     await SetorEmpresa.create(
-      {          
-        title: 'Centro Esportivo',
+      {
+        title: 'Centro Esportivo'
       }
     )
     await SetorEmpresa.create(
-      {          
-        title: 'SPA',
+      {
+        title: 'SPA'
       }
     )
     await SetorEmpresa.create(
-      {          
-        title: 'Centro de treinamento',
+      {
+        title: 'Centro de treinamento'
       }
     )
     await SetorEmpresa.create(
-      {          
-        title: 'Centro Holístico',
+      {
+        title: 'Centro Holístico'
       }
     )
     await SetorEmpresa.create(
-      {          
-        title: 'Consultoria',
+      {
+        title: 'Consultoria'
       }
     )
     await SetorEmpresa.create(
-      {          
-        title: 'Avaliação Física',
+      {
+        title: 'Avaliação Física'
       }
     )
     await SetorEmpresa.create(
-      {          
-        title: 'Avaliação Nutricional',
+      {
+        title: 'Avaliação Nutricional'
       }
     )
     await SetorEmpresa.create(
-      {          
-        title: 'Avaliação Médica',
+      {
+        title: 'Avaliação Médica'
       }
     )
     await SetorEmpresa.create(
-      {          
-        title: 'OUTROS',
+      {
+        title: 'OUTROS'
       }
     )
   }

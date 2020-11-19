@@ -8,7 +8,7 @@ class SetorEmpresaSchema extends Schema {
     this.create('setor_empresas', (table) => {
       table.increments()
       table.string('title', 100).notNullable()
-      table.integer('state')
+      table.integer('state').defaultTo(true)
       table.timestamps()
     })
   }

@@ -5,12 +5,18 @@ const Database = use('Database')
 const crypto = require('crypto')
 
 const Kue = use('Kue')
-const Job = use('App/Jobs/ConfirmationUserMail')
+const JobCreateUser = use('App/Jobs/ConfirmationUserMail')
+const JobInviteUser = use('App/Jobs/InviteUser')
 
 class UserController {
   async store ({ request, response }) {
-    const data = request.only(['username', 'email', 'password', 'type'])
+    const data = request.only(['username', 'email', 'password', 'type', 'isInvited', 'validated'])
+    const dataCpanel = request.only(['cpanel', 'url_convite'])
     const userExists = await User.findBy('email', data.email)
+
+    if (!data.password) {
+      data.password = Math.random().toString(36).slice(-6)
+    }
 
     if (userExists) {
       return response.status(400).send({ error: 'User already exists.' })
@@ -23,9 +29,10 @@ class UserController {
     }
 
     const emp = request.only(['name', 'nome_fantasia', 'email'])
-
-    data.token = crypto.randomBytes(10).toString('hex')
-    data.token_created_at = new Date()
+    if (!dataCpanel.cpanel) {
+      data.token = crypto.randomBytes(10).toString('hex')
+      data.token_created_at = new Date()
+    }
 
     const user = await User.create(data)
 
@@ -33,8 +40,11 @@ class UserController {
 
     if (emp.name) {
       const empresa = await Empresa.create({ ...emp, user_id: user.id })
-
-      Kue.dispatch(Job.key, { email: user.email, token: user.token, redirect_url, type: 'e' }, { attempts: 3 })
+      if (!dataCpanel.cpanel) {
+        Kue.dispatch(JobCreateUser.key, { email: user.email, token: user.token, redirect_url, type: 'e' }, { attempts: 3 })
+      } else {
+        Kue.dispatch(JobInviteUser.key, { username: data.username, email: user.email, password: data.password, url_convite: data.url_convite, type: 'cu' }, { attempts: 3 })
+      }
 
       return {
         user,
@@ -42,15 +52,26 @@ class UserController {
       }
     }
 
-    Kue.dispatch(Job.key, { email: user.email, token: user.token, redirect_url, type: 'c' }, { attempts: 3 })
+    if (!dataCpanel.cpanel) {
+      Kue.dispatch(JobCreateUser.key, { email: user.email, token: user.token, redirect_url, type: 'c' }, { attempts: 3 })
+    } else {
+      Kue.dispatch(JobInviteUser.key, { username: data.username, email: user.email, password: data.password, url_convite: data.url_convite, type: 'c' }, { attempts: 3 })
+    }
 
     return user
   }
 
+  async index () {
+    const users = await User.all()
+    return users
+  }
+
   async show ({ params }) {
-    const user = await Database.select('id', 'username', 'email')
-      .table('users')
-      .where('users.id', params.id)
+    const user = await Database.select('u.id', 'u.username', 'u.email', 'u.type', 'c.name')
+      .from('users as u')
+      .leftJoin('contratantes as c', 'c.user_id', 'u.id')
+      .where('u.id', params.id)
+
     return user
   }
 
@@ -64,6 +85,11 @@ class UserController {
     await user.save()
 
     return user
+  }
+
+  async destroy ({ params }) {
+    const user = await User.findOrFail(params.id)
+    user.delete()
   }
 }
 

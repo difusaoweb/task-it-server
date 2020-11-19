@@ -14,7 +14,6 @@ class CurriculoController {
       .innerJoin('estados', 'cidades.state_id', 'estados.id')
       .innerJoin('vaga_desejadas', 'vaga_desejadas.id', 'profissionals.vaga_desejada_id')
 
-  
     if (vaga_desejada_id) {
       curriculos.where('profissionals.vaga_desejada_id', vaga_desejada_id)
     }
@@ -31,11 +30,12 @@ class CurriculoController {
   }
 
   async show ({ params }) {
-
-    const curriculos = await Database.select('profissionals.*', 'cidades.title as cidade','estados.letter as uf')
-      .table('profissionals')      
+    const curriculos = await Database.select('profissionals.*', 'cidades.title as cidade', 'estados.letter as uf',
+      'vaga_desejadas.title_function as cargo')
+      .table('profissionals')
       .leftJoin('cidades', 'profissionals.cidade_id', 'cidades.id')
       .leftJoin('estados', 'cidades.state_id', 'estados.id')
+      .leftJoin('vaga_desejadas', 'vaga_desejadas.id', 'profissionals.vaga_desejada_id')
 
     return curriculos
   }
