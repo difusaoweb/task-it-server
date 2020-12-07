@@ -43,7 +43,7 @@ class UserController {
       if (!dataCpanel.cpanel) {
         Kue.dispatch(JobCreateUser.key, { email: user.email, token: user.token, redirect_url, type: 'e' }, { attempts: 3 })
       } else {
-        Kue.dispatch(JobInviteUser.key, { username: data.username, email: user.email, password: data.password, url_convite: data.url_convite, type: 'cu' }, { attempts: 3 })
+        Kue.dispatch(JobInviteUser.key, { username: data.username, email: user.email, password: data.password, url_convite: data.url_convite, type: 'e' }, { attempts: 3 })
       }
 
       return {
