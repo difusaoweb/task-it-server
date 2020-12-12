@@ -62,8 +62,11 @@ class UserController {
   }
 
   async index () {
-    const users = await User.all()
-    return users
+    const user = await Database.select('u.*', 'p.id as asCurriculo')
+      .from('users as u')
+      .leftJoin('profissionals as p', 'p.user_id', 'u.id')
+
+    return user
   }
 
   async show ({ params }) {
