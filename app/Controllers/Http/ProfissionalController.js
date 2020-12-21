@@ -88,7 +88,14 @@ class ProfissionalController {
       .innerJoin('area_profissionals', 'profissionals.area_atuacao_id', 'area_profissionals.id')
       .innerJoin('vaga_desejadas', 'profissionals.vaga_desejada_id', 'vaga_desejadas.id')
 
-    return profissional
+    const habilidades = await Database.select('h.*').table('habilidades_profissionals as hp')
+      .where('hp.profissional_id', params.id)
+      .innerJoin('habilidades as h', 'h.id', 'hp.habilidade_id')
+
+    return {
+      profissional,
+      habilidades
+    }
   }
 
   async update ({ request, params }) {

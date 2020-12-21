@@ -13,6 +13,7 @@ Route.resource('profissional', 'ProfissionalController').apiOnly()
 Route.resource('apply_vaga', 'ApplyVagaController').apiOnly()
 Route.resource('pesquisa_salario', 'PesquisaSalarioController').apiOnly()
 Route.resource('setor_empresa', 'SetorEmpresaController').apiOnly()
+Route.resource('habilidades_profissional', 'HabilidadesProfissionalController').apiOnly()
 
 Route.get('empresa_vaga/:id', 'EmpresaVagaController.show')
 Route.get('estado', 'EstadoController.index')
@@ -40,6 +41,4 @@ Route.get('passwords', 'ForgotPasswordController.show')
 Route.get('validation_mail', 'ValidateEmailController.update')
 Route.post('validation_mail', 'ValidateEmailController.store')
 
-// testes
-
-Route.get('sendmail', 'SendMailController.index')
+Route.get('habilidades', 'HabilidadeController.index')
