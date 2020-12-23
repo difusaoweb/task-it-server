@@ -14,6 +14,7 @@ Route.resource('apply_vaga', 'ApplyVagaController').apiOnly()
 Route.resource('pesquisa_salario', 'PesquisaSalarioController').apiOnly()
 Route.resource('setor_empresa', 'SetorEmpresaController').apiOnly()
 Route.resource('habilidades_profissional', 'HabilidadesProfissionalController').apiOnly()
+Route.resource('experiencias_profissional', 'ExperienciasProfissionalController').apiOnly()
 
 Route.get('empresa_vaga/:id', 'EmpresaVagaController.show')
 Route.get('estado', 'EstadoController.index')
