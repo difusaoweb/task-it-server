@@ -295,10 +295,45 @@ class VagaDesejadaSeeder {
         title_function: 'Secretário(a)'
       }
     )
+    await VagaDesejada.create(
+      {
+        type_departament: 4,
+        title_departament: 'Supervisor / Cordenador / Diretor',
+        title_function: 'Técnico'
+      }
+    )
+    await VagaDesejada.create(
+      {
+        type_departament: 4,
+        title_departament: 'Supervisor / Cordenador / Diretor',
+        title_function: 'Comercial'
+      }
+    )
 
     await VagaDesejada.create(
       {
         type_departament: 4,
+        title_departament: 'Supervisor / Cordenador / Diretor',
+        title_function: 'Administrativo'
+      }
+    )
+    await VagaDesejada.create(
+      {
+        type_departament: 4,
+        title_departament: 'Supervisor / Cordenador / Diretor',
+        title_function: 'Financeiro'
+      }
+    )
+    await VagaDesejada.create(
+      {
+        type_departament: 4,
+        title_departament: 'Supervisor / Cordenador / Diretor',
+        title_function: 'Operacional'
+      }
+    )
+    await VagaDesejada.create(
+      {
+        type_departament: 5,
         title_departament: 'Outros',
         title_function: 'Outros'
       }

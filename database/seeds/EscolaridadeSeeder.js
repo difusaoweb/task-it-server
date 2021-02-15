@@ -18,13 +18,13 @@ class EscolaridadeSeeder {
 
     await Escolaridades.create(
       {
-        title: 'Formando'
+        title: 'Superior incompleto'
       }
     )
 
     await Escolaridades.create(
       {
-        title: 'Formado'
+        title: 'Superior completo'
       }
     )
 

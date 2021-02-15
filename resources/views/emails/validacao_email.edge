@@ -33,15 +33,17 @@
           background: #FFF;
         "
       >
-      <p>
-          Seu cadastro no site <b>BrainFit</b> foi realizado para o e-mail ({{ email }}).
-        Se você não foi o autor <a>clique aqui</a>.
-      </p>
+        <p>
+            Seu cadastro no site <b>BrainFit</b> foi realizado para o e-mail ({{ email }}).
+        </p>
 
-      <p>
-        Para continuar com o cadastro clique no link abaixo:
-      </p>
+        <p>
+          Para continuar com o cadastro clique no link abaixo:
+        </p>
         <a href="{{link}}">Ativar cadastro</a>
+        <p>
+          Se você não foi o autor <a href="{{link_not_autor}}">clique aqui</a>.
+        </p>
       </div>
     </div>
   </div>

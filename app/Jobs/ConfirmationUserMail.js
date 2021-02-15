@@ -22,7 +22,8 @@ class ConfirmationUserMail {
       await Mail.send(['emails.validacao_email'], {
         email: email,
         token: token,
-        link: `${redirect_url}?token=${token}`
+        link: `${redirect_url}?token=${token}`,
+        link_not_autor: `${redirect_url}/no-reply`
       },
       message => {
         message
@@ -36,7 +37,8 @@ class ConfirmationUserMail {
       await Mail.send(['emails.validacao_email'], {
         email: email,
         token: token,
-        link: `${redirect_url}?token=${token}`
+        link: `${redirect_url}?token=${token}`,
+        link_not_autor: `${redirect_url}/no-reply`
       },
       message => {
         message
