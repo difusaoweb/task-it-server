@@ -15,7 +15,7 @@ class ProfissionalController {
   async store ({ request, response }) {
     const data = request.only(['nome', 'cpf', 'rg', 'endereco', 'referencia',
       'telCelular', 'telComercial', 'telOutro', 'site', 'email', 'habilidades',
-      'experiencia', 'cursosExtras', 'cidade_id', 'escolaridade_id', 'area_atuacao_id', 'vaga_desejada_id', 'user_id'])
+      'experiencia', 'cursosExtras', 'cidade_id', 'escolaridade_id', 'area_atuacao_id', 'vaga_desejada_id', 'user_id', 'idade'])
 
     const profissionalExists = await Profissional.findBy('email', data.email)
 
@@ -106,7 +106,7 @@ class ProfissionalController {
   async update ({ request, params }) {
     const data = request.only(['nome', 'cpf', 'rg', 'endereco', 'referencia',
       'telCelular', 'telComercial', 'telOutro', 'site', 'email', 'habilidades',
-      'experiencia', 'cursosExtras', 'cidade_id', 'escolaridade_id', 'area_atuacao_id', 'vaga_desejada_id', 'user_id'])
+      'experiencia', 'cursosExtras', 'cidade_id', 'escolaridade_id', 'area_atuacao_id', 'vaga_desejada_id', 'user_id', 'idade'])
 
     const profissional = await Profissional.findOrFail(params.id)
 

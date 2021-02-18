@@ -38,7 +38,7 @@ class ConfirmationUserMail {
         email: email,
         token: token,
         link: `${redirect_url}?token=${token}`,
-        link_not_autor: `${redirect_url}/no-reply`
+        link_not_autor: `${redirect_url}?no-reply=${email}`
       },
       message => {
         message
