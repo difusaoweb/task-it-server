@@ -23,12 +23,12 @@ class ConfirmationUserMail {
         email: email,
         token: token,
         link: `${redirect_url}?token=${token}`,
-        link_not_autor: `${redirect_url}/no-reply`
+        link_not_autor: `${redirect_url}?noReply=${email}`
       },
       message => {
         message
           .to(email)
-          .from('nao-responda@brainfit.com.br', 'Sistema | BrainFit')
+          .from('no-reply@brainfit.com.br', 'Sistema | BrainFit')
           .subject('Ativar cadastro')
       })
     }
@@ -38,12 +38,12 @@ class ConfirmationUserMail {
         email: email,
         token: token,
         link: `${redirect_url}?token=${token}`,
-        link_not_autor: `${redirect_url}?no-reply=${email}`
+        link_not_autor: `${redirect_url}?noReply=${email}`
       },
       message => {
         message
           .to(email)
-          .from('nao-responda@brainfit.com.br', 'Sistema | BrainFit')
+          .from('no-reply@brainfit.com.br', 'Sistema | BrainFit')
           .subject('Ativar cadastro')
       })
     }
