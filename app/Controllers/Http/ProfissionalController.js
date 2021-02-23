@@ -15,7 +15,7 @@ class ProfissionalController {
   async store ({ request, response }) {
     const data = request.only(['nome', 'cpf', 'rg', 'endereco', 'referencia',
       'telCelular', 'telComercial', 'telOutro', 'site', 'email', 'habilidades',
-      'experiencia', 'cursosExtras', 'cidade_id', 'escolaridade_id', 'area_atuacao_id', 'vaga_desejada_id', 'user_id', 'idade'])
+      'experiencia', 'cidade_id', 'escolaridade_id', 'area_atuacao_id', 'vaga_desejada_id', 'user_id', 'idade'])
 
     const profissionalExists = await Profissional.findBy('email', data.email)
 
@@ -96,17 +96,22 @@ class ProfissionalController {
       .where('ep.profissional_id', params.id)
       .from('experiencias_profissionals as ep')
 
+    const cursos = await Database.select('cs.instituicao', 'cs.dataInicio', 'cs.dataTermino', 'cs.curso')
+      .where('cs.profissional_id', params.id)
+      .from('cursos_extras_profissionals as cs')
+
     return {
       profissional,
       habilidades,
-      experiencias
+      experiencias,
+      cursos
     }
   }
 
   async update ({ request, params }) {
     const data = request.only(['nome', 'cpf', 'rg', 'endereco', 'referencia',
       'telCelular', 'telComercial', 'telOutro', 'site', 'email', 'habilidades',
-      'experiencia', 'cursosExtras', 'cidade_id', 'escolaridade_id', 'area_atuacao_id', 'vaga_desejada_id', 'user_id', 'idade'])
+      'experiencia', 'cidade_id', 'escolaridade_id', 'area_atuacao_id', 'vaga_desejada_id', 'user_id', 'idade'])
 
     const profissional = await Profissional.findOrFail(params.id)
 
