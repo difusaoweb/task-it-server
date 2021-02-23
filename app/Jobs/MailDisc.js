@@ -76,7 +76,7 @@ class MailDisc {
     message => {
       message
         .to('cris@brainfit.com.br')
-        .from('nao-responda@brainfit.com.br', 'Sistema | BrainFit')
+        .from('no-reply@brainfit.com.br', 'Sistema | BrainFit')
         .subject('Resultado Avaliação DISC')
     })
   }

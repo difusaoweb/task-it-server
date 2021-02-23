@@ -25,7 +25,7 @@ class BoasVindasMail {
         message => {
           message
             .to(email)
-            .from('nao-responda@brainfit.com', 'Olá | BRAIN FIT')
+            .from('no-reply@brainfit.com', 'Olá | BRAIN FIT')
             .subject('Boas Vindas!')
         }
       )
@@ -38,7 +38,7 @@ class BoasVindasMail {
         message => {
           message
             .to(email)
-            .from('nao-responda@brainfit.com', 'Olá | BRAIN FIT')
+            .from('no-reply@brainfit.com', 'Olá | BRAIN FIT')
             .subject('Boas Vindas!')
         }
       )
