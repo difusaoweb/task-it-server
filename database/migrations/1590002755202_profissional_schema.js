@@ -46,7 +46,6 @@ class ProfissionalSchema extends Schema {
         .inTable('area_profissionals')
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
-      table.string('cursosExtras', 1000).notNullable()
       table
         .integer('vaga_desejada_id')
         .unsigned()
