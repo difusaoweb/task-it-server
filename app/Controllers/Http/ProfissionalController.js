@@ -85,7 +85,7 @@ class ProfissionalController {
       .where('profissionals.id', params.id)
       .innerJoin('cidades', 'profissionals.cidade_id', 'cidades.id')
       .innerJoin('escolaridades', 'escolaridades.id', 'profissionals.escolaridade_id')
-      .innerJoin('area_profissionals', 'profissionals.area_atuacao_id', 'area_profissionals.id')
+      .leftJoin('area_profissionals', 'profissionals.area_atuacao_id', 'area_profissionals.id')
       .innerJoin('vaga_desejadas', 'profissionals.vaga_desejada_id', 'vaga_desejadas.id')
 
     const habilidades = await Database.select('h.*').table('habilidades_profissionals as hp')
