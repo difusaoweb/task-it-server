@@ -1,8 +1,10 @@
 'use strict'
-
+const Contratante = use('App/Models/Contratante')
 const Vagas = use('App/Models/Vagas')
-
 const Database = use('Database')
+
+const Kue = use('Kue')
+const JobAvisoCreateVaga = use('App/Jobs/CreateVagaMail')
 
 class VagaController {
   async index () {
@@ -22,6 +24,8 @@ class VagaController {
       'valor_comissao', 'beneficios', 'carga_horaria', 'descricao_cargo', 'cargo_id', 'valor_salario', 'title', 'empresa_id', 'cidade_id', 'desc_carga_horaria', 'endereco'])
 
     const vaga = await Vagas.create(data)
+    const empresa = await Contratante.findOrFail(data.empresa_id)
+    Kue.dispatch(JobAvisoCreateVaga.key, { email: empresa.email }, { attempts: 3 })
 
     return vaga
   }

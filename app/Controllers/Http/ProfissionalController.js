@@ -4,6 +4,8 @@ const Database = use('Database')
 const Profissional = use('App/Models/Profissional')
 
 const axios = require('axios')
+const Kue = use('Kue')
+const JobAvisoCadCurriculo = use('App/Jobs/CreateCurriculoMail')
 
 class ProfissionalController {
   async index () {
@@ -24,6 +26,7 @@ class ProfissionalController {
     }
 
     const profissional = await Profissional.create(data)
+    Kue.dispatch(JobAvisoCadCurriculo.key, { email: profissional.email }, { attempts: 3 })
 
     const areaProfissional = await Database.select('vaga_desejadas.type_departament').table('vaga_desejadas').where('id', data.vaga_desejada_id)
 
