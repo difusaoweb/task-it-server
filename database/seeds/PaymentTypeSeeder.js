@@ -21,7 +21,7 @@ class PaymentTypeSeeder {
     )
     await PaymentType.create(
       {
-        title: 'Horas Trabalhada'
+        title: 'Horas Trabalhadas'
       }
     )
   }

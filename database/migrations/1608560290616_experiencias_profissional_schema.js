@@ -18,6 +18,7 @@ class ExperienciasProfissionalSchema extends Schema {
       table.string('funcao', 2000).notNullable()
       table.date('dataEntrada').notNullable()
       table.date('dataSaida')
+      table.boolean('atual').defaultTo(false)
       table.timestamps()
     })
   }

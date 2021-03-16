@@ -95,7 +95,7 @@ class ProfissionalController {
       .where('hp.profissional_id', params.id)
       .innerJoin('habilidades as h', 'h.id', 'hp.habilidade_id')
 
-    const experiencias = await Database.select('ep.empresa', 'ep.dataEntrada', 'ep.dataSaida', 'ep.funcao')
+    const experiencias = await Database.select('ep.empresa', 'ep.dataEntrada', 'ep.dataSaida', 'ep.atual', 'ep.funcao')
       .where('ep.profissional_id', params.id)
       .from('experiencias_profissionals as ep')
 
