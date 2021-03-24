@@ -47,7 +47,7 @@ class VagasSchema extends Schema {
       table.double('valor_salario')
       table.double('valor_comissao')
       table.string('beneficios')
-      table.integer('carga_horaria')
+      // table.integer('carga_horaria')
       table.string('endereco', 350).notNullable()
       table.string('desc_carga_horaria', 200).notNullable()
       table.string('descricao_cargo', 1000)

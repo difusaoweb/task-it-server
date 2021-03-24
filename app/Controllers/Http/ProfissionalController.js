@@ -17,7 +17,9 @@ class ProfissionalController {
   async store ({ request, response }) {
     const data = request.only(['nome', 'cpf', 'rg', 'endereco', 'referencia',
       'telCelular', 'telComercial', 'telOutro', 'site', 'email', 'habilidades',
-      'experiencia', 'cidade_id', 'escolaridade_id', 'area_atuacao_id', 'vaga_desejada_id', 'user_id', 'idade'])
+      'experiencia', 'cidade_id', 'escolaridade_id', 'area_atuacao_id', 'vaga_desejada_id',
+      'user_id', 'dataNascimento', 'possuiDeficiencia', 'temHabilitacao', 'idiomas', 'sexo_id',
+      'temFilhos', 'estado_civil_id'])
 
     const profissionalExists = await Profissional.findBy('email', data.email)
 
@@ -83,13 +85,16 @@ class ProfissionalController {
 
   async show ({ params }) {
     const profissional = await Database.select('profissionals.*', 'cidades.title as nomeCidade', 'escolaridades.title as escolaridade',
-      'area_profissionals.title as area_profissional', 'vaga_desejadas.title_function as vagaDesejada')
+      'area_profissionals.title as area_profissional', 'vaga_desejadas.title_function as vagaDesejada', 'sexos.title as sexo',
+      'estado_civils.title as estadoCivil')
       .table('profissionals')
       .where('profissionals.id', params.id)
       .innerJoin('cidades', 'profissionals.cidade_id', 'cidades.id')
       .innerJoin('escolaridades', 'escolaridades.id', 'profissionals.escolaridade_id')
       .leftJoin('area_profissionals', 'profissionals.area_atuacao_id', 'area_profissionals.id')
       .innerJoin('vaga_desejadas', 'profissionals.vaga_desejada_id', 'vaga_desejadas.id')
+      .innerJoin('sexos', 'profissionals.sexo_id', 'sexos.id')
+      .innerJoin('estado_civils', 'profissionals.estado_civil_id', 'estado_civils.id')
 
     const habilidades = await Database.select('h.*').table('habilidades_profissionals as hp')
       .where('hp.profissional_id', params.id)
@@ -114,7 +119,9 @@ class ProfissionalController {
   async update ({ request, params }) {
     const data = request.only(['nome', 'cpf', 'rg', 'endereco', 'referencia',
       'telCelular', 'telComercial', 'telOutro', 'site', 'email', 'habilidades',
-      'experiencia', 'cidade_id', 'escolaridade_id', 'area_atuacao_id', 'vaga_desejada_id', 'user_id', 'idade'])
+      'experiencia', 'cidade_id', 'escolaridade_id', 'area_atuacao_id', 'vaga_desejada_id',
+      'user_id', 'dataNascimento', 'possuiDeficiencia', 'temHabilitacao', 'idiomas', 'sexo_id',
+      'temFilhos', 'estado_civil_id'])
 
     const profissional = await Profissional.findOrFail(params.id)
 
