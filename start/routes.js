@@ -33,6 +33,7 @@ Route.get('payment_types', 'PaymentTypeController.index')
 Route.get('tipos_contratacao', 'TiposContratacaoController.index')
 Route.get('sexo', 'SexoController.index')
 Route.get('estado_civil', 'EstadoCivilController.index')
+Route.get('periodo_trabalho', 'PeriodoTrabalhoController.index')
 
 Route.get('curriculos', 'CurriculoController.index')
 Route.get('curriculos/:id', 'CurriculoController.show')
