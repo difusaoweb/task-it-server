@@ -22,19 +22,23 @@ class UserController {
       return response.status(400).send({ error: 'User already exists.' })
     }
 
-    const userNameExists = await User.findBy('username', data.username)
+    // const userNameExists = await User.findBy('username', data.username)
 
-    if (userNameExists) {
-      return response.status(400).send({ error: 'Username already exists.' })
-    }
+    // if (userNameExists) {
+    //   return response.status(400).send({ error: 'Username already exists.' })
+    // }
 
     const emp = request.only(['name', 'nome_fantasia', 'email'])
-    if (!dataCpanel.cpanel) {
+    if (!dataCpanel.cpanel && data.validated) {
       data.token = crypto.randomBytes(10).toString('hex')
       data.token_created_at = new Date()
     }
 
     const user = await User.create(data)
+
+    if (data.validated) {
+      return user
+    }
 
     const redirect_url = request.input('redirect_url')
 
