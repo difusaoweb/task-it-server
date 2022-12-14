@@ -6,7 +6,6 @@ const Schema = use('Schema')
 class InputIdadeSchema extends Schema {
   up () {
     this.alter('profissionals', (table) => {
-      table.dropColumn('idade')
       table.date('dataNascimento')
       table.string('possuiDeficiencia')
       table.string('temHabilitacao')
@@ -31,7 +30,6 @@ class InputIdadeSchema extends Schema {
 
   down () {
     this.alter('profissionals', (table) => {
-      table.integer('idade')
       table.dropColumn('dataNascimento')
       table.dropColumn('possuiDeficiencia')
       table.dropColumn('temHabilitacao')

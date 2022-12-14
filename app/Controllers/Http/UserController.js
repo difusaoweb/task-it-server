@@ -27,9 +27,8 @@ class UserController {
     // if (userNameExists) {
     //   return response.status(400).send({ error: 'Username already exists.' })
     // }
-
     const emp = request.only(['name', 'nome_fantasia', 'email'])
-    if (!dataCpanel.cpanel && data.validated) {
+    if (!dataCpanel.cpanel && !data.validated) {
       data.token = crypto.randomBytes(10).toString('hex')
       data.token_created_at = new Date()
     }
