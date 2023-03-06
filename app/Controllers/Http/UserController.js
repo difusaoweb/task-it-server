@@ -35,10 +35,6 @@ class UserController {
 
     const user = await User.create(data)
 
-    if (data.validated) {
-      return user
-    }
-
     const redirect_url = request.input('redirect_url')
 
     if (emp.name) {
