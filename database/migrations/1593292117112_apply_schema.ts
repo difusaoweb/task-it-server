@@ -5,7 +5,7 @@ export default class AppliePlaces extends BaseSchema {
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments()
+      table.increments('id').primary()
       table
         .integer('candidato_id')
         .unsigned()

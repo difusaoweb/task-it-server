@@ -5,7 +5,7 @@ export default class Vagas extends BaseSchema {
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments()
+      table.increments('id').primary()
       table.string('title', 100).notNullable()
       table
         .integer('empresa_id')

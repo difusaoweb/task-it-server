@@ -5,7 +5,7 @@ export default class Contratante extends BaseSchema {
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments()
+      table.increments('id').primary()
       table.string('name', 250).notNullable()
       table.string('nome_fantasia', 250)
       table.string('descricaoEmpresa', 1500)

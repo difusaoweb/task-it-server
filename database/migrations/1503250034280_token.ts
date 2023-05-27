@@ -5,7 +5,7 @@ export default class Tokens extends BaseSchema {
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments()
+      table.increments('id').primary()
       table.integer('user_id').unsigned().references('id').inTable('users')
       table.string('token', 255).notNullable().unique().index()
       table.string('type', 80).notNullable()

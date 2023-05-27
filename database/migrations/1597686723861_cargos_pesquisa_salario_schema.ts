@@ -5,7 +5,7 @@ export default class CargosPesquisaSalario extends BaseSchema {
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments()
+      table.increments('id').primary()
       table
         .integer('id_pesquisa_salario')
         .unsigned()

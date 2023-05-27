@@ -5,7 +5,7 @@ export default class VagaDesejada extends BaseSchema {
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments()
+      table.increments('id').primary()
       table.integer('type_departament', 2).notNullable()
       table.string('title_departament', 100).notNullable()
       table.integer('type_fuction', 2)

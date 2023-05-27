@@ -5,7 +5,7 @@ export default class PesquisaSalario extends BaseSchema {
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments()
+      table.increments('id').primary()
       table.string('email', 250).notNullable()
       table.string('nome', 250).notNullable()
       table.string('meucargo', 250).notNullable()

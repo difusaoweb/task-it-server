@@ -5,7 +5,7 @@ export default class Cidades extends BaseSchema {
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments()
+      table.increments('id').primary()
       table.string('iso', 50).notNullable()
       table
         .integer('state_id')
