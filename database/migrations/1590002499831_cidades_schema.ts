@@ -5,7 +5,7 @@ export default class Cidades extends BaseSchema {
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('id').primary()
+      table.increments('id').primary().notNullable()
       table.string('iso', 50).notNullable()
       table
         .integer('state_id')
@@ -14,6 +14,7 @@ export default class Cidades extends BaseSchema {
         .inTable('estados')
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
+        .nullable()
       table.string('iso_ddd', 50).notNullable()
       table.string('title', 100).notNullable()
       table.string('status', 50).notNullable()

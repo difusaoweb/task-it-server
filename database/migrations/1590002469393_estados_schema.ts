@@ -5,7 +5,7 @@ export default class Estados extends BaseSchema {
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('id').primary()
+      table.increments('id').primary().notNullable()
       table.string('title', 50).notNullable()
       table.string('letter', 50).notNullable()
       table.string('iso', 250).notNullable()
