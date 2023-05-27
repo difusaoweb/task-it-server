@@ -1,11 +1,10 @@
-'use strict'
+import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
-/** @type {import('@adonisjs/lucid/src/Schema')} */
-const Schema = use('Schema')
+export default class Vagas extends BaseSchema {
+  protected tableName = 'vagases'
 
-class VagasSchema extends Schema {
-  up () {
-    this.create('vagases', (table) => {
+  public async up() {
+    this.schema.createTable(this.tableName, (table) => {
       table.increments()
       table.string('title', 100).notNullable()
       table
@@ -47,7 +46,6 @@ class VagasSchema extends Schema {
       table.double('valor_salario')
       table.double('valor_comissao')
       table.string('beneficios')
-      table.integer('carga_horaria')
       table.string('endereco', 350).notNullable()
       table.string('desc_carga_horaria', 200).notNullable()
       table.string('descricao_cargo', 1000)
@@ -58,13 +56,27 @@ class VagasSchema extends Schema {
         .inTable('vaga_desejadas')
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
-      table.timestamps()
+      table.string('requisitos')
+      table
+        .integer('tipo_contratacao_id')
+        .unsigned()
+        .references('id')
+        .inTable('tipos_contratacoes')
+        .onUpdate('CASCADE')
+        .onDelete('SET NULL')
+      table
+        .integer('periodo_trabalho_id')
+        .unsigned()
+        .references('id')
+        .inTable('periodo_trabalhos')
+        .onUpdate('CASCADE')
+        .onDelete('SET NULL')
+      table.timestamp('created_at', { useTz: true }).notNullable()
+      table.timestamp('updated_at', { useTz: true }).nullable()
     })
   }
 
-  down () {
-    this.drop('vagases')
+  public async down() {
+    this.schema.dropTable(this.tableName)
   }
 }
-
-module.exports = VagasSchema

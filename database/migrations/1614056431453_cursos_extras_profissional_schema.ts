@@ -1,11 +1,10 @@
-'use strict'
+import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
-/** @type {import('@adonisjs/lucid/src/Schema')} */
-const Schema = use('Schema')
+export default class CursosExtrasProfissional extends BaseSchema {
+  protected tableName = 'cursos_extras_profissionals'
 
-class CursosExtrasProfissionalSchema extends Schema {
-  up () {
-    this.create('cursos_extras_profissionals', (table) => {
+  public async up() {
+    this.schema.createTable(this.tableName, (table) => {
       table.increments()
       table
         .integer('profissional_id')
@@ -18,13 +17,12 @@ class CursosExtrasProfissionalSchema extends Schema {
       table.string('curso', 2000).notNullable()
       table.date('dataInicio').notNullable()
       table.date('dataTermino')
-      table.timestamps()
+      table.timestamp('created_at', { useTz: true }).notNullable()
+      table.timestamp('updated_at', { useTz: true }).nullable()
     })
   }
 
-  down () {
-    this.drop('cursos_extras_profissionals')
+  public async down() {
+    this.schema.dropTable(this.tableName)
   }
 }
-
-module.exports = CursosExtrasProfissionalSchema

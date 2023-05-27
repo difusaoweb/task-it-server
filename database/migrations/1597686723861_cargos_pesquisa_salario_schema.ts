@@ -1,11 +1,10 @@
-'use strict'
+import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
-/** @type {import('@adonisjs/lucid/src/Schema')} */
-const Schema = use('Schema')
+export default class CargosPesquisaSalario extends BaseSchema {
+  protected tableName = 'cargos_pesquisa_salarios'
 
-class CargosPesquisaSalarioSchema extends Schema {
-  up () {
-    this.create('cargos_pesquisa_salarios', (table) => {
+  public async up() {
+    this.schema.createTable(this.tableName, (table) => {
       table.increments()
       table
         .integer('id_pesquisa_salario')
@@ -21,13 +20,12 @@ class CargosPesquisaSalarioSchema extends Schema {
         .inTable('vaga_desejadas')
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
-      table.timestamps()
+      table.timestamp('created_at', { useTz: true }).notNullable()
+      table.timestamp('updated_at', { useTz: true }).nullable()
     })
   }
 
-  down () {
-    this.drop('cargos_pesquisa_salarios')
+  public async down() {
+    this.schema.dropTable(this.tableName)
   }
 }
-
-module.exports = CargosPesquisaSalarioSchema

@@ -1,20 +1,18 @@
-'use strict'
+import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
-/** @type {import('@adonisjs/lucid/src/Schema')} */
-const Schema = use('Schema')
+export default class PaymentTypes extends BaseSchema {
+  protected tableName = 'payment_types'
 
-class PaymentTypesSchema extends Schema {
-  up () {
-    this.create('payment_types', (table) => {
+  public async up() {
+    this.schema.createTable(this.tableName, (table) => {
       table.increments()
       table.string('title', 100).notNullable()
-      table.timestamps()
+      table.timestamp('created_at', { useTz: true }).notNullable()
+      table.timestamp('updated_at', { useTz: true }).nullable()
     })
   }
 
-  down () {
-    this.drop('payment_types')
+  public async down() {
+    this.schema.dropTable(this.tableName)
   }
 }
-
-module.exports = PaymentTypesSchema

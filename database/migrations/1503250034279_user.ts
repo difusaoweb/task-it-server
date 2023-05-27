@@ -1,11 +1,10 @@
-'use strict'
+import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
-/** @type {import('@adonisjs/lucid/src/Schema')} */
-const Schema = use('Schema')
+export default class User extends BaseSchema {
+  protected tableName = 'users'
 
-class UserSchema extends Schema {
-  up () {
-    this.create('users', (table) => {
+  public async up() {
+    this.schema.createTable(this.tableName, (table) => {
       table.increments()
       table.string('username', 80).notNullable().unique()
       table.string('email', 254).notNullable().unique()
@@ -14,13 +13,14 @@ class UserSchema extends Schema {
       table.boolean('validated').defaultTo(false)
       table.string('token')
       table.timestamp('token_created_at')
-      table.timestamps()
+      table.boolean('isInvited').defaultTo(false)
+      table.boolean('asActiveInvite').defaultTo(false)
+      table.timestamp('created_at', { useTz: true }).notNullable()
+      table.timestamp('updated_at', { useTz: true }).nullable()
     })
   }
 
-  down () {
-    this.drop('users')
+  public async down() {
+    this.schema.dropTable(this.tableName)
   }
 }
-
-module.exports = UserSchema

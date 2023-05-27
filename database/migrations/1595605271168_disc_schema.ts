@@ -1,11 +1,10 @@
-'use strict'
+import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
-/** @type {import('@adonisjs/lucid/src/Schema')} */
-const Schema = use('Schema')
+export default class Disc extends BaseSchema {
+  protected tableName = 'discs'
 
-class DiscSchema extends Schema {
-  up () {
-    this.create('discs', (table) => {
+  public async up() {
+    this.schema.createTable(this.tableName, (table) => {
       table.increments()
       table
         .integer('profissional_id')
@@ -58,13 +57,12 @@ class DiscSchema extends Schema {
       table.integer('sensivel').notNullable()
       table.integer('sincero').notNullable()
       table.integer('perfeccionista').notNullable()
-      table.timestamps()
+      table.timestamp('created_at', { useTz: true }).notNullable()
+      table.timestamp('updated_at', { useTz: true }).nullable()
     })
   }
 
-  down () {
-    this.drop('discs')
+  public async down() {
+    this.schema.dropTable(this.tableName)
   }
 }
-
-module.exports = DiscSchema

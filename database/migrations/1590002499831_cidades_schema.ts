@@ -1,11 +1,10 @@
-'use strict'
+import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
-/** @type {import('@adonisjs/lucid/src/Schema')} */
-const Schema = use('Schema')
+export default class Cidades extends BaseSchema {
+  protected tableName = 'cidades'
 
-class CidadesSchema extends Schema {
-  up () {
-    this.create('cidades', (table) => {
+  public async up() {
+    this.schema.createTable(this.tableName, (table) => {
       table.increments()
       table.string('iso', 50).notNullable()
       table
@@ -23,14 +22,12 @@ class CidadesSchema extends Schema {
       table.string('lat', 50).notNullable()
       table.string('long', 50).notNullable()
       table.string('income_per_capita', 50).notNullable()
-
-      table.timestamps()
+      table.timestamp('created_at', { useTz: true }).notNullable()
+      table.timestamp('updated_at', { useTz: true }).nullable()
     })
   }
 
-  down () {
-    this.drop('cidades')
+  public async down() {
+    this.schema.dropTable(this.tableName)
   }
 }
-
-module.exports = CidadesSchema

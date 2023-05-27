@@ -1,11 +1,10 @@
-'use strict'
+import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
-/** @type {import('@adonisjs/lucid/src/Schema')} */
-const Schema = use('Schema')
+export default class Profissional extends BaseSchema {
+  protected tableName = 'profissionals'
 
-class ProfissionalSchema extends Schema {
-  up () {
-    this.create('profissionals', (table) => {
+  public async up() {
+    this.schema.createTable(this.tableName, (table) => {
       table.string('nome', 250).notNullable()
       table.string('cpf', 15).notNullable()
       table.string('rg', 15).notNullable()
@@ -53,14 +52,31 @@ class ProfissionalSchema extends Schema {
         .inTable('vaga_desejadas')
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
-      table.increments()
-      table.timestamps()
+      table.date('dataNascimento')
+      table.string('possuiDeficiencia')
+      table.string('temHabilitacao')
+      table.string('idiomas')
+      table
+        .integer('sexo_id')
+        .unsigned()
+        .references('id')
+        .inTable('sexos')
+        .onUpdate('CASCADE')
+        .onDelete('SET NULL')
+      table.string('temFilhos')
+      table
+        .integer('estado_civil_id')
+        .unsigned()
+        .references('id')
+        .inTable('estado_civils')
+        .onUpdate('CASCADE')
+        .onDelete('SET NULL')
+      table.timestamp('created_at', { useTz: true }).notNullable()
+      table.timestamp('updated_at', { useTz: true }).nullable()
     })
   }
 
-  down () {
-    this.drop('profissionals')
+  public async down() {
+    this.schema.dropTable(this.tableName)
   }
 }
-
-module.exports = ProfissionalSchema

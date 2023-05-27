@@ -1,21 +1,19 @@
-'use strict'
+import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
-/** @type {import('@adonisjs/lucid/src/Schema')} */
-const Schema = use('Schema')
+export default class AreaProfissional extends BaseSchema {
+  protected tableName = 'area_profissionals'
 
-class AreaProfissionalSchema extends Schema {
-  up () {
-    this.create('area_profissionals', (table) => {
+  public async up() {
+    this.schema.createTable(this.tableName, (table) => {
       table.increments()
       table.string('title', 100).notNullable()
       table.integer('state')
-      table.timestamps()
+      table.timestamp('created_at', { useTz: true }).notNullable()
+      table.timestamp('updated_at', { useTz: true }).nullable()
     })
   }
 
-  down () {
-    this.drop('area_profissionals')
+  public async down() {
+    this.schema.dropTable(this.tableName)
   }
 }
-
-module.exports = AreaProfissionalSchema

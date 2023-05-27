@@ -1,20 +1,18 @@
-'use strict'
+import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
-/** @type {import('@adonisjs/lucid/src/Schema')} */
-const Schema = use('Schema')
+export default class EstadoCivil extends BaseSchema {
+  protected tableName = 'estado_civils'
 
-class EstadoCivilSchema extends Schema {
-  up () {
-    this.create('estado_civils', (table) => {
+  public async up() {
+    this.schema.createTable(this.tableName, (table) => {
       table.increments()
       table.string('title', 2000).notNullable()
-      table.timestamps()
+      table.timestamp('created_at', { useTz: true }).notNullable()
+      table.timestamp('updated_at', { useTz: true }).nullable()
     })
   }
 
-  down () {
-    this.drop('estado_civils')
+  public async down() {
+    this.schema.dropTable(this.tableName)
   }
 }
-
-module.exports = EstadoCivilSchema

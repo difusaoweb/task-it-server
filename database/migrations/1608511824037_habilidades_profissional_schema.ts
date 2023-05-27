@@ -1,11 +1,10 @@
-'use strict'
+import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
-/** @type {import('@adonisjs/lucid/src/Schema')} */
-const Schema = use('Schema')
+export default class HabilidadesProfissional extends BaseSchema {
+  protected tableName = 'habilidades_profissionals'
 
-class HabilidadesProfissionalSchema extends Schema {
-  up () {
-    this.create('habilidades_profissionals', (table) => {
+  public async up() {
+    this.schema.createTable(this.tableName, (table) => {
       table.increments()
       table
         .integer('profissional_id')
@@ -21,12 +20,12 @@ class HabilidadesProfissionalSchema extends Schema {
         .inTable('habilidades')
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
+      table.timestamp('created_at', { useTz: true }).notNullable()
+      table.timestamp('updated_at', { useTz: true }).nullable()
     })
   }
 
-  down () {
-    this.drop('habilidades_profissionals')
+  public async down() {
+    this.schema.dropTable(this.tableName)
   }
 }
-
-module.exports = HabilidadesProfissionalSchema

@@ -1,21 +1,19 @@
-'use strict'
+import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
-/** @type {import('@adonisjs/lucid/src/Schema')} */
-const Schema = use('Schema')
+export default class PorteEmpresa extends BaseSchema {
+  protected tableName = 'porte_empresas'
 
-class PorteEmpresaSchema extends Schema {
-  up () {
-    this.create('porte_empresas', (table) => {
+  public async up() {
+    this.schema.createTable(this.tableName, (table) => {
       table.increments()
       table.string('title', 100).notNullable()
       table.string('size', 50).notNullable()
-      table.timestamps()
+      table.timestamp('created_at', { useTz: true }).notNullable()
+      table.timestamp('updated_at', { useTz: true }).nullable()
     })
   }
 
-  down () {
-    this.drop('porte_empresas')
+  public async down() {
+    this.schema.dropTable(this.tableName)
   }
 }
-
-module.exports = PorteEmpresaSchema
