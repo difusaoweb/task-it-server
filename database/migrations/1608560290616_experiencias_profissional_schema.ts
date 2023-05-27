@@ -5,7 +5,7 @@ export default class ExperienciasProfissional extends BaseSchema {
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('id').primary()
+      table.increments('id').primary().notNullable()
       table
         .integer('profissional_id')
         .unsigned()
@@ -13,11 +13,12 @@ export default class ExperienciasProfissional extends BaseSchema {
         .inTable('profissionals')
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
+        .notNullable()
       table.string('empresa', 250).notNullable()
       table.string('funcao', 2000).notNullable()
       table.date('dataEntrada').notNullable()
-      table.date('dataSaida')
-      table.boolean('atual').defaultTo(false)
+      table.date('dataSaida').nullable()
+      table.boolean('atual').defaultTo(false).notNullable()
       table.timestamp('created_at', { useTz: true }).notNullable()
       table.timestamp('updated_at', { useTz: true }).nullable()
     })
