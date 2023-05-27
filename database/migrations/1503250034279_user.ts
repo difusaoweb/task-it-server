@@ -12,7 +12,7 @@ export default class User extends BaseSchema {
       table.string('type', 2).notNullable()
       table.boolean('validated').defaultTo(false)
       table.string('token')
-      table.timestamp('token_created_at')
+      table.timestamp('token_created_at', { useTz: true })
       table.boolean('isInvited').defaultTo(false)
       table.boolean('asActiveInvite').defaultTo(false)
       table.timestamp('created_at', { useTz: true }).notNullable()
