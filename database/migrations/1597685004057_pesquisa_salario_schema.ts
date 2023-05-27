@@ -5,7 +5,7 @@ export default class PesquisaSalario extends BaseSchema {
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('id').primary()
+      table.increments('id').primary().notNullable()
       table.string('email', 250).notNullable()
       table.string('nome', 250).notNullable()
       table.string('meucargo', 250).notNullable()
@@ -25,6 +25,7 @@ export default class PesquisaSalario extends BaseSchema {
         .inTable('cidades')
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
+        .nullable()
       table
         .integer('tipo_salario_id')
         .unsigned()
@@ -32,6 +33,7 @@ export default class PesquisaSalario extends BaseSchema {
         .inTable('payment_types')
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
+        .nullable()
       table.timestamp('created_at', { useTz: true }).notNullable()
       table.timestamp('updated_at', { useTz: true }).nullable()
     })
