@@ -5,7 +5,7 @@ export default class HabilidadesProfissional extends BaseSchema {
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('id').primary()
+      table.increments('id').primary().notNullable()
       table
         .integer('profissional_id')
         .unsigned()
@@ -13,6 +13,7 @@ export default class HabilidadesProfissional extends BaseSchema {
         .inTable('profissionals')
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
+        .notNullable()
       table
         .integer('habilidade_id')
         .unsigned()
@@ -20,6 +21,7 @@ export default class HabilidadesProfissional extends BaseSchema {
         .inTable('habilidades')
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
+        .nullable()
       table.timestamp('created_at', { useTz: true }).notNullable()
       table.timestamp('updated_at', { useTz: true }).nullable()
     })
