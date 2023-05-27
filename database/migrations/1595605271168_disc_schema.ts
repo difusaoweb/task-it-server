@@ -5,7 +5,7 @@ export default class Disc extends BaseSchema {
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('id').primary()
+      table.increments('id').primary().notNullable()
       table
         .integer('profissional_id')
         .unsigned()
@@ -13,6 +13,7 @@ export default class Disc extends BaseSchema {
         .inTable('users')
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
+        .nullable()
       table.integer('d').notNullable()
       table.integer('i').notNullable()
       table.integer('s').notNullable()
