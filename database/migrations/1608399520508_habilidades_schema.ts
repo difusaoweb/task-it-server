@@ -5,7 +5,7 @@ export default class Habilidades extends BaseSchema {
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('id').primary()
+      table.increments('id').primary().notNullable()
       table.integer('idTipo').notNullable()
       table.string('tipo', 100).notNullable()
       table.string('nome', 100).notNullable()
