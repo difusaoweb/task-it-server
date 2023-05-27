@@ -5,7 +5,7 @@ export default class CursosExtrasProfissional extends BaseSchema {
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('id').primary()
+      table.increments('id').primary().notNullable()
       table
         .integer('profissional_id')
         .unsigned()
@@ -13,10 +13,11 @@ export default class CursosExtrasProfissional extends BaseSchema {
         .inTable('profissionals')
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
+        .notNullable()
       table.string('instituicao', 250).notNullable()
       table.string('curso', 2000).notNullable()
-      table.date('dataInicio').notNullable()
-      table.date('dataTermino')
+      table.timestamp('dataInicio', { useTz: true }).notNullable()
+      table.timestamp('dataTermino', { useTz: true }).nullable()
       table.timestamp('created_at', { useTz: true }).notNullable()
       table.timestamp('updated_at', { useTz: true }).nullable()
     })
