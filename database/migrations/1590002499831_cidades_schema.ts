@@ -1,6 +1,6 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
-export default class Cidades extends BaseSchema {
+export default class CidadesSchema extends BaseSchema {
   protected tableName = 'cidades'
 
   public async up() {

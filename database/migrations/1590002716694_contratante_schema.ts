@@ -1,6 +1,6 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
-export default class Contratante extends BaseSchema {
+export default class ContratanteSchema extends BaseSchema {
   protected tableName = 'contratantes'
 
   public async up() {

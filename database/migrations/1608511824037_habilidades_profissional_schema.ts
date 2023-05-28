@@ -1,6 +1,6 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
-export default class HabilidadesProfissional extends BaseSchema {
+export default class HabilidadesProfissionalSchema extends BaseSchema {
   protected tableName = 'habilidades_profissionals'
 
   public async up() {

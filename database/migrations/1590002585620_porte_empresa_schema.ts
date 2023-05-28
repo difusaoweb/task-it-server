@@ -1,6 +1,6 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
-export default class PorteEmpresa extends BaseSchema {
+export default class PorteEmpresaSchema extends BaseSchema {
   protected tableName = 'porte_empresas'
 
   public async up() {

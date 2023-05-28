@@ -1,6 +1,6 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
-export default class Escolaridade extends BaseSchema {
+export default class EscolaridadeSchema extends BaseSchema {
   protected tableName = 'escolaridades'
 
   public async up() {

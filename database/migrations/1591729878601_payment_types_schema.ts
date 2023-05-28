@@ -1,6 +1,6 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
-export default class PaymentTypes extends BaseSchema {
+export default class PaymentTypesSchema extends BaseSchema {
   protected tableName = 'payment_types'
 
   public async up() {

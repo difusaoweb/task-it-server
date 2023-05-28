@@ -1,6 +1,6 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
-export default class AreaProfissional extends BaseSchema {
+export default class AreaProfissionalSchema extends BaseSchema {
   protected tableName = 'area_profissionals'
 
   public async up() {
