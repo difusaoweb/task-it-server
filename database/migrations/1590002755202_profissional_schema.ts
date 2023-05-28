@@ -5,6 +5,7 @@ export default class Profissional extends BaseSchema {
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
+      table.increments('id').primary().notNullable()
       table.string('nome', 250).notNullable()
       table.string('cpf', 15).notNullable()
       table.string('rg', 15).notNullable()
@@ -15,6 +16,7 @@ export default class Profissional extends BaseSchema {
         .inTable('cidades')
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
+        .nullable()
       table
         .integer('user_id')
         .unsigned()
@@ -22,15 +24,16 @@ export default class Profissional extends BaseSchema {
         .inTable('users')
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
+        .nullable()
       table.string('endereco', 500).notNullable()
       table.string('referencia', 500).notNullable()
       table.string('telCelular', 15).notNullable()
-      table.string('telComercial', 15)
-      table.string('telOutro', 15)
-      table.string('site', 250)
+      table.string('telComercial', 15).nullable()
+      table.string('telOutro', 15).nullable()
+      table.string('site', 250).nullable()
       table.string('email', 250).notNullable()
-      table.string('habilidades', 1000)
-      table.string('experiencia', 2000)
+      table.string('habilidades', 1000).nullable()
+      table.string('experiencia', 2000).nullable()
       table
         .integer('escolaridade_id')
         .unsigned()
@@ -38,6 +41,7 @@ export default class Profissional extends BaseSchema {
         .inTable('escolaridades')
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
+        .nullable()
       table
         .integer('area_atuacao_id')
         .unsigned()
@@ -45,6 +49,7 @@ export default class Profissional extends BaseSchema {
         .inTable('area_profissionals')
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
+        .nullable()
       table
         .integer('vaga_desejada_id')
         .unsigned()
@@ -52,10 +57,11 @@ export default class Profissional extends BaseSchema {
         .inTable('vaga_desejadas')
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
-      table.date('dataNascimento')
-      table.string('possuiDeficiencia')
-      table.string('temHabilitacao')
-      table.string('idiomas')
+        .nullable()
+      table.timestamp('dataNascimento', { useTz: true }).nullable()
+      table.string('possuiDeficiencia').nullable()
+      table.string('temHabilitacao').nullable()
+      table.string('idiomas').nullable()
       table
         .integer('sexo_id')
         .unsigned()
@@ -63,7 +69,8 @@ export default class Profissional extends BaseSchema {
         .inTable('sexos')
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
-      table.string('temFilhos')
+        .nullable()
+      table.string('temFilhos').nullable()
       table
         .integer('estado_civil_id')
         .unsigned()
@@ -71,6 +78,7 @@ export default class Profissional extends BaseSchema {
         .inTable('estado_civils')
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
+        .nullable()
       table.timestamp('created_at', { useTz: true }).notNullable()
       table.timestamp('updated_at', { useTz: true }).nullable()
     })
