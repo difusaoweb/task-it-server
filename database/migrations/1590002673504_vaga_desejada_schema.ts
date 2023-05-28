@@ -5,11 +5,11 @@ export default class VagaDesejada extends BaseSchema {
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('id').primary()
+      table.increments('id').primary().notNullable()
       table.integer('type_departament', 2).notNullable()
       table.string('title_departament', 100).notNullable()
-      table.integer('type_fuction', 2)
-      table.string('title_type_fuction', 100)
+      table.integer('type_fuction', 2).nullable()
+      table.string('title_type_fuction', 100).nullable()
       table.string('title_function', 100).notNullable()
       table.timestamp('created_at', { useTz: true }).notNullable()
       table.timestamp('updated_at', { useTz: true }).nullable()
