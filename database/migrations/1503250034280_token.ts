@@ -5,11 +5,11 @@ export default class Tokens extends BaseSchema {
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('id').primary()
-      table.integer('user_id').unsigned().references('id').inTable('users')
-      table.string('token', 255).notNullable().unique().index()
+      table.increments('id').primary().notNullable()
+      table.integer('user_id').unsigned().references('id').inTable('users').notNullable()
+      table.string('token', 255).unique().index().notNullable()
       table.string('type', 80).notNullable()
-      table.boolean('is_revoked').defaultTo(false)
+      table.boolean('is_revoked').defaultTo(false).notNullable()
       table.timestamp('created_at', { useTz: true }).notNullable()
       table.timestamp('updated_at', { useTz: true }).nullable()
     })
