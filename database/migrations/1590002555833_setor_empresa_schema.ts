@@ -5,9 +5,9 @@ export default class SetorEmpresa extends BaseSchema {
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('id').primary()
+      table.increments('id').primary().notNullable()
       table.string('title', 100).notNullable()
-      table.integer('state').defaultTo(1)
+      table.integer('state').defaultTo(1).nullable()
       table.timestamp('created_at', { useTz: true }).notNullable()
       table.timestamp('updated_at', { useTz: true }).nullable()
     })
