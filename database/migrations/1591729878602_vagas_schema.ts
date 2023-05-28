@@ -5,7 +5,7 @@ export default class Vagas extends BaseSchema {
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('id').primary()
+      table.increments('id').primary().notNullable()
       table.string('title', 100).notNullable()
       table
         .integer('empresa_id')
@@ -14,6 +14,7 @@ export default class Vagas extends BaseSchema {
         .inTable('contratantes')
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
+        .nullable()
       table
         .integer('cidade_id')
         .unsigned()
@@ -21,6 +22,7 @@ export default class Vagas extends BaseSchema {
         .inTable('cidades')
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
+        .nullable()
       table
         .integer('area_profissional_id')
         .unsigned()
@@ -28,6 +30,7 @@ export default class Vagas extends BaseSchema {
         .inTable('area_profissionals')
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
+        .nullable()
       table
         .integer('escolaridade_id')
         .unsigned()
@@ -35,7 +38,7 @@ export default class Vagas extends BaseSchema {
         .inTable('escolaridades')
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
-
+        .nullable()
       table
         .integer('tipo_salario')
         .unsigned()
@@ -43,12 +46,13 @@ export default class Vagas extends BaseSchema {
         .inTable('payment_types')
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
-      table.double('valor_salario')
-      table.double('valor_comissao')
-      table.string('beneficios')
+        .nullable()
+      table.double('valor_salario').nullable()
+      table.double('valor_comissao').nullable()
+      table.string('beneficios').nullable()
       table.string('endereco', 350).notNullable()
       table.string('desc_carga_horaria', 200).notNullable()
-      table.string('descricao_cargo', 1000)
+      table.string('descricao_cargo', 1000).nullable()
       table
         .integer('cargo_id')
         .unsigned()
@@ -56,6 +60,7 @@ export default class Vagas extends BaseSchema {
         .inTable('vaga_desejadas')
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
+        .nullable()
       table.string('requisitos')
       table
         .integer('tipo_contratacao_id')
@@ -64,6 +69,7 @@ export default class Vagas extends BaseSchema {
         .inTable('tipos_contratacoes')
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
+        .nullable()
       table
         .integer('periodo_trabalho_id')
         .unsigned()
@@ -71,6 +77,7 @@ export default class Vagas extends BaseSchema {
         .inTable('periodo_trabalhos')
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
+        .nullable()
       table.timestamp('created_at', { useTz: true }).notNullable()
       table.timestamp('updated_at', { useTz: true }).nullable()
     })
