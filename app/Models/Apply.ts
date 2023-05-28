@@ -6,10 +6,10 @@ export default class Apply extends BaseModel {
   public id: number
 
   @column()
-  public candidato_id: number | null
+  public candidatoId: number | null
 
   @column()
-  public vaga_id: number | null
+  public vagaId: number | null
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

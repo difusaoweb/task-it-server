@@ -1,7 +1,6 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Database from '@ioc:Adonis/Lucid/Database'
 
-// 'use strict'
 // const Contratante = use('App/Models/Contratante')
 // const Vagas = use('App/Models/Vagas')
 // const Database = use('Database')
