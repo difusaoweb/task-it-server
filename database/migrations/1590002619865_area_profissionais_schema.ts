@@ -5,9 +5,9 @@ export default class AreaProfissionalSchema extends BaseSchema {
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('id').primary()
+      table.increments('id').primary().nullable()
       table.string('title', 100).notNullable()
-      table.integer('state')
+      table.integer('state').nullable()
       table.timestamp('created_at', { useTz: true }).notNullable()
       table.timestamp('updated_at', { useTz: true }).nullable()
     })

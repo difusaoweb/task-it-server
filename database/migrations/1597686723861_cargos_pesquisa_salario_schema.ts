@@ -5,7 +5,7 @@ export default class CargosPesquisaSalarioSchema extends BaseSchema {
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('id').primary()
+      table.increments('id').primary().notNullable()
       table
         .integer('id_pesquisa_salario')
         .unsigned()
@@ -13,6 +13,7 @@ export default class CargosPesquisaSalarioSchema extends BaseSchema {
         .inTable('pesquisa_salarios')
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
+        .nullable()
       table
         .integer('id_cargo')
         .unsigned()
@@ -20,6 +21,7 @@ export default class CargosPesquisaSalarioSchema extends BaseSchema {
         .inTable('vaga_desejadas')
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
+        .nullable()
       table.timestamp('created_at', { useTz: true }).notNullable()
       table.timestamp('updated_at', { useTz: true }).nullable()
     })
