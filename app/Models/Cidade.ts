@@ -9,10 +9,10 @@ export default class Cidade extends BaseModel {
   public iso: string
 
   @column()
-  public state_id: number | null
+  public stateId: number | null
 
   @column()
-  public iso_ddd: string
+  public isoDdd: string
 
   @column()
   public title: string
@@ -33,7 +33,7 @@ export default class Cidade extends BaseModel {
   public long: string
 
   @column()
-  public income_per_capita: string
+  public incomePerCapita: string
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
