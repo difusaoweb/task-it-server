@@ -6,233 +6,233 @@ export default class VagaDesejadaSeeder extends BaseSeeder {
   public async run() {
     await VagaDesejada.createMany([
       {
-        type_departament: 1,
-        title_departament: 'Departamento Comercial',
-        title_function: 'Consultor de Atendimento / Vendas'
+        typeDepartament: 1,
+        titleDepartament: 'Departamento Comercial',
+        titleFunction: 'Consultor de Atendimento / Vendas'
       },
       {
-        type_departament: 1,
-        title_departament: 'Departamento Comercial',
-        title_function: 'Recepcionista'
+        typeDepartament: 1,
+        titleDepartament: 'Departamento Comercial',
+        titleFunction: 'Recepcionista'
       },
       {
-        type_departament: 1,
-        title_departament: 'Departamento Comercial',
-        title_function: 'Vendedor'
+        typeDepartament: 1,
+        titleDepartament: 'Departamento Comercial',
+        titleFunction: 'Vendedor'
       },
       {
-        type_departament: 1,
-        title_departament: 'Departamento Comercial',
-        title_function: 'Gerente'
+        typeDepartament: 1,
+        titleDepartament: 'Departamento Comercial',
+        titleFunction: 'Gerente'
       },
       {
-        type_departament: 1,
-        title_departament: 'Departamento Comercial',
-        title_function: 'Supervisor de vendas'
+        typeDepartament: 1,
+        titleDepartament: 'Departamento Comercial',
+        titleFunction: 'Supervisor de vendas'
       },
       {
-        type_departament: 2,
-        title_departament: 'Departamento Técnico',
-        type_fuction: 1,
-        title_type_fuction: 'Estagiário',
-        title_function: 'Natação'
+        typeDepartament: 2,
+        titleDepartament: 'Departamento Técnico',
+        typeFuction: 1,
+        titleTypeFuction: 'Estagiário',
+        titleFunction: 'Natação'
       },
       {
-        type_departament: 2,
-        title_departament: 'Departamento Técnico',
-        type_fuction: 1,
-        title_type_fuction: 'Estagiário',
-        title_function: 'Ginástica'
+        typeDepartament: 2,
+        titleDepartament: 'Departamento Técnico',
+        typeFuction: 1,
+        titleTypeFuction: 'Estagiário',
+        titleFunction: 'Ginástica'
       },
       {
-        type_departament: 2,
-        title_departament: 'Departamento Técnico',
-        type_fuction: 1,
-        title_type_fuction: 'Estagiário',
-        title_function: 'Musculação'
+        typeDepartament: 2,
+        titleDepartament: 'Departamento Técnico',
+        typeFuction: 1,
+        titleTypeFuction: 'Estagiário',
+        titleFunction: 'Musculação'
       },
       {
-        type_departament: 2,
-        title_departament: 'Departamento Técnico',
-        type_fuction: 1,
-        title_type_fuction: 'Estagiário',
-        title_function: 'Lutas'
+        typeDepartament: 2,
+        titleDepartament: 'Departamento Técnico',
+        typeFuction: 1,
+        titleTypeFuction: 'Estagiário',
+        titleFunction: 'Lutas'
       },
       {
-        type_departament: 2,
-        title_departament: 'Departamento Técnico',
-        type_fuction: 1,
-        title_type_fuction: 'Estagiário',
-        title_function: 'Escola de esportes'
+        typeDepartament: 2,
+        titleDepartament: 'Departamento Técnico',
+        typeFuction: 1,
+        titleTypeFuction: 'Estagiário',
+        titleFunction: 'Escola de esportes'
       },
       {
-        type_departament: 2,
-        title_departament: 'Departamento Técnico',
-        type_fuction: 1,
-        title_type_fuction: 'Estagiário',
-        title_function: 'Dança'
+        typeDepartament: 2,
+        titleDepartament: 'Departamento Técnico',
+        typeFuction: 1,
+        titleTypeFuction: 'Estagiário',
+        titleFunction: 'Dança'
       },
       {
-        type_departament: 2,
-        title_departament: 'Departamento Técnico',
-        type_fuction: 1,
-        title_type_fuction: 'Estagiário',
-        title_function: 'Pilates'
+        typeDepartament: 2,
+        titleDepartament: 'Departamento Técnico',
+        typeFuction: 1,
+        titleTypeFuction: 'Estagiário',
+        titleFunction: 'Pilates'
       },
       {
-        type_departament: 2,
-        title_departament: 'Departamento Técnico',
-        type_fuction: 1,
-        title_type_fuction: 'Estagiário',
-        title_function: 'Yoga'
+        typeDepartament: 2,
+        titleDepartament: 'Departamento Técnico',
+        typeFuction: 1,
+        titleTypeFuction: 'Estagiário',
+        titleFunction: 'Yoga'
       },
       {
-        type_departament: 2,
-        title_departament: 'Departamento Técnico',
-        type_fuction: 1,
-        title_type_fuction: 'Estagiário',
-        title_function: 'Funcional'
+        typeDepartament: 2,
+        titleDepartament: 'Departamento Técnico',
+        typeFuction: 1,
+        titleTypeFuction: 'Estagiário',
+        titleFunction: 'Funcional'
       },
       {
-        type_departament: 2,
-        title_departament: 'Departamento Técnico',
-        type_fuction: 2,
-        title_type_fuction: 'Professor / Profissional',
-        title_function: 'Natação'
+        typeDepartament: 2,
+        titleDepartament: 'Departamento Técnico',
+        typeFuction: 2,
+        titleTypeFuction: 'Professor / Profissional',
+        titleFunction: 'Natação'
       },
       {
-        type_departament: 2,
-        title_departament: 'Departamento Técnico',
-        type_fuction: 2,
-        title_type_fuction: 'Professor / Profissional',
-        title_function: 'Ginástica'
+        typeDepartament: 2,
+        titleDepartament: 'Departamento Técnico',
+        typeFuction: 2,
+        titleTypeFuction: 'Professor / Profissional',
+        titleFunction: 'Ginástica'
       },
       {
-        type_departament: 2,
-        title_departament: 'Departamento Técnico',
-        type_fuction: 2,
-        title_type_fuction: 'Professor / Profissional',
-        title_function: 'Musculação'
+        typeDepartament: 2,
+        titleDepartament: 'Departamento Técnico',
+        typeFuction: 2,
+        titleTypeFuction: 'Professor / Profissional',
+        titleFunction: 'Musculação'
       },
       {
-        type_departament: 2,
-        title_departament: 'Departamento Técnico',
-        type_fuction: 2,
-        title_type_fuction: 'Professor / Profissional',
-        title_function: 'Lutas'
+        typeDepartament: 2,
+        titleDepartament: 'Departamento Técnico',
+        typeFuction: 2,
+        titleTypeFuction: 'Professor / Profissional',
+        titleFunction: 'Lutas'
       },
       {
-        type_departament: 2,
-        title_departament: 'Departamento Técnico',
-        type_fuction: 2,
-        title_type_fuction: 'Professor / Profissional',
-        title_function: 'Escola de esportes'
+        typeDepartament: 2,
+        titleDepartament: 'Departamento Técnico',
+        typeFuction: 2,
+        titleTypeFuction: 'Professor / Profissional',
+        titleFunction: 'Escola de esportes'
       },
       {
-        type_departament: 2,
-        title_departament: 'Departamento Técnico',
-        type_fuction: 2,
-        title_type_fuction: 'Professor / Profissional',
-        title_function: 'Dança'
+        typeDepartament: 2,
+        titleDepartament: 'Departamento Técnico',
+        typeFuction: 2,
+        titleTypeFuction: 'Professor / Profissional',
+        titleFunction: 'Dança'
       },
       {
-        type_departament: 2,
-        title_departament: 'Departamento Técnico',
-        type_fuction: 2,
-        title_type_fuction: 'Professor / Profissional',
-        title_function: 'Pilates'
+        typeDepartament: 2,
+        titleDepartament: 'Departamento Técnico',
+        typeFuction: 2,
+        titleTypeFuction: 'Professor / Profissional',
+        titleFunction: 'Pilates'
       },
       {
-        type_departament: 2,
-        title_departament: 'Departamento Técnico',
-        type_fuction: 2,
-        title_type_fuction: 'Professor / Profissional',
-        title_function: 'Yoga'
+        typeDepartament: 2,
+        titleDepartament: 'Departamento Técnico',
+        typeFuction: 2,
+        titleTypeFuction: 'Professor / Profissional',
+        titleFunction: 'Yoga'
       },
       {
-        type_departament: 2,
-        title_departament: 'Departamento Técnico',
-        type_fuction: 2,
-        title_type_fuction: 'Professor / Profissional',
-        title_function: 'Funcional'
+        typeDepartament: 2,
+        titleDepartament: 'Departamento Técnico',
+        typeFuction: 2,
+        titleTypeFuction: 'Professor / Profissional',
+        titleFunction: 'Funcional'
       },
       {
-        type_departament: 2,
-        title_departament: 'Departamento Técnico',
-        type_fuction: 3,
-        title_type_fuction: 'Coordenador técnico',
-        title_function: 'Musculação'
+        typeDepartament: 2,
+        titleDepartament: 'Departamento Técnico',
+        typeFuction: 3,
+        titleTypeFuction: 'Coordenador técnico',
+        titleFunction: 'Musculação'
       },
       {
-        type_departament: 2,
-        title_departament: 'Departamento Técnico',
-        type_fuction: 3,
-        title_type_fuction: 'Coordenador técnico',
-        title_function: 'Ginástica'
+        typeDepartament: 2,
+        titleDepartament: 'Departamento Técnico',
+        typeFuction: 3,
+        titleTypeFuction: 'Coordenador técnico',
+        titleFunction: 'Ginástica'
       },
       {
-        type_departament: 2,
-        title_departament: 'Departamento Técnico',
-        type_fuction: 3,
-        title_type_fuction: 'Coordenador técnico',
-        title_function: 'Natação'
+        typeDepartament: 2,
+        titleDepartament: 'Departamento Técnico',
+        typeFuction: 3,
+        titleTypeFuction: 'Coordenador técnico',
+        titleFunction: 'Natação'
       },
       {
-        type_departament: 2,
-        title_departament: 'Departamento Técnico',
-        type_fuction: 3,
-        title_type_fuction: 'Coordenador técnico',
-        title_function: 'Todas as áreas'
+        typeDepartament: 2,
+        titleDepartament: 'Departamento Técnico',
+        typeFuction: 3,
+        titleTypeFuction: 'Coordenador técnico',
+        titleFunction: 'Todas as áreas'
       },
       {
-        type_departament: 3,
-        title_departament: 'Departamento Administrativo',
-        title_function: 'Gerente Administrativo/Financeiro'
+        typeDepartament: 3,
+        titleDepartament: 'Departamento Administrativo',
+        titleFunction: 'Gerente Administrativo/Financeiro'
       },
       {
-        type_departament: 3,
-        title_departament: 'Departamento Administrativo',
-        title_function: 'Gerente Operacional'
+        typeDepartament: 3,
+        titleDepartament: 'Departamento Administrativo',
+        titleFunction: 'Gerente Operacional'
       },
       {
-        type_departament: 3,
-        title_departament: 'Departamento Administrativo',
-        title_function: 'Assistente ADM / Financeiro'
+        typeDepartament: 3,
+        titleDepartament: 'Departamento Administrativo',
+        titleFunction: 'Assistente ADM / Financeiro'
       },
       {
-        type_departament: 3,
-        title_departament: 'Departamento Administrativo',
-        title_function: 'Secretário(a)'
+        typeDepartament: 3,
+        titleDepartament: 'Departamento Administrativo',
+        titleFunction: 'Secretário(a)'
       },
       {
-        type_departament: 4,
-        title_departament: 'Supervisor / Cordenador / Diretor',
-        title_function: 'Técnico'
+        typeDepartament: 4,
+        titleDepartament: 'Supervisor / Cordenador / Diretor',
+        titleFunction: 'Técnico'
       },
       {
-        type_departament: 4,
-        title_departament: 'Supervisor / Cordenador / Diretor',
-        title_function: 'Comercial'
+        typeDepartament: 4,
+        titleDepartament: 'Supervisor / Cordenador / Diretor',
+        titleFunction: 'Comercial'
       },
       {
-        type_departament: 4,
-        title_departament: 'Supervisor / Cordenador / Diretor',
-        title_function: 'Administrativo'
+        typeDepartament: 4,
+        titleDepartament: 'Supervisor / Cordenador / Diretor',
+        titleFunction: 'Administrativo'
       },
       {
-        type_departament: 4,
-        title_departament: 'Supervisor / Cordenador / Diretor',
-        title_function: 'Financeiro'
+        typeDepartament: 4,
+        titleDepartament: 'Supervisor / Cordenador / Diretor',
+        titleFunction: 'Financeiro'
       },
       {
-        type_departament: 4,
-        title_departament: 'Supervisor / Cordenador / Diretor',
-        title_function: 'Operacional'
+        typeDepartament: 4,
+        titleDepartament: 'Supervisor / Cordenador / Diretor',
+        titleFunction: 'Operacional'
       },
       {
-        type_departament: 5,
-        title_departament: 'Outros',
-        title_function: 'Outros'
+        typeDepartament: 5,
+        titleDepartament: 'Outros',
+        titleFunction: 'Outros'
       }
     ])
   }
