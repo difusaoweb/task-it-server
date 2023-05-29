@@ -14,6 +14,7 @@ export default class VagasController {
       const vaga = await Database.from('vagases')
         .select(
           'vagases.title',
+          'vagases.tipo_salario',
           'vagases.cidade_id',
           'vagases.empresa_id',
           'vagases.id',
