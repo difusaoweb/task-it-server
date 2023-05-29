@@ -21,7 +21,7 @@ export default class Vagas extends BaseModel {
   public escolaridadeId: number | null
 
   @column()
-  public tipo_salario: number | null
+  public tipoSalario: number | null
 
   @column()
   public valorSalario: number | null

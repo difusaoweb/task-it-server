@@ -9,7 +9,7 @@ export default class Contratante extends BaseModel {
   public name: string
 
   @column()
-  public nome_fantasia: string | null
+  public nomeFantasia: string | null
 
   @column()
   public descricaoEmpresa: string | null
@@ -24,16 +24,16 @@ export default class Contratante extends BaseModel {
   public email: string
 
   @column()
-  public user_id: number | null
+  public userId: number | null
 
   @column()
-  public porte_empresa_id: number | null
+  public porteEmpresaId: number | null
 
   @column()
-  public setor_empresa_id: number | null
+  public setorEmpresaId: number | null
 
   @column()
-  public cidade_id: number | null
+  public cidadeId: number | null
 
   @column()
   public endereco: string | null
@@ -42,7 +42,7 @@ export default class Contratante extends BaseModel {
   public responsavel: string | null
 
   @column()
-  public type_responsavel: number | null
+  public typeResponsavel: number | null
 
   @column()
   public emailResponsavel: string | null
