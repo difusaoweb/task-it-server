@@ -6,7 +6,6 @@ export default class EstadoSeeder extends BaseSeeder {
   public async run() {
     await Estados.createMany([
       {
-        id: '1',
         title: 'Acre',
         letter: 'AC',
         iso: '12',
@@ -14,7 +13,6 @@ export default class EstadoSeeder extends BaseSeeder {
         population: '816687'
       },
       {
-        id: '2',
         title: 'Alagoas',
         letter: 'AL',
         iso: '27',
@@ -22,7 +20,6 @@ export default class EstadoSeeder extends BaseSeeder {
         population: '3358963'
       },
       {
-        id: '3',
         title: 'Amazonas',
         letter: 'AM',
         iso: '13',
@@ -30,7 +27,6 @@ export default class EstadoSeeder extends BaseSeeder {
         population: '4001667'
       },
       {
-        id: '4',
         title: 'Amapá',
         letter: 'AP',
         iso: '16',
@@ -38,7 +34,6 @@ export default class EstadoSeeder extends BaseSeeder {
         population: '782295'
       },
       {
-        id: '5',
         title: 'Bahia',
         letter: 'BA',
         iso: '29',
@@ -46,7 +41,6 @@ export default class EstadoSeeder extends BaseSeeder {
         population: '15276566'
       },
       {
-        id: '6',
         title: 'Ceará',
         letter: 'CE',
         iso: '23',
@@ -54,7 +48,6 @@ export default class EstadoSeeder extends BaseSeeder {
         population: '8963663'
       },
       {
-        id: '7',
         title: 'Distrito Federal',
         letter: 'DF',
         iso: '53',
@@ -62,7 +55,6 @@ export default class EstadoSeeder extends BaseSeeder {
         population: '2977216'
       },
       {
-        id: '8',
         title: 'Espírito Santo',
         letter: 'ES',
         iso: '32',
@@ -70,7 +62,6 @@ export default class EstadoSeeder extends BaseSeeder {
         population: '3973697'
       },
       {
-        id: '9',
         title: 'Goiás',
         letter: 'GO',
         iso: '52',
@@ -78,7 +69,6 @@ export default class EstadoSeeder extends BaseSeeder {
         population: '6695855'
       },
       {
-        id: '10',
         title: 'Maranhão',
         letter: 'MA',
         iso: '21',
@@ -86,7 +76,6 @@ export default class EstadoSeeder extends BaseSeeder {
         population: '6954036'
       },
       {
-        id: '11',
         title: 'Minas Gerais',
         letter: 'MG',
         iso: '31',
@@ -94,7 +83,6 @@ export default class EstadoSeeder extends BaseSeeder {
         population: '20997560'
       },
       {
-        id: '12',
         title: 'Mato Grosso do Sul',
         letter: 'MS',
         iso: '50',
@@ -102,7 +90,6 @@ export default class EstadoSeeder extends BaseSeeder {
         population: '2682386'
       },
       {
-        id: '13',
         title: 'Mato Grosso',
         letter: 'MT',
         iso: '51',
@@ -110,7 +97,6 @@ export default class EstadoSeeder extends BaseSeeder {
         population: '3305531'
       },
       {
-        id: '14',
         title: 'Pará',
         letter: 'PA',
         iso: '15',
@@ -118,7 +104,6 @@ export default class EstadoSeeder extends BaseSeeder {
         population: '8272724'
       },
       {
-        id: '15',
         title: 'Paraiba',
         letter: 'PB',
         iso: '25',
@@ -126,7 +111,6 @@ export default class EstadoSeeder extends BaseSeeder {
         population: '3999415'
       },
       {
-        id: '16',
         title: 'Pernambuco',
         letter: 'PE',
         iso: '26',
@@ -134,7 +118,6 @@ export default class EstadoSeeder extends BaseSeeder {
         population: '9410336'
       },
       {
-        id: '17',
         title: 'Piauí',
         letter: 'PI',
         iso: '22',
@@ -142,7 +125,6 @@ export default class EstadoSeeder extends BaseSeeder {
         population: '3212180'
       },
       {
-        id: '18',
         title: 'Paraná',
         letter: 'PR',
         iso: '41',
@@ -150,7 +132,6 @@ export default class EstadoSeeder extends BaseSeeder {
         population: '11242720'
       },
       {
-        id: '19',
         title: 'Rio de Janeiro',
         letter: 'RJ',
         iso: '33',
@@ -158,7 +139,6 @@ export default class EstadoSeeder extends BaseSeeder {
         population: '16635996'
       },
       {
-        id: '20',
         title: 'Rio Grande do Norte',
         letter: 'RN',
         iso: '24',
@@ -166,7 +146,6 @@ export default class EstadoSeeder extends BaseSeeder {
         population: '3474998'
       },
       {
-        id: '21',
         title: 'Rondônia',
         letter: 'RO',
         iso: '11',
@@ -174,7 +153,6 @@ export default class EstadoSeeder extends BaseSeeder {
         population: '1787279'
       },
       {
-        id: '22',
         title: 'Roraima',
         letter: 'RR',
         iso: '14',
@@ -182,7 +160,6 @@ export default class EstadoSeeder extends BaseSeeder {
         population: '514229'
       },
       {
-        id: '23',
         title: 'Rio Grande do Sul',
         letter: 'RS',
         iso: '43',
@@ -190,7 +167,6 @@ export default class EstadoSeeder extends BaseSeeder {
         population: '11286500'
       },
       {
-        id: '24',
         title: 'Santa Catarina',
         letter: 'SC',
         iso: '42',
@@ -198,7 +174,6 @@ export default class EstadoSeeder extends BaseSeeder {
         population: '6910553'
       },
       {
-        id: '25',
         title: 'Sergipe',
         letter: 'SE',
         iso: '28',
@@ -206,7 +181,6 @@ export default class EstadoSeeder extends BaseSeeder {
         population: '2265779'
       },
       {
-        id: '26',
         title: 'São Paulo',
         letter: 'SP',
         iso: '35',
@@ -214,7 +188,6 @@ export default class EstadoSeeder extends BaseSeeder {
         population: '44749699'
       },
       {
-        id: '27',
         title: 'Tocantins',
         letter: 'TO',
         iso: '17',
