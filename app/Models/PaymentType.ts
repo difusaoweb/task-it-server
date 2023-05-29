@@ -6,7 +6,7 @@ export default class PaymentType extends BaseModel {
   public id: number
 
   @column()
-  public title: number
+  public title: string
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
