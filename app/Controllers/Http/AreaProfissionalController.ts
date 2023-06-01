@@ -1,12 +1,17 @@
-'use strict'
+import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-const AreaProfissional = use('App/Models/AreaProfissional')
+import AreaProfissional from 'App/Models/AreaProfissional'
 
-class AreaProfissionalController {
-  async index () {
-    const areaProfissional = await AreaProfissional.all()
-    return areaProfissional
+export default class AreaProfissionalController {
+  public async index({ auth, request, response }: HttpContextContract) {
+    try {
+      const setorEmpresas = await AreaProfissional.all()
+      response.send(setorEmpresas)
+      return response
+    } catch (err) {
+      console.error(err)
+      response.status(500)
+      return response
+    }
   }
 }
-
-module.exports = AreaProfissionalController
