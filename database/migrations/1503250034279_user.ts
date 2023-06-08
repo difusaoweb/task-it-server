@@ -11,8 +11,6 @@ export default class UserSchema extends BaseSchema {
       table.string('password', 255).notNullable()
       table.string('type', 2).notNullable()
       table.boolean('validated').defaultTo(false).nullable()
-      table.string('token').nullable()
-      table.timestamp('token_created_at', { useTz: true }).nullable()
       table.boolean('isInvited').defaultTo(false).nullable()
       table.boolean('asActiveInvite').defaultTo(false).nullable()
       table.timestamp('created_at', { useTz: true }).notNullable()

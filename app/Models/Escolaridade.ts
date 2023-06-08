@@ -1,7 +1,9 @@
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import { column } from '@ioc:Adonis/Lucid/Orm'
 import { DateTime } from 'luxon'
 
-export default class Escolaridade extends BaseModel {
+import { CustomBaseModel } from 'App/Models/CustomBaseModel'
+
+export default class Escolaridade extends CustomBaseModel {
   @column({ isPrimary: true })
   public id: number
 

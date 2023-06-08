@@ -1,126 +1,59 @@
-'use strict'
+import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import { schema } from '@ioc:Adonis/Core/Validator'
 
-const PesquisaSalario = use('App/Models/PesquisaSalario')
-const CargosPesquisaSalario = use('App/Models/CargosPesquisaSalario')
+import PesquisaSalario from 'App/Models/PesquisaSalario'
+import CargosPesquisaSalario from 'App/Models/CargosPesquisaSalario'
 
-/** @typedef {import('@adonisjs/framework/src/Request')} Request */
-/** @typedef {import('@adonisjs/framework/src/Response')} Response */
-/** @typedef {import('@adonisjs/framework/src/View')} View */
+export default class PesquisaSalarioController {
+  public async store({ auth, request, response }: HttpContextContract) {
+    const controllerSchema = schema.create({
+      email: schema.string(),
+      nome: schema.string(),
+      meucargo: schema.string(),
+      telefoneContato: schema.string(),
+      nomeEmpresa: schema.string(),
+      areaAtuacao: schema.string(),
+      cidadeId: schema.number.nullableAndOptional(),
+      endereco: schema.string(),
+      cep: schema.string(),
+      site: schema.string(),
+      telefoneRamal: schema.string(),
+      cargos: schema.array().members(schema.number()),
+      valorSalario: schema.string(),
+      valorSalarioColaboradores: schema.string(),
+      tipoSalarioId: schema.number.nullableAndOptional()
+    })
+    try {
+      const data = await request.validate({ schema: controllerSchema })
 
-/**
- * Resourceful controller for interacting with pesquisa_salario
- */
-class PesquisaSalarioController {
-  /**
-   * Show a list of all pesquisa_salario.
-   * GET pesquisa_salario
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async index ({ request, response, view }) {
-  }
-
-  /**
-   * Render a form to be used for creating a new pesquisasalario.
-   * GET pesquisa_salario/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
-  }
-
-  /**
-   * Create/save a new pesquisasalario.
-   * POST pesquisa_salario
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async store ({ request, response }) {
-    const data = request.only([
-      'email', 'nome', 'meucargo', 'telefone_contato', 'nome_empresa', 'area_atuacao', 'endereco',
-      'cep', 'site', 'valor_salario', 'valor_salario_colaboradores', 'cidade_id', 'tipo_salario_id', 'telefone_ramal'
-    ])
-
-    const pesquisaExists = await PesquisaSalario.findBy('email', data.email)
-
-    if (pesquisaExists) {
-      return response.status(400).send({ error: 'Pesquisa already exists.' })
-    }
-
-    const pesquisaSalario = await PesquisaSalario.create(data)
-
-    const { cargos } = request.only(['cargos'])
-
-    const cargosPesquisaSalario = cargos.map(cargo => {
-      const dados = {
-        id_pesquisa_salario: pesquisaSalario.id,
-        id_cargo: cargo.id
+      const pesquisaExists = await PesquisaSalario.findBy('email', data.email)
+      if (pesquisaExists) {
+        return response.status(400).send({ error: 'Pesquisa already exists.' })
       }
 
-      return dados
-    })
+      const pesquisaSalario = await PesquisaSalario.create(data)
 
-    const cargosPesquisa = await CargosPesquisaSalario.createMany(cargosPesquisaSalario)
+      const cargosPesquisaSalario = data.cargos.map((cargoId) => {
+        const dados = {
+          idPesquisaSalario: pesquisaSalario.id,
+          idCargo: cargoId
+        }
 
-    return {
-      pesquisaSalario,
-      cargosPesquisa
+        return dados
+      })
+
+      const cargosPesquisa = await CargosPesquisaSalario.createMany(cargosPesquisaSalario)
+
+      const returnResonse = {
+        pesquisaSalario,
+        cargosPesquisa
+      }
+      response.send(returnResonse)
+      return response
+    } catch (err) {
+      console.error(err)
+      response.status(500)
+      return response
     }
   }
-
-  /**
-   * Display a single pesquisasalario.
-   * GET pesquisa_salario/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async show ({ params, request, response, view }) {
-  }
-
-  /**
-   * Render a form to update an existing pesquisasalario.
-   * GET pesquisa_salario/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
-  }
-
-  /**
-   * Update pesquisasalario details.
-   * PUT or PATCH pesquisa_salario/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async update ({ params, request, response }) {
-  }
-
-  /**
-   * Delete a pesquisasalario with id.
-   * DELETE pesquisa_salario/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async destroy ({ params, request, response }) {
-  }
 }
-
-module.exports = PesquisaSalarioController

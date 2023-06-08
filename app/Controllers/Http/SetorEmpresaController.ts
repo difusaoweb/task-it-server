@@ -1,40 +1,88 @@
-'use strict'
+import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import { schema } from '@ioc:Adonis/Core/Validator'
 
-const SetorEmpresa = use('App/Models/SetorEmpresa')
+import SetorEmpresa from 'App/Models/SetorEmpresa'
 
-class SetorEmpresaController {
-  async index () {
-    const setorEmpresas = await SetorEmpresa.all()
-    return setorEmpresas
+export default class SetorEmpresaController {
+  public async index({ auth, request, response }: HttpContextContract) {
+    try {
+      const setorEmpresas = await SetorEmpresa.all()
+      response.send(setorEmpresas)
+      return response
+    } catch (err) {
+      console.error(err)
+      response.status(500)
+      return response
+    }
   }
 
-  async store ({ request, response }) {
-    const data = request.only(['title'])
-    data.state = 1
+  // public async store({ auth, request, response }: HttpContextContract) {
+  //   try {
+  //     const data = request.only(['title'])
+  //     data.state = 1
 
-    const setorEmp = await SetorEmpresa.create(data)
-    return setorEmp
-  }
+  //     const setorEmp = await SetorEmpresa.create(data)
+  //     response.send(setorEmp)
+  //     return response
+  //   } catch (err) {
+  //     console.error(err)
+  //     response.status(500)
+  //     return response
+  //   }
+  // }
 
-  async show ({ params, request, response, view }) {
-    const setorEmp = await SetorEmpresa.findOrFail(params.id)
-    return setorEmp
-  }
+  // public async show({ auth, request, response }: HttpContextContract) {
+  //   const controllerSchema = schema.create({
+  //     id: schema.number()
+  //   })
+  //   try {
+  //     const { id } = await request.validate({ schema: controllerSchema })
 
-  async update ({ params, request, response }) {
-    const data = request.only(['title', 'state'])
+  //     const setorEmp = await SetorEmpresa.findOrFail(id)
+  //     response.send(setorEmp)
+  //     return response
+  //   } catch (err) {
+  //     console.error(err)
+  //     response.status(500)
+  //     return response
+  //   }
+  // }
 
-    const setorEmp = await SetorEmpresa.findOrFail(params.id)
-    setorEmp.merge(data)
-    await setorEmp.save()
-    return setorEmp
-  }
+  // public async update({ auth, request, response }: HttpContextContract) {
+  //   const controllerSchema = schema.create({
+  //     id: schema.number(),
+  //     title: schema.string(),
+  //     state: schema.string()
+  //   })
+  //   try {
+  //     const { id, title, state } = await request.validate({ schema: controllerSchema })
 
-  async destroy ({ params, request, response }) {
-    const setorEmp = await SetorEmpresa.findOrFail(params.id)
+  //     const setorEmp = await SetorEmpresa.findOrFail(id)
+  //     setorEmp.merge({ title, state })
+  //     await setorEmp.save()
+  //     response.send(setorEmp)
+  //     return response
+  //   } catch (err) {
+  //     console.error(err)
+  //     response.status(500)
+  //     return response
+  //   }
+  // }
 
-    setorEmp.delete()
-  }
+  // public async destroy({ auth, request, response }: HttpContextContract) {
+  //   const controllerSchema = schema.create({
+  //     id: schema.number()
+  //   })
+  //   try {
+  //     const { id } = await request.validate({ schema: controllerSchema })
+
+  //     const setorEmp = await SetorEmpresa.findOrFail(id)
+  //     setorEmp.delete()
+  //     return response
+  //   } catch (err) {
+  //     console.error(err)
+  //     response.status(500)
+  //     return response
+  //   }
+  // }
 }
-
-module.exports = SetorEmpresaController

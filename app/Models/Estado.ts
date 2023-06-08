@@ -1,9 +1,11 @@
-import { BaseModel, column, hasMany, HasMany } from '@ioc:Adonis/Lucid/Orm'
+import { column, hasMany, HasMany } from '@ioc:Adonis/Lucid/Orm'
 import { DateTime } from 'luxon'
+
+import { CustomBaseModel } from 'App/Models/CustomBaseModel'
 
 import Cidade from 'App/Models/Cidade'
 
-export default class Estado extends BaseModel {
+export default class Estado extends CustomBaseModel {
   @column({ isPrimary: true })
   public id: number
 

@@ -1,12 +1,17 @@
-'use strict'
+import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-const PorteEmpresa = use('App/Models/PorteEmpresa')
+import PorteEmpresa from 'App/Models/PorteEmpresa'
 
-class PorteEmpresaController {
-  async index () {
-    const porteEmpresas = await PorteEmpresa.all()
-    return porteEmpresas
+export default class PorteEmpresaController {
+  public async index({ auth, request, response }: HttpContextContract) {
+    try {
+      const porteEmpresas = await PorteEmpresa.all()
+      response.send(porteEmpresas)
+      return response
+    } catch (err) {
+      console.error(err)
+      response.status(500)
+      return response
+    }
   }
 }
-
-module.exports = PorteEmpresaController

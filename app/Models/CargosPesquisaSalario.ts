@@ -1,15 +1,17 @@
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import { column } from '@ioc:Adonis/Lucid/Orm'
 import { DateTime } from 'luxon'
 
-export default class CargosPesquisaSalario extends BaseModel {
+import { CustomBaseModel } from 'App/Models/CustomBaseModel'
+
+export default class CargosPesquisaSalario extends CustomBaseModel {
   @column({ isPrimary: true })
   public id: number
 
   @column()
-  public id_pesquisa_salario: number | null
+  public idPesquisaSalario: number | null
 
   @column()
-  public id_cargo: number | null
+  public idCargo: number | null
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
