@@ -1,10 +1,9 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import { schema } from '@ioc:Adonis/Core/Validator'
 
 import SetorEmpresa from 'App/Models/SetorEmpresa'
 
 export default class SetorEmpresaController {
-  public async index({ auth, request, response }: HttpContextContract) {
+  public async index({ response }: HttpContextContract) {
     try {
       const setorEmpresas = await SetorEmpresa.all()
       response.send(setorEmpresas)

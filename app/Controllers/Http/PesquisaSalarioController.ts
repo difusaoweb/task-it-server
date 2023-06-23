@@ -5,7 +5,7 @@ import PesquisaSalario from 'App/Models/PesquisaSalario'
 import CargosPesquisaSalario from 'App/Models/CargosPesquisaSalario'
 
 export default class PesquisaSalarioController {
-  public async store({ auth, request, response }: HttpContextContract) {
+  public async store({ request, response }: HttpContextContract) {
     const controllerSchema = schema.create({
       email: schema.string(),
       nome: schema.string(),

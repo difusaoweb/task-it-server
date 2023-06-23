@@ -3,7 +3,7 @@ import Database from '@ioc:Adonis/Lucid/Database'
 import { schema } from '@ioc:Adonis/Core/Validator'
 
 export default class SearchVagasParamController {
-  public async index({ auth, request, response }: HttpContextContract) {
+  public async index({ request, response }: HttpContextContract) {
     const controllerSchema = schema.create({
       id: schema.number.nullableAndOptional(),
       cargoId: schema.number.nullableAndOptional(),
@@ -25,11 +25,14 @@ export default class SearchVagasParamController {
         tipoSalario,
         page
       } = await request.validate({ schema: controllerSchema })
+      const perPage = 10
 
       const vaga = Database.from('vagases')
         .select(
           'vagases.title',
+          'vaga_desejadas.title_function as cargo',
           'vagases.cidade_id',
+          'vagases.tipo_salario as tipoSalarioId',
           'vagases.empresa_id',
           'vagases.id',
           'contratantes.name as empresa',
@@ -47,7 +50,6 @@ export default class SearchVagasParamController {
           'cidades.state_id',
           'estados.letter as uf'
         )
-        .forPage(page, 10)
         .innerJoin('contratantes', 'vagases.empresa_id', 'contratantes.id')
         .leftJoin('cidades', 'vagases.cidade_id', 'cidades.id')
         .leftJoin('estados', 'cidades.state_id', 'estados.id')
@@ -55,6 +57,7 @@ export default class SearchVagasParamController {
         .leftJoin('porte_empresas', 'contratantes.porte_empresa_id', 'porte_empresas.id')
         .leftJoin('area_profissionals', 'vagases.area_profissional_id', 'area_profissionals.id')
         .leftJoin('escolaridades', 'vagases.escolaridade_id', 'escolaridades.id')
+        .leftJoin('vaga_desejadas', 'vagases.cargo_id', 'vaga_desejadas.id')
 
       if (id) {
         vaga.where('vagases.id', id)
@@ -84,9 +87,9 @@ export default class SearchVagasParamController {
         vaga.where('vagases.tipo_salario', tipoSalario)
       }
 
-      const returnDb = await vaga.paginate(page, 10)
+      const returnDb = await vaga.paginate(page, perPage)
       console.log(returnDb)
-      // response.send(data)
+      response.send(returnDb)
       return response
     } catch (err) {
       console.log(new Date())

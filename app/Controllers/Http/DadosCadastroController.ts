@@ -2,7 +2,7 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Database from '@ioc:Adonis/Lucid/Database'
 
 export default class DadosCadastroController {
-  public async index({ auth, request, response }: HttpContextContract) {
+  public async index({ response }: HttpContextContract) {
     try {
       const totalEmpresas = await Database.from('contratantes').count('* as empresas')
       const totalCurriculos = await Database.from('profissionals').count('* as curriculos')

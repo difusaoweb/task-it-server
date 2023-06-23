@@ -3,7 +3,7 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import PaymentType from 'App/Models/PaymentType'
 
 export default class PaymentTypeController {
-  public async index({ auth, request, response }: HttpContextContract) {
+  public async index({ response }: HttpContextContract) {
     try {
       const porteEmpresas = await PaymentType.all()
       response.send(porteEmpresas)

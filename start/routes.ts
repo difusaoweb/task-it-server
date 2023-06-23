@@ -17,10 +17,11 @@
 | import './routes/customer'
 |
 */
+import Route from '@ioc:Adonis/Core/Route'
+
 import './routes/Access'
 import './routes/Users'
-
-import Route from '@ioc:Adonis/Core/Route'
+import './routes/Professionals'
 
 Route.get('/vaga', 'VagasController.index')
 Route.get('/vagas_estado', 'VagasEstadoController.index')
@@ -42,16 +43,27 @@ Route.get('/cities', 'CidadeController.index')
 
 Route.post('/pesquisa_salario', 'PesquisaSalarioController.store')
 
+Route.get('/account_empresa', 'AccountEmpController.show')
+Route.get('/vagas_empresa', 'VagasEmpresaController.index')
+
+Route.get('/escolariadade', 'EscolaridadeController.index')
+
+Route.get('/estado_civil', 'EstadoCivilController.index')
+
+Route.get('/sexo', 'SexoController.index')
+
+Route.get('/regime', 'RegimeController.index')
+
+Route.get('/habilidades', 'HabilidadeController.index')
+
 // Route.resource('search_vaga', 'SearchVagaController').apiOnly()
 // Route.resource('detail_vaga', 'DetailVagasController').apiOnly()
 // Route.resource('apply_vaga', 'ApplyVagaController').apiOnly()
-// Route.get('vagas_empresa', 'VagasEmpresaController.index')
 // Route.get('empresa_vaga/:id', 'EmpresaVagaController.show')
 
 // Route.post('session', 'SessionController.store')
 
 // Route.resource('contratante', 'ContratanteController').apiOnly()
-// Route.resource('profissional', 'ProfissionalController').apiOnly()
 
 // Route.resource('habilidades_profissional', 'HabilidadesProfissionalController').apiOnly()
 // Route.resource('experiencias_profissional', 'ExperienciasProfissionalController').apiOnly()
@@ -59,11 +71,7 @@ Route.post('/pesquisa_salario', 'PesquisaSalarioController.store')
 
 // Route.get('estado', 'EstadoController.index')
 // Route.get('account/:id', 'AccountController.show')
-// Route.get('account_empresa/:id', 'AccountEmpController.show')
-// Route.get('escolariadade', 'EscolaridadeController.index')
 // Route.get('tipos_contratacao', 'TiposContratacaoController.index')
-// Route.get('sexo', 'SexoController.index')
-// Route.get('estado_civil', 'EstadoCivilController.index')
 // Route.get('periodo_trabalho', 'PeriodoTrabalhoController.index')
 
 // Route.get('curriculos', 'CurriculoController.index')
@@ -73,5 +81,3 @@ Route.post('/pesquisa_salario', 'PesquisaSalarioController.store')
 // Route.post('passwords', 'ForgotPasswordController.store')
 // Route.put('passwords', 'ForgotPasswordController.update')
 // Route.get('passwords', 'ForgotPasswordController.show')
-
-// Route.get('habilidades', 'HabilidadeController.index')

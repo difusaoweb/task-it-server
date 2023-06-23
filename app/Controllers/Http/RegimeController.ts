@@ -1,12 +1,12 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-import Habilidade from 'App/Models/Habilidade'
+import Regime from 'App/Models/Regime'
 
-export default class HabilidadeController {
+export default class RegimeController {
   public async index({ response }: HttpContextContract) {
     try {
-      const habilidades = await Habilidade.all()
-      return habilidades
+      const RegimeProfi = await Regime.all()
+      return RegimeProfi
     } catch (err) {
       console.error(err)
       let status = 500

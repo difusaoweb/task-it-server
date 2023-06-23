@@ -3,7 +3,7 @@ import Database from '@ioc:Adonis/Lucid/Database'
 import { schema } from '@ioc:Adonis/Core/Validator'
 
 export default class CidadeController {
-  public async index({ auth, request, response }: HttpContextContract) {
+  public async index({ request, response }: HttpContextContract) {
     const controllerSchema = schema.create({
       title: schema.string()
     })

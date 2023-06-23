@@ -24,9 +24,6 @@ export default class User extends CustomBaseModel {
   public validated: boolean
 
   @column()
-  public token: DateTime
-
-  @column()
   public isInvited: boolean
 
   @column()

@@ -1,15 +1,17 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Database from '@ioc:Adonis/Lucid/Database'
+import { schema } from '@ioc:Adonis/Core/Validator'
 
-// const Contratante = use('App/Models/Contratante')
-// const Vagas = use('App/Models/Vagas')
+import Vagas from 'App/Models/Vagas'
+import Contratante from 'App/Models/Contratante'
+// import JobAvisoCreateVaga from 'App/Jobs/CreateVagaMail'
+import CreateVagaMailer from 'App/Mailers/CreateVaga'
 // const Database = use('Database')
 
 // const Kue = use('Kue')
-// const JobAvisoCreateVaga = use('App/Jobs/CreateVagaMail')
 
 export default class VagasController {
-  public async index({ auth, request, response }: HttpContextContract) {
+  public async index({ response }: HttpContextContract) {
     try {
       const vaga = await Database.from('vagases')
         .select(
@@ -43,17 +45,83 @@ export default class VagasController {
     }
   }
 
-  // public async store({ auth, request, response }: HttpContextContract) {
-  //   const data = request.only(['area_profissional_id', 'tipo_salario', 'escolaridade_id',
-  //     'valor_comissao', 'beneficios', 'descricao_cargo', 'cargo_id', 'valor_salario',
-  //     'title', 'empresa_id', 'cidade_id', 'desc_carga_horaria', 'endereco', 'requisitos', 'tipo_contratacao_id', 'periodo_trabalho_id'])
+  public async store({ request, response }: HttpContextContract) {
+    const controllerSchema = schema.create({
+      areaProfissionalId: schema.number(),
+      tipoSalario: schema.number.nullable(),
+      escolaridadeId: schema.number.nullable(),
+      valorComissao: schema.number.nullable(),
+      beneficios: schema.string.nullable(),
+      descricaoCargo: schema.string.nullable(),
+      cargoId: schema.number.nullable(),
+      valorSalario: schema.number.nullable(),
+      title: schema.string(),
+      empresaId: schema.number.nullable(),
+      cidadeId: schema.number.nullable(),
+      descCargaHoraria: schema.string(),
+      endereco: schema.string(),
+      requisitos: schema.string.nullable(),
+      tipoContratacaoId: schema.number.nullable(),
+      periodoTrabalhoId: schema.number.nullable()
+    })
+    try {
+      const {
+        areaProfissionalId,
+        tipoSalario,
+        escolaridadeId,
+        valorComissao,
+        beneficios,
+        descricaoCargo,
+        cargoId,
+        valorSalario,
+        title,
+        empresaId,
+        cidadeId,
+        descCargaHoraria,
+        endereco,
+        requisitos,
+        tipoContratacaoId,
+        periodoTrabalhoId
+      } = await request.validate({
+        schema: controllerSchema
+      })
 
-  //   const vaga = await Vagas.create(data)
-  //   const empresa = await Contratante.findOrFail(data.empresa_id)
-  //   Kue.dispatch(JobAvisoCreateVaga.key, { email: empresa.email }, { attempts: 3 })
+      const vaga = await Vagas.create({
+        areaProfissionalId,
+        tipoSalario,
+        escolaridadeId,
+        valorComissao,
+        beneficios,
+        descricaoCargo,
+        cargoId,
+        valorSalario,
+        title,
+        empresaId,
+        cidadeId,
+        descCargaHoraria,
+        endereco,
+        requisitos,
+        tipoContratacaoId,
+        periodoTrabalhoId
+      })
+      const empresa = await Contratante.findOrFail(empresaId)
+      // Kue.dispatch(JobAvisoCreateVaga.key, { email: empresa.email }, { attempts: 3 })
+      await new CreateVagaMailer({ email: empresa.email })
 
-  //   return vaga
-  // }
+      return vaga
+    } catch (err) {
+      console.error(err)
+      let status = 500
+      let code = 'UNKNOWN'
+      // switch (err?.message) {
+      //   case 'USER_EXISTS':
+      //     status = 400
+      //     code = 'USER_EXISTS'
+      //     break
+      // }
+      return response.status(status).send({ failure: { code } })
+    }
+  }
 
   // public async update({ auth, request, response }: HttpContextContract) {
   //   const data = request.only(['area_profissional_id', 'tipo_salario', 'escolaridade_id',

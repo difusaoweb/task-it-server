@@ -3,7 +3,7 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import VagaDesejada from 'App/Models/VagaDesejada'
 
 export default class VagaDesejadaController {
-  public async index({ auth, request, response }: HttpContextContract) {
+  public async index({ response }: HttpContextContract) {
     try {
       const setorEmpresas = await VagaDesejada.all()
       response.send(setorEmpresas)

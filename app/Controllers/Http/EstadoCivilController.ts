@@ -1,12 +1,23 @@
-'use strict'
+import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-const EstadoCivil = use('App/Models/EstadoCivil')
+import EstadoCivil from 'App/Models/EstadoCivil'
 
-class EstadoCivilController {
-  async index () {
-    const estadoCivil = await EstadoCivil.all()
-    return estadoCivil
+export default class EstadoCivilController {
+  public async index({ response }: HttpContextContract) {
+    try {
+      const estadoCivil = await EstadoCivil.all()
+      return estadoCivil
+    } catch (err) {
+      console.error(err)
+      let status = 500
+      let code = 'UNKNOWN'
+      // switch (err?.message) {
+      //   case 'USER_EXISTS':
+      //     status = 400
+      //     code = 'USER_EXISTS'
+      //     break
+      // }
+      return response.status(status).send({ failure: { code } })
+    }
   }
 }
-
-module.exports = EstadoCivilController

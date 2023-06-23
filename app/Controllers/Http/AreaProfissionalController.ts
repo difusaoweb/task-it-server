@@ -3,7 +3,7 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import AreaProfissional from 'App/Models/AreaProfissional'
 
 export default class AreaProfissionalController {
-  public async index({ auth, request, response }: HttpContextContract) {
+  public async index({ response }: HttpContextContract) {
     try {
       const setorEmpresas = await AreaProfissional.all()
       response.send(setorEmpresas)

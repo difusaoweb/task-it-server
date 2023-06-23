@@ -1,11 +1,9 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schema } from '@ioc:Adonis/Core/Validator'
-import Env from '@ioc:Adonis/Core/Env'
 
 import User from 'App/Models/User'
-// import JobCreateUser from 'App/Jobs/ConfirmationUserMail'
-// import JobInviteUser from 'App/Jobs/InviteUser'
-
+import Empresa from 'App/Models/Contratante'
+import JobCreateUser from 'App/Mailers/ConfirmationUserMail'
 // const Empresa = use('App/Models/Contratante')
 // const Database = use('Database')
 // const crypto = require('crypto')
@@ -53,12 +51,14 @@ export default class UserController {
     const controllerSchema = schema.create({
       username: schema.string(),
       email: schema.string(),
-      password: schema.string()
+      password: schema.string(),
+      redirectUrl: schema.string()
     })
     try {
-      const { username, email, password } = await request.validate({
+      const { username, email, password, redirectUrl } = await request.validate({
         schema: controllerSchema
       })
+      const type = 'c'
 
       const userExists = await User.findBy('email', email)
       if (userExists !== null) {
@@ -69,121 +69,89 @@ export default class UserController {
       //   return response.status(400).send({ error: 'Username already exists.' })
       // }
 
-      const user = await User.create({ username, email, password, type: 'c' })
+      const user = await User.create({ username, email, password, type })
 
-      // const redirectUrl = Env.get('CLIENT_WEB_URL_VALIDATE_EMAIL')
+      const { token } = await auth.use('api').generate(user, { name: 'validateEmail' })
 
-      // Kue.dispatch(
-      //   JobCreateUser.key,
-      //   { email: user.email, token: user.token, redirectUrl, type: 'c' },
-      //   { attempts: 3 }
-      // )
+      await new JobCreateUser({ email: user.email, token, redirectUrl, type }).send()
 
       response.send(user)
       return response
     } catch (err) {
       console.error(err)
+      let status = 500
+      let code = 'UNKNOWN'
       switch (err?.message) {
         case 'USER_EXISTS':
-          response.status(400)
-          response.send({ error: 'User already exists.' })
-          return response
+          status = 400
+          code = 'USER_EXISTS'
+          break
       }
-      response.status(500)
-      return response
+      return response.status(status).send({ failure: { code } })
     }
   }
 
-  // public async createBusinessUser({ auth, request, response }: HttpContextContract) {
-  //   // const controllerSchema = schema.create({
-  //   //   username: schema.number(),
-  //   //   email: schema.string(),
-  //   //   password: schema.string(),
-  //   //   type: schema.string(),
-  //   //   isInvited: schema.boolean(),
-  //   //   validated: schema.boolean(),
-  //   //   cpanel: schema.string(),
-  //   //   urlConvite: schema.string()
-  //   // })
-  //   // try {
-  //   //   const { username, email, password, type, isInvited, validated, cpanel, urlConvite } =
-  //   //     await request.validate({
-  //   //       schema: controllerSchema
-  //   //     })
-  //   //   const userExists = await User.findBy('email', email)
-  //   //   if (userExists) {
-  //   //     throw new Error('USER_ALREADY_EXISTS')
-  //   //   }
-  //   //   // const userNameExists = await User.findBy('username', username)
-  //   //   // if (userNameExists) {
-  //   //   //   return response.status(400).send({ error: 'Username already exists.' })
-  //   //   // }
-  //   //   const emp = request.only(['name', 'nome_fantasia', 'email'])
-  //   //   if (!dataCpanel.cpanel && !data.validated) {
-  //   //     data.token = crypto.randomBytes(10).toString('hex')
-  //   //     data.token_created_at = new Date()
-  //   //   }
-  //   //   const user = await User.create(data)
-  //   //   const redirect_url = request.input('redirect_url')
-  //   //   if (emp.name) {
-  //   //     const empresa = await Empresa.create({ ...emp, user_id: user.id })
-  //   //     if (!dataCpanel.cpanel) {
-  //   //       Kue.dispatch(
-  //   //         JobCreateUser.key,
-  //   //         { email: user.email, token: user.token, redirect_url, type: 'e' },
-  //   //         { attempts: 3 }
-  //   //       )
-  //   //     } else {
-  //   //       Kue.dispatch(
-  //   //         JobInviteUser.key,
-  //   //         {
-  //   //           username: data.username,
-  //   //           email: user.email,
-  //   //           password: data.password,
-  //   //           url_convite: data.url_convite,
-  //   //           type: 'e'
-  //   //         },
-  //   //         { attempts: 3 }
-  //   //       )
-  //   //     }
-  //   //     return {
-  //   //       user,
-  //   //       empresa
-  //   //     }
-  //   //   }
-  //   //   if (!dataCpanel.cpanel) {
-  //   //     Kue.dispatch(
-  //   //       JobCreateUser.key,
-  //   //       { email: user.email, token: user.token, redirect_url, type: 'c' },
-  //   //       { attempts: 3 }
-  //   //     )
-  //   //   } else {
-  //   //     Kue.dispatch(
-  //   //       JobInviteUser.key,
-  //   //       {
-  //   //         username: data.username,
-  //   //         email: user.email,
-  //   //         password: data.password,
-  //   //         url_convite: data.url_convite,
-  //   //         type: 'c'
-  //   //       },
-  //   //       { attempts: 3 }
-  //   //     )
-  //   //   }
-  //   //   response.send(user)
-  //   //   return response
-  //   // } catch (err) {
-  //   //   console.error(err)
-  //   //   switch (err?.message) {
-  //   //     case 'USER_ALREADY_EXISTS':
-  //   //       response.status(400)
-  //   //       response.send({ error: 'User already exists.' })
-  //   //       return response
-  //   //   }
-  //   //   response.status(500)
-  //   //   return response
-  //   // }
-  // }
+  public async createBusinessUser({ auth, request, response }: HttpContextContract) {
+    const controllerSchema = schema.create({
+      email: schema.string(),
+      password: schema.string(),
+      name: schema.string(),
+      tradeName: schema.string(),
+      redirectUrl: schema.string()
+      // isInvited: schema.boolean(),
+      // validated: schema.boolean(),
+      // cpanel: schema.string(),
+      // urlConvite: schema.string()
+    })
+    try {
+      const { email, password, name, tradeName, redirectUrl } = await request.validate({
+        schema: controllerSchema
+      })
+      const type = 'e'
+
+      const userExists = await User.findBy('email', email)
+      if (userExists !== null) {
+        throw new Error('USER_EXISTS')
+      }
+      // const userNameExists = await User.findBy('username', username)
+      // if (userNameExists) {
+      //   return response.status(400).send({ error: 'Username already exists.' })
+      // }
+
+      const user = await User.create({ username: name, email, password, type })
+      const empresa = await Empresa.create({
+        name,
+        nomeFantasia: tradeName,
+        email,
+        userId: user.id
+      })
+      console.log(empresa)
+
+      const { token } = await auth.use('api').generate(user, { name: 'validateEmail' })
+
+      await new JobCreateUser({ email: user.email, token, redirectUrl, type }).send()
+
+      response.send(user)
+      return response
+    } catch (err) {
+      console.error(err)
+      let status = 500
+      let code = 'UNKNOWN'
+      switch (err?.code) {
+        case 'E_VALIDATION_FAILURE':
+          status = 400
+          code = 'VALIDATION_FAILURE'
+          break
+      }
+      switch (err?.message) {
+        case 'USER_EXISTS':
+          status = 400
+          code = 'USER_EXISTS'
+          break
+      }
+      return response.status(status).send({ failure: { code } })
+    }
+  }
 
   // public async update({ auth, request, response }: HttpContextContract) {
   //   const controllerSchema = schema.create({

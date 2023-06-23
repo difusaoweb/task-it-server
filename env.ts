@@ -27,6 +27,6 @@ export default Env.rules({
   PG_PASSWORD: Env.schema.string.optional(),
   PG_DB_NAME: Env.schema.string(),
   DB_CONNECTION: Env.schema.string(),
-  HASH_DRIVER: Env.schema.string(),
+  HASH_DRIVER: Env.schema.enum(['scrypt', 'bcrypt', 'argon'] as const),
   CLIENT_WEB_URL_VALIDATE_EMAIL: Env.schema.string()
 })

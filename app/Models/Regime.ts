@@ -3,21 +3,12 @@ import { DateTime } from 'luxon'
 
 import { CustomBaseModel } from 'App/Models/CustomBaseModel'
 
-export default class Token extends CustomBaseModel {
+export default class Regime extends CustomBaseModel {
   @column({ isPrimary: true })
   public id: number
 
   @column()
-  public userId: number
-
-  @column()
-  public token: string
-
-  @column()
-  public type: string
-
-  @column()
-  public isRevoked: boolean
+  public title: string
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
