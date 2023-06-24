@@ -11,9 +11,13 @@ import CreateVagaMailer from 'App/Mailers/CreateVaga'
 // const Kue = use('Kue')
 
 export default class VagasController {
-  public async index({ response }: HttpContextContract) {
+  public async index({ request, response }: HttpContextContract) {
+    const controllerSchema = schema.create({
+      title: schema.string.nullableAndOptional()
+    })
     try {
-      const vaga = await Database.from('vagases')
+      const { title } = await request.validate({ schema: controllerSchema })
+      const query = Database.from('vagases')
         .select(
           'vagases.title',
           'vagases.tipo_salario',
@@ -36,8 +40,12 @@ export default class VagasController {
         .innerJoin('estados', 'cidades.state_id', 'estados.id')
         .leftJoin('tipos_contratacoes', 'vagases.tipo_contratacao_id', 'tipos_contratacoes.id')
         .leftJoin('periodo_trabalhos', 'vagases.periodo_trabalho_id', 'periodo_trabalhos.id')
+      if (typeof title === 'string') {
+        query.where('vagases.title', 'ILIKE', '%' + title + '%')
+      }
+      const returnDb = await query
 
-      response.send(vaga)
+      response.send(returnDb)
       return response
     } catch (err) {
       console.error(err)
