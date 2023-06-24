@@ -18,7 +18,7 @@ export default class PesquisaSalarioController {
       cep: schema.string(),
       site: schema.string(),
       telefoneRamal: schema.string(),
-      cargos: schema.array().members(schema.number()),
+      cargosIds: schema.array().members(schema.number()),
       valorSalario: schema.string(),
       valorSalarioColaboradores: schema.string(),
       tipoSalarioId: schema.number.nullableAndOptional()
@@ -33,7 +33,7 @@ export default class PesquisaSalarioController {
 
       const pesquisaSalario = await PesquisaSalario.create(data)
 
-      const cargosPesquisaSalario = data.cargos.map((cargoId) => {
+      const cargosPesquisaSalario = data.cargosIds.map((cargoId) => {
         const dados = {
           idPesquisaSalario: pesquisaSalario.id,
           idCargo: cargoId
