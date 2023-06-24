@@ -41,7 +41,7 @@ Route.get('/setor_empresa', 'SetorEmpresaController.index')
 Route.get('/area_profissional', 'AreaProfissionalController.index')
 Route.get('/cities', 'CidadeController.index')
 
-Route.post('/pesquisa_salario', 'PesquisaSalarioController.store')
+Route.post('/pesquisaSalario', 'PesquisaSalarioController.store')
 
 Route.get('/account_empresa', 'AccountEmpController.show')
 Route.get('/vagas_empresa', 'VagasEmpresaController.index')
