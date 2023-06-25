@@ -19,7 +19,7 @@ export default class AccountController {
           'cidades.title as cidade',
           'estados.letter as uf',
           'area_profissionals.title as areaProfissional',
-          'vagases.tipoSalarioId',
+          'vagases.tipo_salario as tipoSalarioId',
           'applies.vagaId',
           'applies.candidatoId'
         )
