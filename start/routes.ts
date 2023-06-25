@@ -22,6 +22,7 @@ import Route from '@ioc:Adonis/Core/Route'
 import './routes/Access'
 import './routes/Users'
 import './routes/Professionals'
+import './routes/Account'
 
 Route.get('/vaga', 'VagasController.index')
 Route.get('/vagas_estado', 'VagasEstadoController.index')
@@ -43,7 +44,6 @@ Route.get('/cities', 'CidadeController.index')
 
 Route.post('/pesquisaSalario', 'PesquisaSalarioController.store')
 
-Route.get('/account_empresa', 'AccountEmpController.show')
 Route.get('/vagas_empresa', 'VagasEmpresaController.index')
 
 Route.get('/escolariadade', 'EscolaridadeController.index')
@@ -70,7 +70,6 @@ Route.get('/habilidades', 'HabilidadeController.index')
 // Route.resource('cursos_profissionals', 'CursosExtrasProfissionalController').apiOnly()
 
 // Route.get('estado', 'EstadoController.index')
-// Route.get('account/:id', 'AccountController.show')
 // Route.get('tipos_contratacao', 'TiposContratacaoController.index')
 // Route.get('periodo_trabalho', 'PeriodoTrabalhoController.index')
 
