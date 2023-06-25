@@ -271,7 +271,7 @@ export default class AccessController {
       response.send(data)
       return response
     } catch (err) {
-      console.error(err)
+      console.error(err?.message)
       let status = 500
       let code = 'UNKNOWN'
       switch (err?.code) {
@@ -279,17 +279,18 @@ export default class AccessController {
           status = 404
           code = 'USER_NOT_FOUND'
           break
+        case 'EMAIL_NOT_VALIDATED':
+          status = 403
+          code = 'EMAIL_NOT_VALIDATED'
+          const body: any = JSON.parse(err.message.replace(`${err.code}: `, ''))
+          const email: string | null = body?.email ?? null
+          return response.status(status).send({ failure: { code, email } })
       }
       switch (err?.message) {
         case 'INCORRECT_PASSWORD':
           status = 403
           code = 'INCORRECT_PASSWORD'
           break
-        case 'EMAIL_NOT_VALIDATED':
-          status = 403
-          code = 'EMAIL_NOT_VALIDATED'
-          const email: string | null = JSON.parse(err.code)?.email ?? null
-          return response.status(status).send({ failure: { code, email } })
       }
       return response.status(status).send({ failure: { code } })
     }
