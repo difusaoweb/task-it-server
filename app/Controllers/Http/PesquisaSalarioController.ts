@@ -24,16 +24,47 @@ export default class PesquisaSalarioController {
       tipoSalarioId: schema.number.nullableAndOptional()
     })
     try {
-      const data = await request.validate({ schema: controllerSchema })
+      const {
+        email,
+        nome,
+        meucargo,
+        telefoneContato,
+        nomeEmpresa,
+        areaAtuacao,
+        cidadeId,
+        endereco,
+        cep,
+        site,
+        telefoneRamal,
+        cargosIds,
+        valorSalario,
+        valorSalarioColaboradores,
+        tipoSalarioId
+      } = await request.validate({ schema: controllerSchema })
 
-      const pesquisaExists = await PesquisaSalario.findBy('email', data.email)
+      const pesquisaExists = await PesquisaSalario.findBy('email', email)
       if (pesquisaExists) {
         return response.status(400).send({ error: 'Pesquisa already exists.' })
       }
 
-      const pesquisaSalario = await PesquisaSalario.create(data)
+      const pesquisaSalario = await PesquisaSalario.create({
+        email,
+        nome,
+        meucargo,
+        telefoneContato,
+        nomeEmpresa,
+        areaAtuacao,
+        cidadeId,
+        endereco,
+        cep,
+        site,
+        telefoneRamal,
+        valorSalario,
+        valorSalarioColaboradores,
+        tipoSalarioId
+      })
 
-      const cargosPesquisaSalario = data.cargosIds.map((cargoId) => {
+      const cargosPesquisaSalario = cargosIds.map((cargoId) => {
         const dados = {
           idPesquisaSalario: pesquisaSalario.id,
           idCargo: cargoId
