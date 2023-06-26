@@ -20,8 +20,8 @@ export default class AccountController {
           'estados.letter as uf',
           'area_profissionals.title as areaProfissional',
           'vagases.tipo_salario as tipoSalarioId',
-          'applies.vagaId',
-          'applies.candidatoId'
+          'applies.vaga_id as vagaId',
+          'applies.candidato_id as candidatoId'
         )
         .innerJoin('vagases', 'vagases.id', 'applies.vaga_id')
         .innerJoin('cidades', 'vagases.cidade_id', 'cidades.id')
