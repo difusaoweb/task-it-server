@@ -1,5 +1,6 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schema } from '@ioc:Adonis/Core/Validator'
+import { Exception } from '@adonisjs/core/build/standalone'
 
 import User from 'App/Models/User'
 import Empresa from 'App/Models/Contratante'
@@ -164,7 +165,7 @@ export default class UserController {
 
       const user = auth.use('api').user
       if (user === undefined) {
-        throw new Error('TOKEN_USER_INVALID')
+        throw new Exception('', undefined, 'TOKEN_USER_INVALID')
       }
 
       const { username, email, password } = await request.validate({ schema: controllerSchema })
@@ -175,9 +176,20 @@ export default class UserController {
       response.send(user)
       return response
     } catch (err) {
-      console.error(err)
-      response.status(500)
-      return response
+      // console.error(err)
+      let status = 500
+      let code = 'UNKNOWN'
+      switch (err?.code) {
+        case 'E_VALIDATION_FAILURE':
+          status = 400
+          code = 'VALIDATION_FAILURE'
+          break
+        case 'TOKEN_USER_INVALID':
+          status = 400
+          code = 'TOKEN_USER_INVALID'
+          break
+      }
+      return response.status(status).send({ code })
     }
   }
 
