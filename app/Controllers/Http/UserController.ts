@@ -4,10 +4,8 @@ import { schema } from '@ioc:Adonis/Core/Validator'
 import User from 'App/Models/User'
 import Empresa from 'App/Models/Contratante'
 import JobCreateUser from 'App/Mailers/ConfirmationUserMail'
-// const Empresa = use('App/Models/Contratante')
-// const Database = use('Database')
+import Database from '@ioc:Adonis/Lucid/Database'
 // const crypto = require('crypto')
-
 // const Kue = use('Kue')
 
 export default class UserController {
@@ -26,26 +24,28 @@ export default class UserController {
   //   }
   // }
 
-  // public async show({ auth, request, response }: HttpContextContract) {
-  //   const controllerSchema = schema.create({
-  //     id: schema.number()
-  //   })
-  //   try {
-  //     const { id } = await request.validate({ schema: controllerSchema })
+  public async show({ auth, response }: HttpContextContract) {
+    try {
+      await auth.use('api').check()
 
-  //     const user = await Database.select('u.id', 'u.username', 'u.email', 'u.type', 'c.name')
-  //       .from('users as u')
-  //       .leftJoin('contratantes as c', 'c.user_id', 'u.id')
-  //       .where('u.id', id)
+      const user = auth.use('api').user
+      if (user === undefined) {
+        throw new Error('TOKEN_USER_INVALID')
+      }
 
-  //     response.send(user)
-  //     return response
-  //   } catch (err) {
-  //     console.error(err)
-  //     response.status(500)
-  //     return response
-  //   }
-  // }
+      const account = await Database.from('users as u')
+        .select('u.id', 'u.username', 'u.email', 'u.type', 'c.name')
+        .leftJoin('contratantes as c', 'c.user_id', 'u.id')
+        .where('u.id', user.id)
+
+      response.send(account)
+      return response
+    } catch (err) {
+      console.error(err)
+      response.status(500)
+      return response
+    }
+  }
 
   public async createProfessionalUser({ auth, request, response }: HttpContextContract) {
     const controllerSchema = schema.create({
