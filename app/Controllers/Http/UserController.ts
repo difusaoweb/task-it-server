@@ -38,7 +38,7 @@ export default class UserController {
         .leftJoin('contratantes as c', 'c.user_id', 'u.id')
         .where('u.id', user.id)
 
-      response.send(account)
+      response.send(account[0])
       return response
     } catch (err) {
       console.error(err)
