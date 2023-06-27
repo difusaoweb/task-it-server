@@ -4,5 +4,7 @@ Route.group(() => {
   Route.get('/show', 'UserController.show')
   Route.post('/createProfessionalUser', 'UserController.createProfessionalUser')
   Route.post('/createBusinessUser', 'UserController.createBusinessUser')
-  Route.put('/', 'UserController.update')
+  Route.group(() => {
+    Route.put('/', 'UserController.update')
+  }).middleware('auth')
 }).prefix('/users')

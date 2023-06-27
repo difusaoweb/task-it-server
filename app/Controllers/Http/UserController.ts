@@ -161,7 +161,7 @@ export default class UserController {
       password: schema.string()
     })
     try {
-      await auth.use('api').check()
+      // await auth.use('api').check()
 
       const user = auth.use('api').user
       if (user === undefined) {
@@ -181,11 +181,11 @@ export default class UserController {
       let code = 'UNKNOWN'
       switch (err?.code) {
         case 'E_VALIDATION_FAILURE':
-          status = 400
-          code = 'VALIDATION_FAILURE'
+          status = 403
+          code = 'INVALID_PARAMETERS'
           break
         case 'TOKEN_USER_INVALID':
-          status = 400
+          status = 403
           code = 'TOKEN_USER_INVALID'
           break
       }
