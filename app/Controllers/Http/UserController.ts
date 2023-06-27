@@ -153,29 +153,33 @@ export default class UserController {
     }
   }
 
-  // public async update({ auth, request, response }: HttpContextContract) {
-  //   const controllerSchema = schema.create({
-  //     id: schema.number(),
-  //     username: schema.number(),
-  //     email: schema.string(),
-  //     password: schema.string()
-  //   })
-  //   try {
-  //     const { id, username, email, password } = await request.validate({ schema: controllerSchema })
+  public async update({ auth, request, response }: HttpContextContract) {
+    const controllerSchema = schema.create({
+      username: schema.string(),
+      email: schema.string(),
+      password: schema.string()
+    })
+    try {
+      await auth.use('api').check()
 
-  //     const user = await User.findOrFail(id)
+      const user = auth.use('api').user
+      if (user === undefined) {
+        throw new Error('TOKEN_USER_INVALID')
+      }
 
-  //     user.merge({ username, email, password })
-  //     await user.save()
+      const { username, email, password } = await request.validate({ schema: controllerSchema })
 
-  //     response.send(user)
-  //     return response
-  //   } catch (err) {
-  //     console.error(err)
-  //     response.status(500)
-  //     return response
-  //   }
-  // }
+      user.merge({ username, email, password })
+      await user.save()
+
+      response.send(user)
+      return response
+    } catch (err) {
+      console.error(err)
+      response.status(500)
+      return response
+    }
+  }
 
   // public async destroy({ auth, request, response }: HttpContextContract) {
   //   const controllerSchema = schema.create({
