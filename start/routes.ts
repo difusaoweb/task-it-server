@@ -22,7 +22,7 @@ import Route from '@ioc:Adonis/Core/Route'
 import './routes/Access'
 import './routes/Users'
 import './routes/Professionals'
-import './routes/Account'
+import './routes/Dashboard'
 
 Route.get('/vaga', 'VagasController.index')
 Route.get('/vagas_estado', 'VagasEstadoController.index')

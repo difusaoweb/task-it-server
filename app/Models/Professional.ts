@@ -3,7 +3,7 @@ import { DateTime } from 'luxon'
 
 import { CustomBaseModel } from 'App/Models/CustomBaseModel'
 
-export default class Profissional extends CustomBaseModel {
+export default class Professional extends CustomBaseModel {
   @column({ isPrimary: true })
   public id: number
 

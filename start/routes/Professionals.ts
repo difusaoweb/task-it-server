@@ -1,7 +1,8 @@
 import Route from '@ioc:Adonis/Core/Route'
 
 Route.group(() => {
-  Route.get('/', 'ProfissionalController.index')
-  Route.post('/store', 'ProfissionalController.store')
-  Route.delete('/destroy', 'ProfissionalController.destroy')
-}).prefix('/professionals')
+  Route.get('/', 'ProfessionalController.index')
+  Route.get('/show', 'ProfessionalController.show')
+  Route.post('/', 'ProfessionalController.store')
+  Route.delete('/', 'ProfessionalController.destroy')
+}).prefix('/professional')

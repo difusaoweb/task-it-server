@@ -1,0 +1,223 @@
+import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import Database from '@ioc:Adonis/Lucid/Database'
+import { Exception } from '@adonisjs/core/build/standalone'
+
+// const Database = use('Database')
+// const Profissional = use('App/Models/Profissional')
+// const axios = require('axios')
+// const Kue = use('Kue')
+// const JobAvisoCadCurriculo = use('App/Jobs/CreateCurriculoMail')
+
+export default class ProfessionalController {
+  public async show({ auth, request, response }: HttpContextContract) {
+    try {
+      await auth.use('api').check()
+
+      const user = auth.use('api').user
+      if (user === undefined) {
+        throw new Exception('', undefined, 'TOKEN_USER_INVALID')
+      }
+
+      const professional = await Database.from('profissionals')
+        .select(
+          'profissionals.*',
+          'cidades.title as nomeCidade',
+          'escolaridades.title as escolaridade',
+          'area_profissionals.title as areaProfissional',
+          'vaga_desejadas.title_function as vagaDesejada',
+          'sexos.title as sexo',
+          'estado_civils.title as estadoCivil'
+        )
+        .innerJoin('cidades', 'profissionals.cidade_id', 'cidades.id')
+        .innerJoin('escolaridades', 'escolaridades.id', 'profissionals.escolaridade_id')
+        .leftJoin('area_profissionals', 'profissionals.area_atuacao_id', 'area_profissionals.id')
+        .innerJoin('vaga_desejadas', 'profissionals.vaga_desejada_id', 'vaga_desejadas.id')
+        .innerJoin('sexos', 'profissionals.sexo_id', 'sexos.id')
+        .innerJoin('estado_civils', 'profissionals.estado_civil_id', 'estado_civils.id')
+        .where('profissionals.id', user.id)
+
+      const skills = await Database.from('habilidades_profissionals as hp')
+        .select('h.*')
+        .innerJoin('habilidades as h', 'h.id', 'hp.habilidade_id')
+        .where('hp.profissional_id', user.id)
+
+      const experiences = await Database.from('experiencias_profissionals as ep')
+        .select('ep.empresa', 'ep.dataEntrada', 'ep.dataSaida', 'ep.atual', 'ep.funcao')
+        .where('ep.profissional_id', user.id)
+
+      const courses = await Database.from('cursos_extras_profissionals as cs')
+        .select('cs.instituicao', 'cs.dataInicio', 'cs.dataTermino', 'cs.curso')
+        .where('cs.profissional_id', user.id)
+
+      return {
+        professional: professional[0],
+        skills,
+        experiences,
+        courses
+      }
+    } catch (err) {
+      console.error(err)
+      response.status(500)
+      return response
+    }
+  }
+  // async index() {
+  //   const profissionals = await Profissional.all()
+
+  //   return profissionals
+  // }
+
+  // async store({ request, response }) {
+  //   const data = request.only([
+  //     'nome',
+  //     'cpf',
+  //     'rg',
+  //     'endereco',
+  //     'referencia',
+  //     'telCelular',
+  //     'telComercial',
+  //     'telOutro',
+  //     'site',
+  //     'email',
+  //     'habilidades',
+  //     'experiencia',
+  //     'cidade_id',
+  //     'escolaridade_id',
+  //     'area_atuacao_id',
+  //     'vaga_desejada_id',
+  //     'user_id',
+  //     'dataNascimento',
+  //     'possuiDeficiencia',
+  //     'temHabilitacao',
+  //     'idiomas',
+  //     'sexo_id',
+  //     'temFilhos',
+  //     'regime',
+  //     'estado_civil_id'
+  //   ])
+
+  //   const profissionalExists = await Profissional.findBy('email', data.email)
+
+  //   if (profissionalExists) {
+  //     return response.status(400).send({ error: 'Profissional already exists.' })
+  //   }
+
+  //   const profissional = await Profissional.create(data)
+  //   Kue.dispatch(JobAvisoCadCurriculo.key, { email: profissional.email }, { attempts: 3 })
+
+  //   const areaProfissional = await Database.select('vaga_desejadas.type_departament')
+  //     .table('vaga_desejadas')
+  //     .where('id', data.vaga_desejada_id)
+
+  //   try {
+  //     const headers = {
+  //       'accept': 'application/json',
+  //       'content-type': 'application/json',
+  //       'api-key':
+  //         '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'
+  //     }
+
+  //     await axios.post(
+  //       'https://api.sendinblue.com/v3/contacts',
+  //       {
+  //         email: data.email,
+  //         attributes: {
+  //           NOME: data.nome,
+  //           SMS: '55' + data.telCelular
+  //         }
+  //       },
+  //       {
+  //         headers: headers
+  //       }
+  //     )
+
+  //     if (areaProfissional[0].type_departament === 1) {
+  //       await axios.post(
+  //         'https://api.sendinblue.com/v3/contacts/lists/5/contacts/add',
+  //         {
+  //           emails: [data.email]
+  //         },
+  //         {
+  //           headers: headers
+  //         }
+  //       )
+  //     }
+
+  //     if (areaProfissional[0].type_departament === 2) {
+  //       await axios.post(
+  //         'https://api.sendinblue.com/v3/contacts/lists/6/contacts/add',
+  //         {
+  //           emails: [data.email]
+  //         },
+  //         {
+  //           headers: headers
+  //         }
+  //       )
+  //     }
+
+  //     if (areaProfissional[0].type_departament === 3) {
+  //       await axios.post(
+  //         'https://api.sendinblue.com/v3/contacts/lists/7/contacts/add',
+  //         {
+  //           emails: [data.email]
+  //         },
+  //         {
+  //           headers: headers
+  //         }
+  //       )
+  //     }
+
+  //     return profissional
+  //   } catch (err) {
+  //     if (err.response.data.code === 'duplicate_parameter') {
+  //       return profissional
+  //     }
+
+  //     return err.response.data.message
+  //   }
+  // }
+
+  // async update({ request, params }) {
+  //   const data = request.only([
+  //     'nome',
+  //     'cpf',
+  //     'rg',
+  //     'endereco',
+  //     'referencia',
+  //     'telCelular',
+  //     'telComercial',
+  //     'telOutro',
+  //     'site',
+  //     'email',
+  //     'habilidades',
+  //     'experiencia',
+  //     'cidade_id',
+  //     'escolaridade_id',
+  //     'area_atuacao_id',
+  //     'vaga_desejada_id',
+  //     'user_id',
+  //     'dataNascimento',
+  //     'possuiDeficiencia',
+  //     'temHabilitacao',
+  //     'idiomas',
+  //     'sexo_id',
+  //     'temFilhos',
+  //     'regime',
+  //     'estado_civil_id'
+  //   ])
+
+  //   const profissional = await Profissional.findOrFail(params.id)
+
+  //   profissional.merge(data)
+
+  //   await profissional.save()
+
+  //   return profissional
+  // }
+
+  // async destroy({ params }) {
+  //   const profissional = await Profissional.findOrFail(params.id)
+
+  //   profissional.delete()
+  // }
+}
