@@ -36,6 +36,8 @@ export default class ProfessionalController {
         .innerJoin('estado_civils', 'profissionals.estado_civil_id', 'estado_civils.id')
         .where('profissionals.id', user.id)
 
+      console.log(professional)
+
       const skills = await Database.from('habilidades_profissionals as hp')
         .select('h.*')
         .innerJoin('habilidades as h', 'h.id', 'hp.habilidade_id')
@@ -50,7 +52,7 @@ export default class ProfessionalController {
         .where('cs.profissional_id', user.id)
 
       return {
-        professional: professional[0],
+        professional: professional.length === 0 ? {} : professional[0],
         skills,
         experiences,
         courses
