@@ -7,7 +7,7 @@ export default class DiscSchema extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary().notNullable()
       table
-        .integer('profissional_id')
+        .integer('professional_id')
         .unsigned()
         .references('id')
         .inTable('users')

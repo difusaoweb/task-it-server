@@ -8,7 +8,7 @@ export default class Disc extends CustomBaseModel {
   public id: number
 
   @column()
-  public profissionalId: number | null
+  public professionalId: number | null
 
   @column()
   public d: number

@@ -23,10 +23,8 @@ import './routes/Access'
 import './routes/Users'
 import './routes/Professionals'
 import './routes/Dashboard'
-
-Route.get('/vaga', 'VagasController.index')
-Route.get('/vagas_estado', 'VagasEstadoController.index')
-Route.get('/vaga_desejada', 'VagaDesejadaController.index')
+import './routes/Jobs'
+import './routes/Disc'
 
 Route.get('/dados_cadastro', 'DadosCadastroController.index')
 Route.get('/search_vaga_params', 'SearchVagasParamController.index')
@@ -39,7 +37,6 @@ Route.get('/setor_empresa', 'SetorEmpresaController.index')
 // Route.put('/setor_empresa', 'SetorEmpresaController')
 // Route.delete('/setor_empresa', 'SetorEmpresaController')
 
-Route.get('/area_profissional', 'AreaProfissionalController.index')
 Route.get('/cities', 'CidadeController.index')
 
 Route.post('/pesquisaSalario', 'PesquisaSalarioController.store')
@@ -75,7 +72,6 @@ Route.get('/habilidades', 'HabilidadeController.index')
 
 // Route.get('curriculos', 'CurriculoController.index')
 // Route.get('curriculos/:id', 'CurriculoController.show')
-// Route.post('discs', 'DiscController.store')
 
 // Route.post('passwords', 'ForgotPasswordController.store')
 // Route.put('passwords', 'ForgotPasswordController.update')
