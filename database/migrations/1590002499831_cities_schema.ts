@@ -1,7 +1,7 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
-export default class CidadesSchema extends BaseSchema {
-  protected tableName = 'cidades'
+export default class CitySchema extends BaseSchema {
+  protected tableName = 'cities'
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {

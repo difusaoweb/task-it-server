@@ -1,10 +1,10 @@
 import BaseSeeder from '@ioc:Adonis/Lucid/Seeder'
 
-import Cidades from 'App/Models/Cidade'
+import City from 'App/Models/City'
 
-export default class CidadeSeeder extends BaseSeeder {
+export default class CitySeeder extends BaseSeeder {
   public async run() {
-    await Cidades.createMany([
+    await City.createMany([
       {
         stateId: 21,
         title: "Alta Floresta D'oeste",

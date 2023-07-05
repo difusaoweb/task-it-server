@@ -3,7 +3,9 @@ import { DateTime } from 'luxon'
 
 import { CustomBaseModel } from 'App/Models/CustomBaseModel'
 
-export default class Cidade extends CustomBaseModel {
+export default class City extends CustomBaseModel {
+  public static table = 'cities'
+
   @column({ isPrimary: true })
   public id: number
 
