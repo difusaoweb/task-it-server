@@ -9,7 +9,7 @@ export default class User extends CustomBaseModel {
   public id: number
 
   @column()
-  public username: string
+  public displayName: string
 
   @column()
   public email: string

@@ -3,7 +3,7 @@ import { DateTime } from 'luxon'
 
 import { CustomBaseModel } from 'App/Models/CustomBaseModel'
 
-export default class PesquisaSalario extends CustomBaseModel {
+export default class SalarySurvey extends CustomBaseModel {
   @column({ isPrimary: true })
   public id: number
 
@@ -26,7 +26,7 @@ export default class PesquisaSalario extends CustomBaseModel {
   public areaAtuacao: string
 
   @column()
-  public endereco: string
+  public address: string
 
   @column()
   public cep: string
@@ -38,13 +38,13 @@ export default class PesquisaSalario extends CustomBaseModel {
   public telefoneRamal: string
 
   @column()
-  public valorSalario: string
+  public salaryValue: string
 
   @column()
-  public valorSalarioColaboradores: string
+  public salaryValueColaboradores: string
 
   @column()
-  public cidadeId: number | null
+  public cityId: number | null
 
   @column()
   public tipoSalarioId: number | null

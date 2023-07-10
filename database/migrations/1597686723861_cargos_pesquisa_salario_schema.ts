@@ -1,24 +1,24 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
-export default class CargosPesquisaSalarioSchema extends BaseSchema {
-  protected tableName = 'cargos_pesquisa_salarios'
+export default class CargosSalarySurveySchema extends BaseSchema {
+  protected tableName = 'cargos_salary_surveys'
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary().notNullable()
       table
-        .integer('id_pesquisa_salario')
+        .integer('salary_survey_id')
         .unsigned()
         .references('id')
-        .inTable('pesquisa_salarios')
+        .inTable('salary_surveys')
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
         .nullable()
       table
-        .integer('id_cargo')
+        .integer('desired_jobs_id')
         .unsigned()
         .references('id')
-        .inTable('vaga_desejadas')
+        .inTable('desired_jobs')
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
         .nullable()

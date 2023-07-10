@@ -3,7 +3,7 @@ import { schema } from '@ioc:Adonis/Core/Validator'
 import { Exception } from '@adonisjs/core/build/standalone'
 
 import User from 'App/Models/User'
-import Empresa from 'App/Models/Contratante'
+import Business from 'App/Models/Business'
 import JobCreateUser from 'App/Mailers/ConfirmationUserMail'
 import Database from '@ioc:Adonis/Lucid/Database'
 // const crypto = require('crypto')
@@ -14,7 +14,7 @@ export default class UserController {
   //   try {
   //     const user = await Database.select('u.*', 'p.id as asCurriculo')
   //       .from('users as u')
-  //       .leftJoin('profissionals as p', 'p.user_id', 'u.id')
+  //       .leftJoin('professional as p', 'p.user_id', 'u.id')
 
   //     response.send(user)
   //     return response
@@ -31,64 +31,69 @@ export default class UserController {
 
       const user = auth.use('api').user
       if (user === undefined) {
-        throw new Error('TOKEN_USER_INVALID')
+        throw new Exception('', undefined, 'TOKEN_USER_INVALID')
       }
 
       const account = await Database.from('users as u')
-        .select('u.id', 'u.username', 'u.email', 'u.type', 'c.name')
-        .leftJoin('contratantes as c', 'c.user_id', 'u.id')
+        .select('u.id', 'u.display_name', 'u.email', 'u.type', 'c.name')
+        .leftJoin('businesses as c', 'c.user_id', 'u.id')
         .where('u.id', user.id)
 
-      response.send(account[0])
-      return response
-    } catch (err) {
-      console.error(err)
-      response.status(500)
-      return response
+      return response.send(account[0])
+    } catch (err: any) {
+      let status = 500
+      let failure: any = { code: 'UNKNOWN' }
+      switch (err.code) {
+        case 'TOKEN_USER_INVALID':
+          status = 400
+          failure.code = 'TOKEN_USER_INVALID'
+          break
+        default:
+          console.error(err)
+          break
+      }
+      return response.status(status).send(failure)
     }
   }
 
   public async createProfessionalUser({ auth, request, response }: HttpContextContract) {
     const controllerSchema = schema.create({
-      username: schema.string(),
+      name: schema.string(),
       email: schema.string(),
       password: schema.string(),
       redirectUrl: schema.string()
     })
     try {
-      const { username, email, password, redirectUrl } = await request.validate({
+      const { name, email, password, redirectUrl } = await request.validate({
         schema: controllerSchema
       })
       const type = 'c'
 
       const userExists = await User.findBy('email', email)
       if (userExists !== null) {
-        throw new Error('USER_EXISTS')
+        throw new Exception('', undefined, 'USER_EXISTS')
       }
-      // const userNameExists = await User.findBy('username', username)
-      // if (userNameExists) {
-      //   return response.status(400).send({ error: 'Username already exists.' })
-      // }
 
-      const user = await User.create({ username, email, password, type })
+      const user = await User.create({ displayName: name, email, password, type })
 
-      const { token } = await auth.use('api').generate(user, { name: 'validateEmail' })
+      const { token } = await auth.use('api').generate(user, { name: 'validate-email' })
 
       await new JobCreateUser({ email: user.email, token, redirectUrl, type }).send()
 
-      response.send(user)
-      return response
-    } catch (err) {
-      console.error(err)
+      return response.send(user)
+    } catch (err: any) {
       let status = 500
-      let code = 'UNKNOWN'
-      switch (err?.message) {
+      let failure: any = { code: 'UNKNOWN' }
+      switch (err.code) {
         case 'USER_EXISTS':
           status = 400
-          code = 'USER_EXISTS'
+          failure.code = 'USER_EXISTS'
+          break
+        default:
+          console.error(err)
           break
       }
-      return response.status(status).send({ failure: { code } })
+      return response.status(status).send(failure)
     }
   }
 
@@ -96,8 +101,8 @@ export default class UserController {
     const controllerSchema = schema.create({
       email: schema.string(),
       password: schema.string(),
-      name: schema.string(),
-      tradeName: schema.string(),
+      companyName: schema.string(),
+      tradingName: schema.string(),
       redirectUrl: schema.string()
       // isInvited: schema.boolean(),
       // validated: schema.boolean(),
@@ -105,58 +110,52 @@ export default class UserController {
       // urlConvite: schema.string()
     })
     try {
-      const { email, password, name, tradeName, redirectUrl } = await request.validate({
+      const { email, password, companyName, tradingName, redirectUrl } = await request.validate({
         schema: controllerSchema
       })
       const type = 'e'
 
       const userExists = await User.findBy('email', email)
       if (userExists !== null) {
-        throw new Error('USER_EXISTS')
+        throw new Exception('', undefined, 'USER_EXISTS')
       }
-      // const userNameExists = await User.findBy('username', username)
-      // if (userNameExists) {
-      //   return response.status(400).send({ error: 'Username already exists.' })
-      // }
 
-      const user = await User.create({ username: name, email, password, type })
-      const empresa = await Empresa.create({
-        name,
-        nomeFantasia: tradeName,
+      const user = await User.create({ displayName: tradingName, email, password, type })
+      await Business.create({
+        companyName,
+        tradingName,
         email,
         userId: user.id
       })
-      console.log(empresa)
 
-      const { token } = await auth.use('api').generate(user, { name: 'validateEmail' })
+      const { token } = await auth.use('api').generate(user, { name: 'validate-email' })
 
       await new JobCreateUser({ email: user.email, token, redirectUrl, type }).send()
 
-      response.send(user)
-      return response
-    } catch (err) {
-      console.error(err)
+      return response.send(user)
+    } catch (err: any) {
       let status = 500
-      let code = 'UNKNOWN'
-      switch (err?.code) {
+      let failure: any = { code: 'UNKNOWN' }
+      switch (err.code) {
         case 'E_VALIDATION_FAILURE':
           status = 400
-          code = 'VALIDATION_FAILURE'
+          failure.code = 'VALIDATION_FAILURE'
           break
-      }
-      switch (err?.message) {
         case 'USER_EXISTS':
           status = 400
-          code = 'USER_EXISTS'
+          failure.code = 'USER_EXISTS'
+          break
+        default:
+          console.error(err)
           break
       }
-      return response.status(status).send({ failure: { code } })
+      return response.status(status).send(failure)
     }
   }
 
   public async update({ auth, request, response }: HttpContextContract) {
     const controllerSchema = schema.create({
-      username: schema.string(),
+      displayName: schema.string(),
       email: schema.string(),
       password: schema.string()
     })
@@ -168,28 +167,29 @@ export default class UserController {
         throw new Exception('', undefined, 'TOKEN_USER_INVALID')
       }
 
-      const { username, email, password } = await request.validate({ schema: controllerSchema })
+      const { displayName, email, password } = await request.validate({ schema: controllerSchema })
 
-      user.merge({ username, email, password })
+      user.merge({ displayName, email, password })
       await user.save()
 
-      response.send(user)
-      return response
-    } catch (err) {
-      // console.error(err)
+      return response.send(user)
+    } catch (err: any) {
       let status = 500
-      let code = 'UNKNOWN'
-      switch (err?.code) {
+      let failure: any = { code: 'UNKNOWN' }
+      switch (err.code) {
         case 'E_VALIDATION_FAILURE':
           status = 403
-          code = 'INVALID_PARAMETERS'
+          failure.code = 'INVALID_PARAMETERS'
           break
         case 'TOKEN_USER_INVALID':
           status = 403
-          code = 'TOKEN_USER_INVALID'
+          failure.code = 'TOKEN_USER_INVALID'
+          break
+        default:
+          console.error(err)
           break
       }
-      return response.status(status).send({ code })
+      return response.status(status).send(failure)
     }
   }
 

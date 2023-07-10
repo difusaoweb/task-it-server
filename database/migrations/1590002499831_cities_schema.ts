@@ -11,7 +11,7 @@ export default class CitySchema extends BaseSchema {
         .integer('state_id')
         .unsigned()
         .references('id')
-        .inTable('estados')
+        .inTable('states')
         .onUpdate('CASCADE')
         .onDelete('SET NULL')
         .nullable()

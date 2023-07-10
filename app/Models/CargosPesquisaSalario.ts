@@ -3,12 +3,12 @@ import { DateTime } from 'luxon'
 
 import { CustomBaseModel } from 'App/Models/CustomBaseModel'
 
-export default class CargosPesquisaSalario extends CustomBaseModel {
+export default class CargosSalarySurvey extends CustomBaseModel {
   @column({ isPrimary: true })
   public id: number
 
   @column()
-  public idPesquisaSalario: number | null
+  public idSalarySurvey: number | null
 
   @column()
   public idCargo: number | null

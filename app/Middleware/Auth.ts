@@ -1,5 +1,5 @@
-import { AuthenticationException } from '@adonisjs/auth/build/standalone'
-import type { GuardsList } from '@ioc:Adonis/Addons/Auth'
+import { Exception } from '@adonisjs/core/build/standalone'
+
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 /**
@@ -10,67 +10,38 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
  * of named middleware.
  */
 export default class AuthMiddleware {
-  /**
-   * The URL to redirect to when request is Unauthorized
-   */
-  protected redirectTo = '/login'
-
-  /**
-   * Authenticates the current HTTP request against a custom set of defined
-   * guards.
-   *
-   * The authentication loop stops as soon as the user is authenticated using any
-   * of the mentioned guards and that guard will be used by the rest of the code
-   * during the current request.
-   */
-  protected async authenticate(auth: HttpContextContract['auth'], guards: (keyof GuardsList)[]) {
-    /**
-     * Hold reference to the guard last attempted within the for loop. We pass
-     * the reference of the guard to the "AuthenticationException", so that
-     * it can decide the correct response behavior based upon the guard
-     * driver
-     */
-    let guardLastAttempted: string | undefined
-
-    for (let guard of guards) {
-      guardLastAttempted = guard
-
-      if (await auth.use(guard).check()) {
-        /**
-         * Instruct auth to use the given guard as the default guard for
-         * the rest of the request, since the user authenticated
-         * succeeded here
-         */
+  protected async authenticate(auth: HttpContextContract['auth']) {
+    const guard = 'api'
+    if (await auth.use(guard).check()) {
+      const tokenName = await auth.use(guard).token?.name
+      if (tokenName === 'login') {
         auth.defaultGuard = guard
         return true
       }
     }
-
-    /**
-     * Unable to authenticate using any guard
-     */
-    throw new AuthenticationException(
-      'Unauthorized access',
-      'E_UNAUTHORIZED_ACCESS',
-      guardLastAttempted,
-      this.redirectTo,
-    )
+    throw new Exception('', 401, 'UNAUTHORIZED_ACCESS')
   }
 
   /**
    * Handle request
    */
-  public async handle (
-    { auth }: HttpContextContract,
-    next: () => Promise<void>,
-    customGuards: (keyof GuardsList)[]
-  ) {
-    /**
-     * Uses the user defined guards or the default guard mentioned in
-     * the config file
-     */
-    const guards = customGuards.length ? customGuards : [auth.name]
-    await this.authenticate(auth, guards)
-    await next()
+  public async handle({ auth, response }: HttpContextContract, next: () => Promise<void>) {
+    try {
+      await this.authenticate(auth)
+      await next()
+    } catch (err: any) {
+      let status = 500
+      let failure: any = { code: 'UNKNOWN' }
+      switch (err.code) {
+        case 'UNAUTHORIZED_ACCESS':
+          status = 401
+          failure.code = 'UNAUTHORIZED_ACCESS'
+          break
+        default:
+          console.error(err)
+          break
+      }
+      return response.status(status).send(failure)
+    }
   }
 }

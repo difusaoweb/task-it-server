@@ -92,7 +92,7 @@ export default class Disc extends CustomBaseModel {
   public protetor: number
 
   @column()
-  public contestador: number
+  public contstater: number
 
   @column()
   public competitivo: number

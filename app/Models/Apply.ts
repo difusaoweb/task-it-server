@@ -4,14 +4,16 @@ import { DateTime } from 'luxon'
 import { CustomBaseModel } from 'App/Models/CustomBaseModel'
 
 export default class Apply extends CustomBaseModel {
+  public static table = 'applies'
+
   @column({ isPrimary: true })
   public id: number
 
   @column()
-  public candidatoId: number | null
+  public candidateId: number
 
   @column()
-  public vagaId: number | null
+  public vacancyId: number
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

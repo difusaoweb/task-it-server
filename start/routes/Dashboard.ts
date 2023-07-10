@@ -1,6 +1,8 @@
 import Route from '@ioc:Adonis/Core/Route'
 
 Route.group(() => {
-  Route.get('/dashboard', 'DashboardController.show')
-  Route.get('/dashboardBusiness', 'DashboardBusinessController.showBusiness')
-}).middleware('auth')
+  Route.group(() => {
+    Route.get('/', 'DashboardController.show')
+    Route.get('/business', 'DashboardController.showBusiness')
+  }).middleware('auth')
+}).prefix('/dashboard')

@@ -41,7 +41,7 @@ export default class DiscSchema extends BaseSchema {
       table.integer('incansavel').notNullable()
       table.integer('emotivo').notNullable()
       table.integer('protetor').notNullable()
-      table.integer('contestador').notNullable()
+      table.integer('contstater').notNullable()
       table.integer('competitivo').notNullable()
       table.integer('persuasivo').notNullable()
       table.integer('acomodado').notNullable()

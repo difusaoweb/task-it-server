@@ -7,84 +7,88 @@ export default class SearchVagasParamController {
     const controllerSchema = schema.create({
       id: schema.number.nullableAndOptional(),
       cargoId: schema.number.nullableAndOptional(),
-      cidadeId: schema.number.nullableAndOptional(),
-      setorEmpresa: schema.number.nullableAndOptional(),
+      cityId: schema.number.nullableAndOptional(),
+      businessCategoryId: schema.number.nullableAndOptional(),
       areaProfissional: schema.number.nullableAndOptional(),
-      porteEmpresa: schema.number.nullableAndOptional(),
-      tipoSalario: schema.number.nullableAndOptional(),
+      companySizeId: schema.number.nullableAndOptional(),
+      paymentTypeId: schema.number.nullableAndOptional(),
       page: schema.number()
     })
     try {
       const {
         id,
         cargoId,
-        cidadeId,
-        setorEmpresa,
+        cityId,
+        businessCategoryId,
         areaProfissional,
-        porteEmpresa,
-        tipoSalario,
+        companySizeId,
+        paymentTypeId,
         page
       } = await request.validate({ schema: controllerSchema })
       const perPage = 10
 
-      const vaga = Database.from('vagases')
+      const vaga = Database.from('vacancies')
         .select(
-          'vagases.title',
-          'vaga_desejadas.title_function as cargo',
-          'vagases.cidade_id',
-          'vagases.tipo_salario as tipoSalarioId',
-          'vagases.empresa_id',
-          'vagases.id',
-          'contratantes.name as empresa',
-          'vagases.valor_salario',
-          'setor_empresas.title as setor',
-          'contratantes.telCelular',
-          'porte_empresas.title as porte',
-          'contratantes.endereco as enderecoEmp',
-          'area_profissionals.title as areaProfissional',
-          'escolaridades.title as escolaridade',
-          'vagases.valor_comissao',
-          'vagases.beneficios',
-          'vagases.descricao_cargo',
-          'cidades.title as cidade',
-          'cidades.state_id',
-          'estados.letter as uf'
+          'vacancies.title',
+          'desired_jobs.title_function as jobName',
+          'vacancies.city_id as cityId',
+          'vacancies.payment_type_id as paymentTypeId',
+          'vacancies.business_id',
+          'vacancies.id',
+          'businesses.company_name as empresa',
+          'vacancies.salary_value',
+          'business_categories.title as setor',
+          'businesses.phone_number',
+          'company_sizes.title as porte',
+          'businesses.address as addressEmp',
+          'job_workloads.title as jobWorkloadTitle',
+          'educational_levels.title as escolaridade',
+          'vacancies.valor_comissao',
+          'vacancies.benefits',
+          'vacancies.job_description',
+          'cities.title as cityName',
+          'cities.state_id',
+          'states.letter as uf'
         )
-        .innerJoin('contratantes', 'vagases.empresa_id', 'contratantes.id')
-        .leftJoin('cidades', 'vagases.cidade_id', 'cidades.id')
-        .leftJoin('estados', 'cidades.state_id', 'estados.id')
-        .leftJoin('setor_empresas', 'contratantes.setor_empresa_id', 'setor_empresas.id')
-        .leftJoin('porte_empresas', 'contratantes.porte_empresa_id', 'porte_empresas.id')
-        .leftJoin('area_profissionals', 'vagases.area_profissional_id', 'area_profissionals.id')
-        .leftJoin('escolaridades', 'vagases.escolaridade_id', 'escolaridades.id')
-        .leftJoin('vaga_desejadas', 'vagases.cargo_id', 'vaga_desejadas.id')
+        .innerJoin('businesses', 'vacancies.business_id', 'businesses.id')
+        .leftJoin('cities', 'vacancies.city_id', 'cities.id')
+        .leftJoin('states', 'cities.state_id', 'states.id')
+        .leftJoin(
+          'business_categories',
+          'businesses.business_category_id',
+          'business_categories.id'
+        )
+        .leftJoin('company_sizes', 'businesses.company_size_id', 'company_sizes.id')
+        .leftJoin('area_professional', 'vacancies.job_workload_id', 'job_workloads.id')
+        .leftJoin('educational_levels', 'vacancies.escolaridade_id', 'educational_levels.id')
+        .leftJoin('vaga_desejadas', 'vacancies.cargo_id', 'vaga_desejadas.id')
 
       if (id) {
-        vaga.where('vagases.id', id)
+        vaga.where('vacancies.id', id)
       }
 
       if (cargoId) {
-        vaga.where('vagases.cargo_id', cargoId)
+        vaga.where('vacancies.cargo_id', cargoId)
       }
 
-      if (cidadeId) {
-        vaga.where('vagases.cidade_id', cidadeId)
+      if (cityId) {
+        vaga.where('vacancies.city_id', cityId)
       }
 
-      if (setorEmpresa) {
-        vaga.where('contratantes.setor_empresa_id', setorEmpresa)
+      if (businessCategoryId) {
+        vaga.where('businesses.business_category_id', businessCategoryId)
       }
 
       if (areaProfissional) {
-        vaga.where('vagases.area_profissional_id', areaProfissional)
+        vaga.where('vacancies.job_workload_id', areaProfissional)
       }
 
-      if (porteEmpresa) {
-        vaga.where('contratantes.porte_empresa_id', porteEmpresa)
+      if (companySizeId) {
+        vaga.where('businesses.company_size_id', companySizeId)
       }
 
-      if (tipoSalario) {
-        vaga.where('vagases.tipo_salario', tipoSalario)
+      if (paymentTypeId) {
+        vaga.where('vacancies.payment_type_id', paymentTypeId)
       }
 
       const returnDb = await vaga.paginate(page, perPage)

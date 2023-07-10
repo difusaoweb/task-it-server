@@ -1,14 +1,18 @@
 import { column } from '@ioc:Adonis/Lucid/Orm'
 import { DateTime } from 'luxon'
+import { manyToMany, ManyToMany, hasMany, HasMany } from '@ioc:Adonis/Lucid/Orm'
 
 import { CustomBaseModel } from 'App/Models/CustomBaseModel'
+import Skill from 'App/Models/Skill'
+import CoursesOfProfessional from 'App/Models/CoursesOfProfessional'
+import ExperiencesOfProfessional from 'App/Models/ExperiencesOfProfessional'
 
 export default class Professional extends CustomBaseModel {
   @column({ isPrimary: true })
   public id: number
 
   @column()
-  public nome: string
+  public name: string
 
   @column()
   public cpf: string
@@ -17,25 +21,22 @@ export default class Professional extends CustomBaseModel {
   public rg: string
 
   @column()
-  public cidadeId: number | null
+  public cityId: number | null
 
   @column()
   public userId: number | null
 
   @column()
-  public endereco: string
+  public address: string
 
   @column()
-  public referencia: string
+  public addressReference: string | null
 
   @column()
-  public telCelular: string
+  public phoneNumber: string
 
   @column()
-  public telComercial: string | null
-
-  @column()
-  public telOutro: string | null
+  public anotherPhoneNumber: string | null
 
   @column()
   public site: string | null
@@ -44,44 +45,55 @@ export default class Professional extends CustomBaseModel {
   public email: string
 
   @column()
-  public habilidades: string | null
+  public educationalLevelId: number | null
 
   @column()
-  public experiencia: string | null
+  public jobWorkloadId: number | null
 
   @column()
-  public escolaridadeId: number | null
-
-  @column()
-  public areaAtuacaoId: number | null
-
-  @column()
-  public vagaDesejadaId: number | null
+  public desiredJobId: number | null
 
   @column.dateTime()
-  public dataNascimento: DateTime | null
+  public dateOfBirth: DateTime
 
   @column()
-  public possuiDeficiencia: string | null
+  public disability: string | null
 
   @column()
-  public temHabilitacao: string | null
+  public haveALicense: boolean
 
   @column()
-  public idiomas: string | null
+  public languages: string | null
 
   @column()
-  public sexoId: number | null
+  public sexId: number | null
 
   @column()
-  public temFilhos: string | null
+  public maritalStatusId: number | null
 
   @column()
-  public estadoCivilId: number | null
+  public jobTypeId: number | null
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime | null
+
+  @manyToMany(() => Skill, {
+    pivotTable: 'skills_professional',
+    pivotForeignKey: 'profissional_id',
+    pivotRelatedForeignKey: 'skill_id'
+  })
+  public skills: ManyToMany<typeof Skill>
+
+  @hasMany(() => CoursesOfProfessional, {
+    foreignKey: 'professional_id'
+  })
+  public courses: HasMany<typeof CoursesOfProfessional>
+
+  @hasMany(() => ExperiencesOfProfessional, {
+    foreignKey: 'professional_id'
+  })
+  public experiences: HasMany<typeof ExperiencesOfProfessional>
 }

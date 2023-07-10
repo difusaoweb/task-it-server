@@ -1,10 +1,10 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schema } from '@ioc:Adonis/Core/Validator'
 
-import PesquisaSalario from 'App/Models/PesquisaSalario'
-import CargosPesquisaSalario from 'App/Models/CargosPesquisaSalario'
+import SalarySurvey from 'App/Models/SalarySurvey'
+import CargosSalarySurvey from 'App/Models/CargosSalarySurvey'
 
-export default class PesquisaSalarioController {
+export default class SalarySurveyController {
   public async store({ request, response }: HttpContextContract) {
     const controllerSchema = schema.create({
       email: schema.string(),
@@ -13,14 +13,14 @@ export default class PesquisaSalarioController {
       telefoneContato: schema.string(),
       nomeEmpresa: schema.string(),
       areaAtuacao: schema.string(),
-      cidadeId: schema.number.nullableAndOptional(),
-      endereco: schema.string(),
+      cityId: schema.number.nullableAndOptional(),
+      address: schema.string(),
       cep: schema.string(),
       site: schema.string(),
       telefoneRamal: schema.string(),
       cargosIds: schema.array().members(schema.number()),
-      valorSalario: schema.string(),
-      valorSalarioColaboradores: schema.string(),
+      salaryValue: schema.string(),
+      salaryValueColaboradores: schema.string(),
       tipoSalarioId: schema.number.nullableAndOptional()
     })
     try {
@@ -31,49 +31,49 @@ export default class PesquisaSalarioController {
         telefoneContato,
         nomeEmpresa,
         areaAtuacao,
-        cidadeId,
-        endereco,
+        cityId,
+        address,
         cep,
         site,
         telefoneRamal,
         cargosIds,
-        valorSalario,
-        valorSalarioColaboradores,
+        salaryValue,
+        salaryValueColaboradores,
         tipoSalarioId
       } = await request.validate({ schema: controllerSchema })
 
-      const pesquisaExists = await PesquisaSalario.findBy('email', email)
+      const pesquisaExists = await SalarySurvey.findBy('email', email)
       if (pesquisaExists) {
         return response.status(400).send({ error: 'Pesquisa already exists.' })
       }
 
-      const pesquisaSalario = await PesquisaSalario.create({
+      const pesquisaSalario = await SalarySurvey.create({
         email,
         nome,
         meucargo,
         telefoneContato,
         nomeEmpresa,
         areaAtuacao,
-        cidadeId,
-        endereco,
+        cityId,
+        address,
         cep,
         site,
         telefoneRamal,
-        valorSalario,
-        valorSalarioColaboradores,
+        salaryValue,
+        salaryValueColaboradores,
         tipoSalarioId
       })
 
-      const cargosPesquisaSalario = cargosIds.map((cargoId) => {
+      const cargosSalarySurvey = cargosIds.map((cargoId) => {
         const dados = {
-          idPesquisaSalario: pesquisaSalario.id,
+          idSalarySurvey: pesquisaSalario.id,
           idCargo: cargoId
         }
 
         return dados
       })
 
-      const cargosPesquisa = await CargosPesquisaSalario.createMany(cargosPesquisaSalario)
+      const cargosPesquisa = await CargosSalarySurvey.createMany(cargosSalarySurvey)
 
       const returnResonse = {
         pesquisaSalario,

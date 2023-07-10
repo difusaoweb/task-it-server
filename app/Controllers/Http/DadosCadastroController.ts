@@ -4,25 +4,30 @@ import Database from '@ioc:Adonis/Lucid/Database'
 export default class DadosCadastroController {
   public async index({ response }: HttpContextContract) {
     try {
-      const totalEmpresas = await Database.from('contratantes').count('* as empresas')
-      const totalCurriculos = await Database.from('profissionals').count('* as curriculos')
-      const totalVagas = await Database.from('vagases').count('* as vagas')
+      const amountBusiness = await Database.from('businesses').count('* as businesses')
+      const amountCurricula = await Database.from('professionals').count('* as curricula')
+      const amountVacancies = await Database.from('vacancies').count('* as vacancies')
 
       interface DataReturnTypes {
-        totalEmpresas: number
-        totalCurriculos: number
-        totalVagas: number
+        amountBusiness: number
+        amountCurricula: number
+        amountVacancies: number
       }
       const dataReturn: DataReturnTypes = {
-        totalEmpresas: parseInt(totalEmpresas[0].empresas),
-        totalCurriculos: parseInt(totalCurriculos[0].curriculos),
-        totalVagas: parseInt(totalVagas[0].vagas)
+        amountBusiness: parseInt(amountBusiness[0].businesses),
+        amountCurricula: parseInt(amountCurricula[0].curricula),
+        amountVacancies: parseInt(amountVacancies[0].vacancies)
       }
-      response.send(dataReturn)
-      return response
-    } catch (err) {
-      console.error(err)
-      return response
+      return response.send(dataReturn)
+    } catch (err: any) {
+      let status = 500
+      let failure: any = { code: 'UNKNOWN' }
+      switch (err.code) {
+        default:
+          console.error(err)
+          break
+      }
+      return response.status(status).send(failure)
     }
   }
 }
