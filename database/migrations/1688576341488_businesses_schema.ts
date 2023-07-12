@@ -15,6 +15,7 @@ export default class BusinessSchema extends BaseSchema {
       table
         .integer('user_id')
         .unsigned()
+        .unique()
         .references('id')
         .inTable('users')
         .onUpdate('CASCADE')

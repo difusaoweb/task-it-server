@@ -1,7 +1,7 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
 export default class ExperiencesOfProfessionalSchema extends BaseSchema {
-  protected tableName = 'experiences_of_professional'
+  protected tableName = 'experiences_of_professionals'
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
@@ -9,8 +9,7 @@ export default class ExperiencesOfProfessionalSchema extends BaseSchema {
       table
         .integer('professional_id')
         .unsigned()
-        .references('id')
-        .inTable('professionals')
+        .references('professionals.id')
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
         .notNullable()

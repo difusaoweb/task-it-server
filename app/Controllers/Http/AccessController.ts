@@ -257,6 +257,7 @@ export default class AccessController {
         professionalId: number | null
         businessId: number | null
         cityId: number | null
+        profileId: number | null
       }
       let returnUser: ReturnUserTypes[] | ReturnUserTypes = await Database.from('users')
         .select(
@@ -276,6 +277,16 @@ export default class AccessController {
         .where('users.email', email)
 
       returnUser = returnUser[0]
+
+      returnUser.profileId =
+        returnUser.businessId !== null
+          ? returnUser.businessId
+          : returnUser.professionalId !== null
+          ? returnUser.professionalId
+          : null
+
+      delete returnUser.businessId
+      delete returnUser.professionalId
 
       if (returnUser.isInvited === true && returnUser.asActiveInvite === false) {
         user.asActiveInvite = true

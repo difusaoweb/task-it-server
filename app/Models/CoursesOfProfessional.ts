@@ -4,7 +4,7 @@ import { DateTime } from 'luxon'
 import { CustomBaseModel } from 'App/Models/CustomBaseModel'
 
 export default class CoursesOfProfessional extends CustomBaseModel {
-  public static table = 'courses_of_professional'
+  public static table = 'courses_of_professionals'
 
   @column({ isPrimary: true })
   public id: number

@@ -12,7 +12,10 @@ export default class DashboardController {
         throw new Exception('', undefined, 'TOKEN_USER_INVALID')
       }
 
-      const professional = await Professional.findByOrFail('user_id', user.id)
+      const professional = await Professional.findBy('user_id', user.id)
+      if (professional === null) {
+        return response.send([])
+      }
 
       const returnDb = await Database.from('applies')
         .select(
@@ -33,14 +36,22 @@ export default class DashboardController {
         .innerJoin('job_workloads', 'job_workloads.id', 'vacancies.job_workload_id')
         .where('applies.candidate_id', professional.id)
 
-      return returnDb
+      return response.send(returnDb)
     } catch (err: any) {
+      console.error(err)
       let status = 500
       let failure: any = { code: 'UNKNOWN' }
-      switch (err.code) {
+      if (err.code) {
+        failure.code = err.code
+      }
+      switch (failure.code) {
         case 'TOKEN_USER_INVALID':
           status = 403
           failure.code = 'TOKEN_USER_INVALID'
+          break
+        case 'UNKNOWN':
+          console.error(new Date(), 'app/Controllers/Http/DashboardController.ts show')
+          console.error(err)
           break
       }
       return response.status(status).send(failure)

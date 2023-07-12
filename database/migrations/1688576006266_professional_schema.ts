@@ -20,6 +20,7 @@ export default class ProfessionalSchema extends BaseSchema {
       table
         .integer('user_id')
         .unsigned()
+        .unique()
         .references('id')
         .inTable('users')
         .onUpdate('CASCADE')

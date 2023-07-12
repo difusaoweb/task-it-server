@@ -72,7 +72,7 @@ export default class Professional extends CustomBaseModel {
   public maritalStatusId: number | null
 
   @column()
-  public jobTypeId: number | null
+  public employmentRegimeId: number | null
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
@@ -81,19 +81,24 @@ export default class Professional extends CustomBaseModel {
   public updatedAt: DateTime | null
 
   @manyToMany(() => Skill, {
-    pivotTable: 'skills_professional',
-    pivotForeignKey: 'profissional_id',
-    pivotRelatedForeignKey: 'skill_id'
+    localKey: 'id',
+    pivotForeignKey: 'professional_id',
+    relatedKey: 'id',
+    pivotRelatedForeignKey: 'skill_id',
+    pivotTable: 'skill_professional',
+    pivotTimestamps: true
   })
   public skills: ManyToMany<typeof Skill>
 
   @hasMany(() => CoursesOfProfessional, {
-    foreignKey: 'professional_id'
+    localKey: 'id',
+    foreignKey: 'professionalId'
   })
   public courses: HasMany<typeof CoursesOfProfessional>
 
   @hasMany(() => ExperiencesOfProfessional, {
-    foreignKey: 'professional_id'
+    localKey: 'id',
+    foreignKey: 'professionalId'
   })
   public experiences: HasMany<typeof ExperiencesOfProfessional>
 }

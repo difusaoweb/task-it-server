@@ -5,6 +5,9 @@ import Database from '@ioc:Adonis/Lucid/Database'
 import Hash from '@ioc:Adonis/Core/Hash'
 import { Exception } from '@adonisjs/core/build/standalone'
 
+import Professional from 'App/Models/Professional'
+import CustomBaseModel from 'App/Models/CustomBaseModel'
+
 export default class CurriculumController {
   public async index({ request, response }: HttpContextContract) {
     const controllerSchema = schema.create({
@@ -59,31 +62,169 @@ export default class CurriculumController {
     }
   }
 
-  public async show({ request, response }: HttpContextContract) {
+  public async show({ auth, request, response }: HttpContextContract) {
     const controllerSchema = schema.create({
-      id: schema.number()
+      curriculumId: schema.number.optional()
     })
     try {
-      const { id } = await request.validate({
+      let { curriculumId } = await request.validate({
         schema: controllerSchema
       })
-      const curricula = await Database.from('professionals')
+
+      if (curriculumId === undefined) {
+        const user = auth.use('api').user
+        if (user === undefined) {
+          throw new Exception('', 403, 'TOKEN_USER_INVALID')
+        }
+
+        const professional = await Professional.findBy('user_id', user.id)
+        if (professional === null) {
+          throw new Exception('', 404, 'PROFESSIONAL_NOT_FOUND')
+        }
+
+        curriculumId = professional.id
+      }
+
+      const professional = await Database.from('professional')
         .select(
           'professionals.*',
-          'cities.title as city',
-          'states.letter as uf',
-          'desired_jobs.title_function as jobName'
+          'cities.title as cityTitle',
+          'educational_levels.title as educational_levels.title',
+          'job_workloads.title as jobWorkloadTitle',
+          'desired_jobs.title_function as vagaDesejada',
+          'sexes.title as sexo',
+          'marital_statuses.title as stateCivil'
         )
-        .leftJoin('cities', 'professionals.city_id', 'cities.id')
-        .leftJoin('states', 'cities.state_id', 'states.id')
-        .leftJoin('desired_jobs', 'desired_jobs.id', 'professionals.desired_job_id')
+        .innerJoin('cities', 'professionals.city_id', 'cities.id')
+        .innerJoin('educational_levels', 'educational_levels.id', 'professionals.escolaridade_id')
+        .leftJoin('area_professional', 'professionals.area_atuacao_id', 'job_workloads.id')
+        .innerJoin('vaga_desejadas', 'professionals.vaga_desejada_id', 'vaga_desejadas.id')
+        .innerJoin('sexos', 'professionals.sexo_id', 'sexes.id')
+        .innerJoin('marital_statuses', 'professionals.marital_status_id', 'marital_statuses.id')
+        .where('professionals.id', curriculumId)
 
-      return curricula
+      console.log(professional)
+
+      const skills = await Database.from('skills_professional as hp')
+        .select('h.*')
+        .innerJoin('skills as h', 'h.id', 'hp.skill_id')
+        .where('hp.professional_id', curriculumId)
+
+      const experiences = await Database.from('experiences_of_professional as ep')
+        .select('ep.business', 'ep.start_date', 'ep.end_date', 'ep.current', 'ep.role')
+        .where('ep.professional_id', curriculumId)
+
+      const courses = await Database.from('courses_of_professional as cs')
+        .select('cs.institution', 'cs.start_date', 'cs.end_date', 'cs.course')
+        .where('cs.professional_id', curriculumId)
+
+      return response.send({
+        professional: professional.length === 0 ? {} : professional[0],
+        skills,
+        experiences,
+        courses
+      })
     } catch (err: any) {
+      // console.error(err)
       let status = 500
       let failure: any = { code: 'UNKNOWN' }
-      switch (err.code) {
-        default:
+      if (err.code) {
+        failure.code = err.code
+      }
+      switch (failure.code) {
+        case 'UNKNOWN':
+          console.error(err)
+          break
+      }
+      return response.status(status).send(failure)
+    }
+  }
+
+  public async showDashboard({ auth, request, response }: HttpContextContract) {
+    try {
+      const user = auth.use('api').user
+      if (user === undefined) {
+        throw new Exception('', 403, 'TOKEN_USER_INVALID')
+      }
+
+      const professional = await Professional.findBy('user_id', user.id)
+      if (professional === null) {
+        throw new Exception('', 404, 'PROFESSIONAL_NOT_FOUND')
+      }
+
+      const curriculum = await Database.from('professionals')
+        .select(
+          'professionals.*',
+          'cities.id as cityId',
+          'cities.title as cityTitle',
+          'educational_levels.id as educationalLevelId',
+          'educational_levels.title as educationalLevelTitle',
+          'marital_statuses.id as maritalStatusId',
+          'marital_statuses.title as maritalStatusTitle',
+          'sexes.id as sexId',
+          'sexes.title as sexTitle',
+          'employment_regimes.id as employmentRegimeId',
+          'employment_regimes.title as employmentRegimeTitle',
+          'job_workloads.id as jobWorkloadId',
+          'job_workloads.title as jobWorkloadTitle',
+          'desired_jobs.id as desiredJobId',
+          'desired_jobs.title_function as desiredJobTitle'
+        )
+        .innerJoin('cities', 'cities.id', 'professionals.city_id')
+        .innerJoin(
+          'educational_levels',
+          'educational_levels.id',
+          'professionals.educational_level_id'
+        )
+        .innerJoin('marital_statuses', 'marital_statuses.id', 'professionals.marital_status_id')
+        .innerJoin('sexes', 'sexes.id', 'professionals.sex_id')
+        .innerJoin(
+          'employment_regimes',
+          'employment_regimes.id',
+          'professionals.employment_regime_id'
+        )
+        .leftJoin('job_workloads', 'job_workloads.id', 'professionals.job_workload_id')
+        .innerJoin('desired_jobs', 'desired_jobs.id', 'professionals.desired_job_id')
+        .where('professionals.id', professional.id)
+
+      await professional.load('skills')
+      await professional.load('courses')
+      await professional.load('experiences')
+
+      // const skills = await Database.from('skills_professional as hp')
+      //   .select('h.*')
+      //   .innerJoin('skills as h', 'h.id', 'hp.skill_id')
+      //   .where('hp.professional_id', professional.id)
+
+      // const experiences = await Database.from('experiences_of_professional as ep')
+      //   .select('ep.business', 'ep.start_date', 'ep.end_date', 'ep.current', 'ep.role')
+      //   .where('ep.professional_id', professional.id)
+
+      // const courses = await Database.from('courses_of_professional as cs')
+      //   .select('cs.institution', 'cs.start_date', 'cs.end_date', 'cs.course')
+      //   .where('cs.professional_id', professional.id)
+
+      return response.send({
+        professional: curriculum.length === 0 ? {} : curriculum[0],
+        skills: professional.skills,
+        experiences: professional.experiences,
+        courses: professional.courses
+      })
+    } catch (err: any) {
+      console.error(err)
+      let status = 500
+      let failure: any = { code: 'UNKNOWN' }
+      if (err.code) {
+        failure.code = err.code
+      }
+      switch (failure.code) {
+        case 'TOKEN_USER_INVALID':
+          status = 403
+          break
+        case 'PROFESSIONAL_NOT_FOUND':
+          status = 404
+          break
+        case 'UNKNOWN':
           console.error(err)
           break
       }

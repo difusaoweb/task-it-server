@@ -33,6 +33,7 @@ import './routes/MaritalStatus'
 import './routes/EducationalLevel'
 import './routes/EmploymentRegime'
 import './routes/PaymentType'
+import './routes/Apply'
 
 Route.get('/', 'DadosCadastroController.index')
 Route.get('/porte_empresa', 'CompanySizeController.index')
@@ -48,7 +49,6 @@ Route.post('/pesquisaSalario', 'SalarySurveyController.store')
 Route.get('/vagas_empresa', 'VagasEmpresaController.index')
 
 // Route.resource('search_vaga', 'SearchVagaController').apiOnly()
-// Route.resource('apply_vaga', 'ApplyVagaController').apiOnly()
 // Route.get('empresa_vaga/:id', 'EmpresaVagaController.show')
 
 // Route.resource('business', 'BusinessController').apiOnly()

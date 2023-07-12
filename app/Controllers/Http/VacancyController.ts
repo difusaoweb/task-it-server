@@ -146,7 +146,7 @@ export default class VacancyController {
         .where('vacancies.id', id)
         .orderBy('vacancies.id', 'desc')
 
-      return response.send(vaga)
+      return response.send(vaga[0])
     } catch (err: any) {
       let status = 500
       let failure: any = { code: 'UNKNOWN' }

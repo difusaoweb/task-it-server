@@ -33,15 +33,15 @@ export default class ProfessionalController {
           'educational_levels.title as escolaridade',
           'job_workloads.title as jobWorkloadTitle',
           'desired_jobs.title_function as vagaDesejada',
-          'sexos.title as sexo',
-          'state_civils.title as stateCivil'
+          'sexes.title as sexo',
+          'marital_statuses.title as stateCivil'
         )
         .innerJoin('cities', 'professionals.city_id', 'cities.id')
         .innerJoin('educational_levels', 'educational_levels.id', 'professionals.escolaridade_id')
         .leftJoin('area_professional', 'professionals.area_atuacao_id', 'job_workloads.id')
         .innerJoin('vaga_desejadas', 'professionals.vaga_desejada_id', 'vaga_desejadas.id')
-        .innerJoin('sexos', 'professionals.sexo_id', 'sexos.id')
-        .innerJoin('state_civils', 'professionals.state_civil_id', 'state_civils.id')
+        .innerJoin('sexos', 'professionals.sexo_id', 'sexes.id')
+        .innerJoin('marital_statuses', 'professionals.marital_status_id', 'marital_statuses.id')
         .where('professionals.id', user.id)
 
       console.log(professional)
@@ -49,15 +49,15 @@ export default class ProfessionalController {
       const skills = await Database.from('skills_professional as hp')
         .select('h.*')
         .innerJoin('skills as h', 'h.id', 'hp.skill_id')
-        .where('hp.profissional_id', user.id)
+        .where('hp.professional_id', user.id)
 
-      const experiences = await Database.from('experiencias_professional as ep')
-        .select('ep.empresa', 'ep.dataEntrada', 'ep.dataSaida', 'ep.atual', 'ep.funcao')
-        .where('ep.profissional_id', user.id)
+      const experiences = await Database.from('experiences_of_professional as ep')
+        .select('ep.business', 'ep.start_date', 'ep.end_date', 'ep.current', 'ep.role')
+        .where('ep.professional_id', user.id)
 
-      const courses = await Database.from('cursos_extras_professional as cs')
-        .select('cs.instituicao', 'cs.dataInicio', 'cs.dataTermino', 'cs.curso')
-        .where('cs.profissional_id', user.id)
+      const courses = await Database.from('courses_of_professional as cs')
+        .select('cs.institution', 'cs.start_date', 'cs.end_date', 'cs.course')
+        .where('cs.professional_id', user.id)
 
       return {
         professional: professional.length === 0 ? {} : professional[0],
@@ -85,7 +85,7 @@ export default class ProfessionalController {
       haveALicense: schema.boolean(),
       maritalStatusId: schema.number.nullable(),
       sexId: schema.number.nullable(),
-      jobTypeId: schema.number.nullable(),
+      employmentRegimeId: schema.number.nullable(),
       address: schema.string(),
       addressReference: schema.string.nullable(),
       phoneNumber: schema.string(),
@@ -126,7 +126,7 @@ export default class ProfessionalController {
         haveALicense,
         maritalStatusId,
         sexId,
-        jobTypeId,
+        employmentRegimeId,
         address,
         addressReference,
         phoneNumber,
@@ -179,19 +179,19 @@ export default class ProfessionalController {
         haveALicense,
         languages,
         sexId,
-        jobTypeId,
+        employmentRegimeId,
         maritalStatusId
       })
 
       if (skillsId !== null) {
         skillsId.map(async (skillId) => {
-          await professionals.related('skills').attach([skillId])
+          await professional.related('skills').attach([skillId])
         })
       }
 
       if (courses !== null) {
         courses.map(async (course) => {
-          await professionals.related('courses').createMany([
+          await professional.related('courses').createMany([
             {
               ...course,
               startDate: DateTime.fromISO(course.startDate),
@@ -203,7 +203,7 @@ export default class ProfessionalController {
 
       if (experiences !== null) {
         experiences.map(async (course) => {
-          await professionals.related('experiences').createMany([
+          await professional.related('experiences').createMany([
             {
               ...course,
               startDate: DateTime.fromISO(course.startDate),
@@ -278,10 +278,11 @@ export default class ProfessionalController {
       //   }
 
       // return professional
-      return 'ok.'
-    } catch (err) {
+      return response.send({ professionalId: professional.id })
+    } catch (err: any) {
+      console.error(err)
       let status = 500
-      let failure = { code: 'UNKNOWN' }
+      let failure: any = { code: 'UNKNOWN' }
       switch (err.code) {
         case 'E_VALIDATION_FAILURE':
           status = 403
@@ -325,7 +326,7 @@ export default class ProfessionalController {
   //     'sexo_id',
   //     'temFilhos',
   //     'regime',
-  //     'state_civil_id'
+  //     'marital_status_id'
   //   ])
 
   //   const profissional = await Profissional.findOrFail(params.id)
