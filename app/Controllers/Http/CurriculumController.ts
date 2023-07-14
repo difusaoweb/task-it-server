@@ -6,7 +6,6 @@ import Hash from '@ioc:Adonis/Core/Hash'
 import { Exception } from '@adonisjs/core/build/standalone'
 
 import Professional from 'App/Models/Professional'
-import CustomBaseModel from 'App/Models/CustomBaseModel'
 
 export default class CurriculumController {
   public async index({ request, response }: HttpContextContract) {
