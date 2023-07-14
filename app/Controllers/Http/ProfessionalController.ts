@@ -12,12 +12,12 @@ import Skill from 'App/Models/Skill'
 // const JobAvisoCadCurriculo = use('App/Jobs/CreateCurriculoMail')
 
 export default class ProfessionalController {
-  public async index({ auth, request, response }: HttpContextContract) {
+  public async index() {
     const professionals = await Professional.all()
     return professionals
   }
 
-  public async show({ auth, request, response }: HttpContextContract) {
+  public async show({ auth, response }: HttpContextContract) {
     try {
       await auth.use('api').check()
 

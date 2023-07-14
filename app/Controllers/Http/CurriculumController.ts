@@ -1,8 +1,6 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schema } from '@ioc:Adonis/Core/Validator'
-import { DateTime } from 'luxon'
 import Database from '@ioc:Adonis/Lucid/Database'
-import Hash from '@ioc:Adonis/Core/Hash'
 import { Exception } from '@adonisjs/core/build/standalone'
 
 import Professional from 'App/Models/Professional'
@@ -139,7 +137,7 @@ export default class CurriculumController {
     }
   }
 
-  public async showDashboard({ auth, request, response }: HttpContextContract) {
+  public async showDashboard({ auth, response }: HttpContextContract) {
     try {
       const user = auth.use('api').user
       if (user === undefined) {

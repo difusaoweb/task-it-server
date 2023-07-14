@@ -2,7 +2,6 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Database from '@ioc:Adonis/Lucid/Database'
 import { Exception } from '@adonisjs/core/build/standalone'
 import Professional from 'App/Models/Professional'
-import Business from 'App/Models/Business'
 
 export default class DashboardController {
   public async show({ auth, response }: HttpContextContract) {

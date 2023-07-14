@@ -73,7 +73,7 @@ export default class BusinessController {
     }
   }
 
-  public async showDashboard({ auth, request, response }: HttpContextContract) {
+  public async showDashboard({ auth, response }: HttpContextContract) {
     try {
       const user = auth.use('api').user
       if (user === undefined) {

@@ -99,7 +99,7 @@ export default class VacancyController {
     }
   }
 
-  public async last({ request, response }: HttpContextContract) {
+  public async last({ response }: HttpContextContract) {
     try {
       const vacancies = await Database.from('vacancies')
         .select(
@@ -232,7 +232,7 @@ export default class VacancyController {
     }
   }
 
-  public async indexBusinessRegistered({ auth, request, response }) {
+  public async indexBusinessRegistered({ auth, response }) {
     try {
       const user = auth.use('api').user
       if (user === undefined) {
@@ -349,7 +349,7 @@ export default class VacancyController {
     }
   }
 
-  public async showDashboard({ auth, request, response }) {
+  public async showDashboard({ request, response }) {
     const controllerSchema = schema.create({
       id: schema.number()
     })

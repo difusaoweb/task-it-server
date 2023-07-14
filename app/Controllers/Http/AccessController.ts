@@ -254,8 +254,8 @@ export default class AccessController {
         email: string
         isInvited: boolean
         asActiveInvite: boolean
-        professionalId: number | null
-        businessId: number | null
+        professionalId?: number | null
+        businessId?: number | null
         cityId: number | null
         profileId: number | null
       }
@@ -279,9 +279,9 @@ export default class AccessController {
       returnUser = returnUser[0]
 
       returnUser.profileId =
-        returnUser.businessId !== null
+        returnUser.businessId !== undefined && returnUser.businessId !== null
           ? returnUser.businessId
-          : returnUser.professionalId !== null
+          : returnUser.professionalId !== undefined && returnUser.professionalId !== null
           ? returnUser.professionalId
           : null
 
