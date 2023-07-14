@@ -1,6 +1,7 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Database from '@ioc:Adonis/Lucid/Database'
 import { schema } from '@ioc:Adonis/Core/Validator'
+import { Exception } from '@adonisjs/core/build/standalone'
 
 import Vacancy from 'App/Models/Vacancy'
 import Business from 'App/Models/Business'
@@ -82,71 +83,6 @@ export default class VacancyController {
 
       const returnDb = await vaga.paginate(page, perPage)
       return response.send(returnDb)
-    } catch (err: any) {
-      let status = 500
-      let failure: any = { code: 'UNKNOWN' }
-      switch (err.code) {
-        case 'E_VALIDATION_FAILURE':
-          status = 403
-          failure.code = 'INVALID_PARAMETERS'
-          break
-        default:
-          console.error(err)
-          break
-      }
-      return response.status(status).send(failure)
-    }
-  }
-
-  public async show({ request, response }) {
-    const controllerSchema = schema.create({
-      id: schema.number()
-    })
-    try {
-      const { id } = await request.validate({ schema: controllerSchema })
-      const vaga = await Database.from('vacancies')
-        .select(
-          'vacancies.id',
-          'businesses.company_name as businessCompanyName',
-          'company_sizes.title as companySizeTitle',
-          'business_categories.title as businessCategoryTitle',
-          'businesses.address as businessAddress',
-          'businesses.business_phone as businessPhone',
-          'businesses.description',
-          'vacancies.title',
-          'desired_jobs.title_function as desiredJobTitleFunction',
-          'vacancies.job_description as jobDescription',
-          'employment_regimes.title as employmentRegimeTitle',
-          'vacancies.requirements',
-          'job_workloads.title as jobWorkloadTitle',
-          'educational_levels.title as educationalLevelTitle',
-          'payment_types.title as paymentTypeTitle',
-          'vacancies.salary_value as salaryValue',
-          'vacancies.commission',
-          'cities.title as cityTitle',
-          'states.letter as stateAbbreviation',
-          'vacancies.workload',
-          'vacancies.benefits',
-          'vacancies.address'
-        )
-        .leftJoin('businesses', 'businesses.id', 'vacancies.business_id')
-        .leftJoin('company_sizes', 'company_sizes.id', 'businesses.company_size_id')
-        .leftJoin(
-          'business_categories',
-          'business_categories.id',
-          'businesses.business_category_id'
-        )
-        .leftJoin('desired_jobs', 'desired_jobs.id', 'vacancies.job_id')
-        .leftJoin('employment_regimes', 'employment_regimes.id', 'vacancies.employment_regime_id')
-        .leftJoin('job_workloads', 'job_workloads.id', 'vacancies.job_workload_id')
-        .leftJoin('educational_levels', 'educational_levels.id', 'vacancies.educational_level_id')
-        .leftJoin('payment_types', 'payment_types.id', 'vacancies.payment_type_id')
-        .leftJoin('cities', 'cities.id', 'vacancies.city_id')
-        .leftJoin('states', 'states.id', 'cities.state_id')
-        .where('vacancies.id', id)
-        .orderBy('vacancies.id', 'desc')
-
-      return response.send(vaga[0])
     } catch (err: any) {
       let status = 500
       let failure: any = { code: 'UNKNOWN' }
@@ -248,6 +184,244 @@ export default class VacancyController {
   //     return response.status(status).send(failure)
   //   }
   // }
+
+  public async indexBusinessApplied({ auth, response }: HttpContextContract) {
+    try {
+      const user = auth.use('api').user
+      if (user === undefined) {
+        throw new Exception('', 403, 'TOKEN_USER_INVALID')
+      }
+
+      const business = await Business.findByOrFail('user_id', user.id)
+
+      const returnDb = await Database.from('applies')
+        .select(
+          'applies.id',
+          'vacancies.title as vacancyTitle',
+          'cities.title as cityTitle',
+          'states.letter as stateAbbreviation',
+          'job_workloads.title as jobWorkloadTitle',
+          'vacancies.payment_type_id as paymentTypeId',
+          'applies.vacancy_id as vacancyId',
+          'applies.candidate_id as candidateId',
+          'professionals.name as professionalName'
+        )
+        .innerJoin('vacancies', 'vacancies.id', 'applies.vacancy_id')
+        .innerJoin('professionals', 'professionals.id', 'applies.candidate_id')
+        .innerJoin('cities', 'cities.id', 'professionals.city_id')
+        .innerJoin('states', 'states.id', 'cities.state_id')
+        .innerJoin('businesses', 'businesses.id', 'vacancies.business_id')
+        .innerJoin('job_workloads', 'job_workloads.id', 'vacancies.job_workload_id')
+        .innerJoin('users', 'users.id', 'businesses.user_id')
+        .where('businesses.id', business.id)
+
+      return returnDb
+    } catch (err: any) {
+      let status = 500
+      let failure: any = { code: 'UNKNOWN' }
+      switch (err.code) {
+        case 'TOKEN_USER_INVALID':
+          status = err.status
+          failure.code = err.code
+          break
+        default:
+          console.error(err)
+          break
+      }
+      return response.status(status).send(failure)
+    }
+  }
+
+  public async indexBusinessRegistered({ auth, request, response }) {
+    try {
+      const user = auth.use('api').user
+      if (user === undefined) {
+        throw new Error('TOKEN_USER_INVALID')
+      }
+
+      const business = await Business.findBy('user_id', user.id)
+      if (business === null) {
+        throw new Exception('', 404, 'BUSINESS_NOT_FOUND')
+      }
+
+      const vacancies = await Database.from('vacancies')
+        .select(
+          'vacancies.id',
+          'vacancies.title',
+          'cities.title as cityTitle',
+          'states.letter as stateAbbreviation'
+        )
+        .innerJoin('cities', 'cities.id', 'vacancies.city_id')
+        .innerJoin('states', 'states.id', 'cities.state_id')
+        .where('vacancies.business_id', business.id)
+        .orderBy('vacancies.id', 'desc')
+
+      return response.send(vacancies)
+    } catch (err: any) {
+      let status = 500
+      let failure: any = { code: 'UNKNOWN' }
+      if (err.code) {
+        failure.code = err.code
+      }
+
+      switch (failure.code) {
+        case 'BUSINESS_NOT_FOUND':
+          status = err.status
+        case 'UNKNOWN':
+          console.error(err)
+        default:
+          console.error(err)
+          break
+      }
+      return response.status(status).send(failure)
+    }
+  }
+
+  public async show({ request, response }) {
+    const controllerSchema = schema.create({
+      id: schema.number()
+    })
+    try {
+      const { id } = await request.validate({ schema: controllerSchema })
+      const vaga = await Database.from('vacancies')
+        .select(
+          'vacancies.id',
+          'businesses.company_name as businessCompanyName',
+          'company_sizes.title as companySizeTitle',
+          'business_categories.title as businessCategoryTitle',
+          'businesses.address as businessAddress',
+          'businesses.business_phone as businessPhone',
+          'businesses.description',
+          'vacancies.title',
+          'desired_jobs.title_function as desiredJobTitleFunction',
+          'vacancies.job_description as jobDescription',
+          'employment_regimes.title as employmentRegimeTitle',
+          'vacancies.requirements',
+          'job_workloads.title as jobWorkloadTitle',
+          'educational_levels.title as educationalLevelTitle',
+          'payment_types.title as paymentTypeTitle',
+          'vacancies.salary_value as salaryValue',
+          'vacancies.commission',
+          'cities.title as cityTitle',
+          'states.letter as stateAbbreviation',
+          'vacancies.workload',
+          'vacancies.benefits',
+          'vacancies.address'
+        )
+        .leftJoin('businesses', 'businesses.id', 'vacancies.business_id')
+        .leftJoin('company_sizes', 'company_sizes.id', 'businesses.company_size_id')
+        .leftJoin(
+          'business_categories',
+          'business_categories.id',
+          'businesses.business_category_id'
+        )
+        .leftJoin('desired_jobs', 'desired_jobs.id', 'vacancies.job_id')
+        .leftJoin('employment_regimes', 'employment_regimes.id', 'vacancies.employment_regime_id')
+        .leftJoin('job_workloads', 'job_workloads.id', 'vacancies.job_workload_id')
+        .leftJoin('educational_levels', 'educational_levels.id', 'vacancies.educational_level_id')
+        .leftJoin('payment_types', 'payment_types.id', 'vacancies.payment_type_id')
+        .leftJoin('cities', 'cities.id', 'vacancies.city_id')
+        .leftJoin('states', 'states.id', 'cities.state_id')
+        .where('vacancies.id', id)
+        .orderBy('vacancies.id', 'desc')
+      if (vaga.length === 0) {
+        throw new Exception('', 404, 'VACANCY_NOT_FOUND')
+      }
+
+      return response.send(vaga[0])
+    } catch (err: any) {
+      let status = 500
+      let failure: any = { code: 'UNKNOWN' }
+      switch (err.code) {
+        case 'E_VALIDATION_FAILURE':
+          status = 403
+          failure.code = 'INVALID_PARAMETERS'
+          break
+        case 'VACANCY_NOT_FOUND':
+          status = err.status
+          failure.code = err.code
+          break
+        default:
+          console.error(err)
+          break
+      }
+      return response.status(status).send(failure)
+    }
+  }
+
+  public async showDashboard({ auth, request, response }) {
+    const controllerSchema = schema.create({
+      id: schema.number()
+    })
+    try {
+      const { id } = await request.validate({ schema: controllerSchema })
+
+      const vaga = await Database.from('vacancies')
+        .select(
+          'vacancies.id',
+          'businesses.company_name as businessCompanyName',
+          'company_sizes.title as companySizeTitle',
+          'business_categories.title as businessCategoryTitle',
+          'businesses.address as businessAddress',
+          'businesses.business_phone as businessPhone',
+          'businesses.description',
+          'vacancies.title',
+          'desired_jobs.title_function as desiredJobTitleFunction',
+          'vacancies.job_description as jobDescription',
+          'employment_regimes.title as employmentRegimeTitle',
+          'vacancies.requirements',
+          'job_workloads.title as jobWorkloadTitle',
+          'educational_levels.title as educationalLevelTitle',
+          'payment_types.title as paymentTypeTitle',
+          'vacancies.salary_value as salaryValue',
+          'vacancies.commission',
+          'cities.title as cityTitle',
+          'states.letter as stateAbbreviation',
+          'vacancies.workload',
+          'vacancies.benefits',
+          'vacancies.address'
+        )
+        .leftJoin('businesses', 'businesses.id', 'vacancies.business_id')
+        .leftJoin('company_sizes', 'company_sizes.id', 'businesses.company_size_id')
+        .leftJoin(
+          'business_categories',
+          'business_categories.id',
+          'businesses.business_category_id'
+        )
+        .leftJoin('desired_jobs', 'desired_jobs.id', 'vacancies.job_id')
+        .leftJoin('employment_regimes', 'employment_regimes.id', 'vacancies.employment_regime_id')
+        .leftJoin('job_workloads', 'job_workloads.id', 'vacancies.job_workload_id')
+        .leftJoin('educational_levels', 'educational_levels.id', 'vacancies.educational_level_id')
+        .leftJoin('payment_types', 'payment_types.id', 'vacancies.payment_type_id')
+        .leftJoin('cities', 'cities.id', 'vacancies.city_id')
+        .leftJoin('states', 'states.id', 'cities.state_id')
+        .where('vacancies.id', id)
+        .orderBy('vacancies.id', 'desc')
+      if (vaga.length === 0) {
+        throw new Exception('', 404, 'VACANCY_NOT_FOUND')
+      }
+
+      return response.send(vaga[0])
+    } catch (err: any) {
+      console.error(err)
+      let status = 500
+      let failure: any = { code: 'UNKNOWN' }
+      switch (err.code) {
+        case 'E_VALIDATION_FAILURE':
+          status = 403
+          failure.code = 'INVALID_PARAMETERS'
+          break
+        case 'VACANCY_NOT_FOUND':
+          status = err.status
+          failure.code = err.code
+          break
+        default:
+          console.error(err)
+          break
+      }
+      return response.status(status).send(failure)
+    }
+  }
 
   public async store({ auth, request, response }: HttpContextContract) {
     const controllerSchema = schema.create({

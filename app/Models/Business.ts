@@ -34,7 +34,7 @@ export default class Business extends CustomBaseModel {
   public companySizeId: number | null
 
   @column()
-  public businessCategoryIdId: number | null
+  public businessCategoryId: number | null
 
   @column()
   public cityId: number | null

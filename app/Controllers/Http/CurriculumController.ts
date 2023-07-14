@@ -24,14 +24,14 @@ export default class CurriculumController {
       const curricula = Database.from('professionals')
         .select(
           'professionals.*',
-          'cities.title as city',
-          'states.letter as uf',
-          'desired_jobs.title_function as jobName'
+          'cities.title as cityTitle',
+          'states.letter as stateAbbreviation',
+          'desired_jobs.title_function as desiredJobTitleFunction'
         )
         .innerJoin('cities', 'cities.id', 'professionals.city_id')
         .innerJoin('states', 'states.id', 'cities.state_id')
         .innerJoin('desired_jobs', 'desired_jobs.id', 'professionals.desired_job_id')
-      // .forPage(page, 10)
+        .forPage(page, 10)
 
       if (desiredJobId) {
         curricula.where('professionals.desired_job_id', desiredJobId)

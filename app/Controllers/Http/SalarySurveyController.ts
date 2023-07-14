@@ -2,7 +2,7 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schema } from '@ioc:Adonis/Core/Validator'
 
 import SalarySurvey from 'App/Models/SalarySurvey'
-import CargosSalarySurvey from 'App/Models/CargosSalarySurvey'
+import RolesSalarySurvey from 'App/Models/RolesSalarySurvey'
 
 export default class SalarySurveyController {
   public async store({ request, response }: HttpContextContract) {
@@ -73,7 +73,7 @@ export default class SalarySurveyController {
         return dados
       })
 
-      const cargosPesquisa = await CargosSalarySurvey.createMany(cargosSalarySurvey)
+      const cargosPesquisa = await RolesSalarySurvey.createMany(cargosSalarySurvey)
 
       const returnResonse = {
         pesquisaSalario,

@@ -34,6 +34,7 @@ import './routes/EducationalLevel'
 import './routes/EmploymentRegime'
 import './routes/PaymentType'
 import './routes/Apply'
+import './routes/Business'
 
 Route.get('/', 'DadosCadastroController.index')
 Route.get('/porte_empresa', 'CompanySizeController.index')

@@ -13,17 +13,17 @@ import Professional from 'App/Models/Professional'
 import Business from 'App/Models/Business'
 
 export default class ApplyController {
-  public async index() {
-    const applyVaga = await Apply.all()
+  // public async index() {
+  //   const applyVaga = await Apply.all()
 
-    return applyVaga
-  }
+  //   return applyVaga
+  // }
 
-  public async show({ auth, request, response }: HttpContextContract) {
-    const apply = await Apply.findOrFail(params.id)
+  // public async show({ auth, request, response }: HttpContextContract) {
+  //   const apply = await Apply.findOrFail(params.id)
 
-    return apply
-  }
+  //   return apply
+  // }
 
   public async store({ auth, request, response }: HttpContextContract) {
     const controllerSchema = schema.create({
@@ -86,21 +86,21 @@ export default class ApplyController {
     }
   }
 
-  public async update({ auth, request, response }: HttpContextContract) {
-    const data = request.only(['vaga_id', 'cadidato_id'])
+  // public async update({ auth, request, response }: HttpContextContract) {
+  //   const data = request.only(['vaga_id', 'cadidato_id'])
 
-    const apply = await Apply.findOrFail(params.id)
+  //   const apply = await Apply.findOrFail(params.id)
 
-    apply.merge(data)
+  //   apply.merge(data)
 
-    await apply.save()
+  //   await apply.save()
 
-    return apply
-  }
+  //   return apply
+  // }
 
-  public async destroy({ auth, request, response }: HttpContextContract) {
-    const apply = await Apply.findOrFail(params.id)
+  // public async destroy({ auth, request, response }: HttpContextContract) {
+  //   const apply = await Apply.findOrFail(params.id)
 
-    apply.delete()
-  }
+  //   apply.delete()
+  // }
 }
