@@ -27,5 +27,7 @@ export default Env.rules({
   PG_PASSWORD: Env.schema.string.optional(),
   PG_DB_NAME: Env.schema.string(),
   DB_CONNECTION: Env.schema.string(),
-  HASH_DRIVER: Env.schema.enum(['scrypt', 'bcrypt', 'argon'] as const)
+  HASH_DRIVER: Env.schema.enum(['scrypt', 'bcrypt', 'argon'] as const),
+	MAILGUN_API_KEY: Env.schema.string(),
+	MAILGUN_DOMAIN: Env.schema.string({ format: 'host' })
 })
