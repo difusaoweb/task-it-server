@@ -18,7 +18,7 @@ export default mailConfig({
   | a mailer
   |
   */
-  mailer: 'mailgun',
+  mailer: Env.get('MAIL_DRIVER', 'smtp'),
 
   /*
   |--------------------------------------------------------------------------
@@ -34,6 +34,24 @@ export default mailConfig({
   |
   */
   mailers: {
+    /*
+    |--------------------------------------------------------------------------
+    | Smtp
+    |--------------------------------------------------------------------------
+    |
+    | Uses SMTP protocol for sending email
+    |
+    */
+    smtp: {
+      driver: 'smtp',
+      host: Env.get('SMTP_HOST'),
+      port: Env.get('SMTP_PORT'),
+			auth: {
+				user: Env.get('SMTP_USERNAME'),
+				pass: Env.get('SMTP_PASSWORD'),
+				type: 'login',
+			}
+    },
 
     /*
     |--------------------------------------------------------------------------

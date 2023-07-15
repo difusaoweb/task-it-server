@@ -149,26 +149,41 @@ export default class AccessController {
     }
   }
 
-  public async checkEmailValidation({ auth, response }: HttpContextContract) {
+  public async checkEmailValidation({ auth, request, response }: HttpContextContract) {
+    const controllerSchema = schema.create({
+      noReply: schema.boolean.optional()
+    })
     try {
+      const { noReply } = await request.validate({
+        schema: controllerSchema
+      })
+
       await auth.use('api').check()
       const user = await auth.use('api').user
       if (user === undefined) {
-        throw new Exception('', 403, 'TOKEN_USER_INVALID')
+        throw new Exception('', 403, 'TOKEN_INVALID_OR_ACCOUNT_ALREADY_ACTIVATED')
       }
       if (user.validated) {
-        throw new Exception('', 401, 'ACCOUNT_ALREADY_ACTIVATED')
+				return response.status(200).send({ validated: true, typeUser: user.type })
       }
 
       const tokenContractObj = await auth.use('api').token
       if (tokenContractObj === undefined) {
-        throw new Exception('', 403, 'TOKEN_USER_INVALID')
+        throw new Exception('', 403, 'TOKEN_INVALID_OR_ACCOUNT_ALREADY_ACTIVATED')
       }
 
       const token = await ApiToken.findOrFail(tokenContractObj.meta.id)
       if (token.name !== 'validate-email') {
         throw new Exception('', 403, 'TOKEN_TYPE_INVALID')
       }
+
+
+			if(noReply !== undefined) {
+				await token.delete()
+				await user.delete()
+
+				return response.status(200).send({ code: 'ACCOUNT_REMOVED' })
+			}
 
       user.validated = true
       await user.save()
@@ -191,29 +206,32 @@ export default class AccessController {
         // )
       }
 
-      token.delete()
+      await token.delete()
 
-      return {
-        validated: user.validated,
-        typeUsr: user.type
-      }
+      return response.status(200).send({
+				validated: true,
+        typeUser: user.type
+      })
     } catch (err: any) {
       let status = 500
       let failure: any = { code: 'UNKNOWN' }
+
+			if(err.code !== undefined) {
+				failure.code = err.code
+			}
+			if(err.status !== undefined) {
+				status = err.status
+			}
+
       switch (err.code) {
-        case 'TOKEN_USER_INVALID':
-          status = err.status
-          failure.code = err.code
-          break
-        case 'ACCOUNT_ALREADY_ACTIVATED':
-          status = err.status
-          failure.code = err.code
+				case 'E_VALIDATION_FAILURE':
+					failure.code = 'INVALID_PARAMETERS'
+        case 'TOKEN_INVALID_OR_ACCOUNT_ALREADY_ACTIVATED':
           break
         case 'TOKEN_TYPE_INVALID':
-          status = err.status
-          failure.code = err.code
           break
-        default:
+        case 'UNKNOWN':
+					console.error(new Date(), 'app/Controllers/Http/AccessController.ts checkEmailValidation')
           console.error(err)
           break
       }
@@ -334,10 +352,20 @@ export default class AccessController {
       response.status(200)
       return response
     } catch (err: any) {
+			// console.error(err)
       let status = 500
       let failure: any = { code: 'UNKNOWN' }
-      switch (err.code) {
-        default:
+
+			if(err.status !== undefined) {
+				status = err.status
+			}
+			if(err.code !== undefined) {
+				failure.code = err.code
+			}
+
+			switch (err.code) {
+        case 'UNKNOWN':
+					console.error(new Date(), 'app/Controllers/Http/AccessController.ts logout')
           console.error(err)
           break
       }
