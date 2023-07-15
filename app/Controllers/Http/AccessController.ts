@@ -69,7 +69,7 @@ export default class AccessController {
             ativo: true,
             typeUsr: user.type
           }),
-          undefined,
+          401,
           'ACCOUNT_ALREADY_ACTIVATED'
         )
       }
@@ -104,25 +104,25 @@ export default class AccessController {
         // )
       }
 
-      return {
+      return response.send({
         msg: 'Email enviado com sucesso!'
-      }
+      })
     } catch (err: any) {
-      // return response.status(401).send({
-      // 	error: {
-      // 		message: 'Conta ja ativada',
-      // 		ativo: true,
-      // 		typeUsr: user.type
-      // 	}
-      // })
+			console.log(err)
 
       let status = 500
       let failure: any = { code: 'UNKNOWN' }
-      switch (err.code) {
+
+			if(err.code !== undefined) {
+				failure.code = err.code
+			}
+			if(err.status !== undefined) {
+				status = err.status
+			}
+
+      switch (failure.code) {
         case 'ACCOUNT_ALREADY_ACTIVATED':
-          status = 404
-          failure.code = 'ACCOUNT_ALREADY_ACTIVATED'
-          const body: any = JSON.parse(err.message)
+					const body: any = JSON.parse(err.message.replace(`${err.code}: `, ''))
           const message: string | null = body?.message ?? null
           if (message !== null) {
             failure.message = message
@@ -136,21 +136,14 @@ export default class AccessController {
             failure.typeUsr = typeUsr
           }
           break
-        case 'INCORRECT_PASSWORD':
-          status = 403
-          failure.code = 'INCORRECT_PASSWORD'
-          break
-        case 'EMAIL_NOT_VALIDATED':
-          status = 403
-          failure.code = 'EMAIL_NOT_VALIDATED'
-          const email: string | null = JSON.parse(err.code)?.email ?? null
-          if (email !== null) {
-            failure.email = email
-          }
-          break
-        default:
+        case 'UNKNOWN':
+					console.error(new Date(), 'app/Controllers/Http/AccessController.ts createEmailValidation')
           console.error(err)
           break
+				default:
+					console.error(new Date(), 'app/Controllers/Http/AccessController.ts createEmailValidation')
+					console.error(err)
+					break
       }
       return response.status(status).send(failure)
     }

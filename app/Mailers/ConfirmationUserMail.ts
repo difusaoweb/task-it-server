@@ -24,7 +24,7 @@ export default class ConfirmationUserMail extends BaseMailer {
           email,
           token,
           link: `${redirectUrl}?token=${token}`,
-          linkNotAutor: `${redirectUrl}?noReply=${email}`
+          linkNotAutor: `${redirectUrl}?token=${token}&noReply`
         })
     }
 
@@ -37,7 +37,7 @@ export default class ConfirmationUserMail extends BaseMailer {
           email,
           token,
           link: `${redirectUrl}?token=${token}`,
-          linkNotAutor: `${redirectUrl}?noReply=${email}`
+          linkNotAutor: `${redirectUrl}?token=${token}&noReply`
         })
     }
   }

@@ -6,7 +6,7 @@ Route.group(() => {
   }).middleware('auth')
   Route.post('/', 'AccessController.login')
   Route.post('/validate', 'AccessController.createEmailValidation')
-  Route.get('/validate', 'AccessController.checkEmailValidation')
+  Route.put('/validate', 'AccessController.checkEmailValidation')
   Route.group(() => {
     Route.delete('/', 'AccessController.logout')
   }).middleware('auth')
