@@ -29,10 +29,10 @@ export default Env.rules({
   DB_CONNECTION: Env.schema.string(),
   HASH_DRIVER: Env.schema.enum(['scrypt', 'bcrypt', 'argon'] as const),
   MAIL_DRIVER: Env.schema.enum(['smtp', 'mailgun'] as const),
-	SMTP_HOST: Env.schema.string.optional({ format: 'host' }),
-	SMTP_PORT: Env.schema.number.optional(),
-	SMTP_USERNAME: Env.schema.string.optional(),
-	SMTP_PASSWORD: Env.schema.string.optional(),
-	MAILGUN_API_KEY: Env.schema.string.optional(),
-	MAILGUN_DOMAIN: Env.schema.string.optional({ format: 'host' })
+  SMTP_HOST: Env.schema.string({ format: 'host' }),
+  SMTP_PORT: Env.schema.number(),
+  SMTP_USERNAME: Env.schema.string(),
+  SMTP_PASSWORD: Env.schema.string(),
+  MAILGUN_API_KEY: Env.schema.string(),
+  MAILGUN_DOMAIN: Env.schema.string({ format: 'host' })
 })
