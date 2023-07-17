@@ -108,21 +108,21 @@ export default class AccessController {
         msg: 'Email enviado com sucesso!'
       })
     } catch (err: any) {
-			console.log(err)
+      console.log(err)
 
       let status = 500
       let failure: any = { code: 'UNKNOWN' }
 
-			if(err.code !== undefined) {
-				failure.code = err.code
-			}
-			if(err.status !== undefined) {
-				status = err.status
-			}
+      if (err.code !== undefined) {
+        failure.code = err.code
+      }
+      if (err.status !== undefined) {
+        status = err.status
+      }
 
       switch (failure.code) {
         case 'ACCOUNT_ALREADY_ACTIVATED':
-					const body: any = JSON.parse(err.message.replace(`${err.code}: `, ''))
+          const body: any = JSON.parse(err.message.replace(`${err.code}: `, ''))
           const message: string | null = body?.message ?? null
           if (message !== null) {
             failure.message = message
@@ -137,13 +137,19 @@ export default class AccessController {
           }
           break
         case 'UNKNOWN':
-					console.error(new Date(), 'app/Controllers/Http/AccessController.ts createEmailValidation')
+          console.error(
+            new Date(),
+            'app/Controllers/Http/AccessController.ts createEmailValidation'
+          )
           console.error(err)
           break
-				default:
-					console.error(new Date(), 'app/Controllers/Http/AccessController.ts createEmailValidation')
-					console.error(err)
-					break
+        default:
+          console.error(
+            new Date(),
+            'app/Controllers/Http/AccessController.ts createEmailValidation'
+          )
+          console.error(err)
+          break
       }
       return response.status(status).send(failure)
     }
@@ -164,7 +170,7 @@ export default class AccessController {
         throw new Exception('', 403, 'TOKEN_INVALID_OR_ACCOUNT_ALREADY_ACTIVATED')
       }
       if (user.validated) {
-				return response.status(200).send({ validated: true, typeUser: user.type })
+        return response.status(200).send({ validated: true, typeUser: user.type })
       }
 
       const tokenContractObj = await auth.use('api').token
@@ -177,13 +183,12 @@ export default class AccessController {
         throw new Exception('', 403, 'TOKEN_TYPE_INVALID')
       }
 
+      if (noReply !== undefined) {
+        await token.delete()
+        await user.delete()
 
-			if(noReply !== undefined) {
-				await token.delete()
-				await user.delete()
-
-				return response.status(200).send({ code: 'ACCOUNT_REMOVED' })
-			}
+        return response.status(200).send({ code: 'ACCOUNT_REMOVED' })
+      }
 
       user.validated = true
       await user.save()
@@ -209,29 +214,30 @@ export default class AccessController {
       await token.delete()
 
       return response.status(200).send({
-				validated: true,
+        validated: true,
         typeUser: user.type
       })
     } catch (err: any) {
       let status = 500
       let failure: any = { code: 'UNKNOWN' }
 
-			if(err.code !== undefined) {
-				failure.code = err.code
-			}
-			if(err.status !== undefined) {
-				status = err.status
-			}
+      if (err.code !== undefined) {
+        failure.code = err.code
+      }
+      if (err.status !== undefined) {
+        status = err.status
+      }
 
       switch (err.code) {
-				case 'E_VALIDATION_FAILURE':
-					failure.code = 'INVALID_PARAMETERS'
+        case 'E_VALIDATION_FAILURE':
+          failure.code = 'INVALID_PARAMETERS'
+          break
         case 'TOKEN_INVALID_OR_ACCOUNT_ALREADY_ACTIVATED':
           break
         case 'TOKEN_TYPE_INVALID':
           break
         case 'UNKNOWN':
-					console.error(new Date(), 'app/Controllers/Http/AccessController.ts checkEmailValidation')
+          console.error(new Date(), 'app/Controllers/Http/AccessController.ts checkEmailValidation')
           console.error(err)
           break
       }
@@ -250,11 +256,11 @@ export default class AccessController {
       const user = await User.findByOrFail('email', email)
 
       if (!(await Hash.verify(user.password, password))) {
-        throw new Exception('', undefined, 'INCORRECT_PASSWORD')
+        throw new Exception('', 403, 'INCORRECT_PASSWORD')
       }
 
       if (user.validated === false) {
-        throw new Exception(JSON.stringify({ email }), undefined, 'EMAIL_NOT_VALIDATED')
+        throw new Exception(JSON.stringify({ email }), 403, 'EMAIL_NOT_VALIDATED')
       }
 
       interface ReturnUserTypes {
@@ -318,14 +324,20 @@ export default class AccessController {
     } catch (err: any) {
       let status = 500
       let failure: any = { code: 'UNKNOWN' }
+
+      if (err.status !== undefined) {
+        status = err.status
+      }
+      if (err.code !== undefined) {
+        failure.code = err.code
+      }
+
       switch (err.code) {
         case 'E_ROW_NOT_FOUND':
           status = 404
           failure.code = 'USER_NOT_FOUND'
           break
         case 'EMAIL_NOT_VALIDATED':
-          status = 403
-          failure.code = 'EMAIL_NOT_VALIDATED'
           const body: any = JSON.parse(err.message.replace(`${err.code}: `, ''))
           const email: string | null = body?.email ?? null
           if (email !== null) {
@@ -333,10 +345,9 @@ export default class AccessController {
           }
           break
         case 'INCORRECT_PASSWORD':
-          status = 403
-          failure.code = 'INCORRECT_PASSWORD'
           break
-        default:
+        case 'UNKNOWN':
+          console.error(new Date(), 'app/Controllers/Http/AccessController.ts login')
           console.error(err)
           break
       }
@@ -352,20 +363,20 @@ export default class AccessController {
       response.status(200)
       return response
     } catch (err: any) {
-			// console.error(err)
+      // console.error(err)
       let status = 500
       let failure: any = { code: 'UNKNOWN' }
 
-			if(err.status !== undefined) {
-				status = err.status
-			}
-			if(err.code !== undefined) {
-				failure.code = err.code
-			}
+      if (err.status !== undefined) {
+        status = err.status
+      }
+      if (err.code !== undefined) {
+        failure.code = err.code
+      }
 
-			switch (err.code) {
+      switch (err.code) {
         case 'UNKNOWN':
-					console.error(new Date(), 'app/Controllers/Http/AccessController.ts logout')
+          console.error(new Date(), 'app/Controllers/Http/AccessController.ts logout')
           console.error(err)
           break
       }
