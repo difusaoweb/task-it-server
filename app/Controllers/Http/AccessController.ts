@@ -67,7 +67,7 @@ export default class AccessController {
           JSON.stringify({
             message: 'Conta ja ativada',
             ativo: true,
-            typeUsr: user.type
+            typeUser: user.type
           }),
           401,
           'ACCOUNT_ALREADY_ACTIVATED'
@@ -131,9 +131,9 @@ export default class AccessController {
           if (ativo !== null) {
             failure.ativo = ativo
           }
-          const typeUsr: string | null = body?.typeUsr ?? null
-          if (typeUsr !== null) {
-            failure.typeUsr = typeUsr
+          const typeUser: string | null = body?.typeUser ?? null
+          if (typeUser !== null) {
+            failure.typeUser = typeUser
           }
           break
         case 'UNKNOWN':
