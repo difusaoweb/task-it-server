@@ -157,7 +157,7 @@ export default class AccessController {
 
   public async checkEmailValidation({ auth, request, response }: HttpContextContract) {
     const controllerSchema = schema.create({
-      noReply: schema.boolean.optional()
+      noReply: schema.boolean()
     })
     try {
       const { noReply } = await request.validate({
@@ -183,7 +183,7 @@ export default class AccessController {
         throw new Exception('', 403, 'TOKEN_TYPE_INVALID')
       }
 
-      if (noReply !== undefined) {
+      if (noReply === true) {
         await token.delete()
         await user.delete()
 
