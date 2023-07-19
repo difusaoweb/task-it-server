@@ -55,7 +55,7 @@ export default class UserController {
     }
   }
 
-  public async createProfessionalUser({ auth, request, response }: HttpContextContract) {
+  public async createProfessionalUser({ request, response }: HttpContextContract) {
     const controllerSchema = schema.create({
       name: schema.string(),
       email: schema.string(),
@@ -75,8 +75,7 @@ export default class UserController {
 
       const user = await User.create({ displayName: name, email, password, type })
 
-      await auth.use('api').generate(user, { name: 'validate-email' })
-
+      // await auth.use('api').generate(user, { name: 'validate-email' })
       // await new JobCreateUser({ email: user.email, token, redirectUrl, type }).send()
 
       return response.send(user)
@@ -96,7 +95,7 @@ export default class UserController {
     }
   }
 
-  public async createBusinessUser({ auth, request, response }: HttpContextContract) {
+  public async createBusinessUser({ request, response }: HttpContextContract) {
     const controllerSchema = schema.create({
       email: schema.string(),
       password: schema.string(),
@@ -127,7 +126,7 @@ export default class UserController {
         userId: user.id
       })
 
-      await auth.use('api').generate(user, { name: 'validate-email' })
+      // await auth.use('api').generate(user, { name: 'validate-email' })
       // await new JobCreateUser({ email: user.email, token, redirectUrl, type }).send()
 
       return response.send(user)
