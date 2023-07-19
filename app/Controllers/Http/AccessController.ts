@@ -74,33 +74,22 @@ export default class AccessController {
         )
       }
 
-      const diffMinutes = DateTime.now().diff(user.updatedAt ?? user.createdAt, 'minutes').minutes
-      if (diffMinutes < 3) {
-        throw {
-          status: 401,
-          code: 'WAIT_TO_TRAY'
-        }
-      }
+      const tokens = await ApiToken.query()
+        .where('user_id', '=', user.id)
+        .where('name', '=', 'validate-email')
+
+      tokens.map(async (token) => {
+        await token.delete()
+      })
 
       const { token } = await auth.use('api').generate(user, { name: 'validate-email' })
 
-      if (user.type === 'e') {
-        await new JobConfirmation({ email: user.email, token, redirectUrl, type: 'e' }).send()
-        // Kue.dispatch(
-        //   JobConfirmation.key,
-        //   { email: user.email, token, redirectUrl, type: 'e' },
-        //   { attempts: 3 }
-        // )
-      }
-
-      if (user.type === 'c') {
-        await new JobConfirmation({ email: user.email, token, redirectUrl, type: 'e' }).send()
-        // Kue.dispatch(
-        //   JobConfirmation.key,
-        //   { email: user.email, token, redirectUrl, type: 'c' },
-        //   { attempts: 3 }
-        // )
-      }
+      await new JobConfirmation({ email: user.email, token, redirectUrl, type: user.type }).send()
+      // Kue.dispatch(
+      //   JobConfirmation.key,
+      //   { email: user.email, token, redirectUrl, type: user.type },
+      //   { attempts: 3 }
+      // )
 
       return response.status(200).send({
         msg: 'Email enviado com sucesso!'
