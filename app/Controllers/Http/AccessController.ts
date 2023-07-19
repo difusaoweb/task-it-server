@@ -75,13 +75,11 @@ export default class AccessController {
       }
 
       const diffMinutes = DateTime.now().diff(user.updatedAt ?? user.createdAt, 'minutes').minutes
-
       if (diffMinutes < 3) {
-        return response.status(401).send({
-          error: {
-            message: 'Aguarde para tentar novamente'
-          }
-        })
+        throw {
+          status: 401,
+          code: 'WAIT_TO_TRAY'
+        }
       }
 
       const { token } = await auth.use('api').generate(user, { name: 'validate-email' })
@@ -104,12 +102,11 @@ export default class AccessController {
         // )
       }
 
-      return response.send({
+      return response.status(200).send({
         msg: 'Email enviado com sucesso!'
       })
     } catch (err: any) {
       console.log(err)
-
       let status = 500
       let failure: any = { code: 'UNKNOWN' }
 
@@ -135,6 +132,8 @@ export default class AccessController {
           if (typeUser !== null) {
             failure.typeUser = typeUser
           }
+          break
+        case 'WAIT_TO_TRAY':
           break
         case 'UNKNOWN':
           console.error(

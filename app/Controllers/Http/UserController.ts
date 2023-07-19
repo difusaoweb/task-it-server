@@ -76,9 +76,9 @@ export default class UserController {
 
       const user = await User.create({ displayName: name, email, password, type })
 
-      const { token } = await auth.use('api').generate(user, { name: 'validate-email' })
+      await auth.use('api').generate(user, { name: 'validate-email' })
 
-      await new JobCreateUser({ email: user.email, token, redirectUrl, type }).send()
+      // await new JobCreateUser({ email: user.email, token, redirectUrl, type }).send()
 
       return response.send(user)
     } catch (err: any) {
@@ -128,9 +128,8 @@ export default class UserController {
         userId: user.id
       })
 
-      const { token } = await auth.use('api').generate(user, { name: 'validate-email' })
-
-      await new JobCreateUser({ email: user.email, token, redirectUrl, type }).send()
+      await auth.use('api').generate(user, { name: 'validate-email' })
+      // await new JobCreateUser({ email: user.email, token, redirectUrl, type }).send()
 
       return response.send(user)
     } catch (err: any) {
