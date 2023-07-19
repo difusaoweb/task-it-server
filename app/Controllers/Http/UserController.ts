@@ -4,7 +4,6 @@ import { Exception } from '@adonisjs/core/build/standalone'
 
 import User from 'App/Models/User'
 import Business from 'App/Models/Business'
-import JobCreateUser from 'App/Mailers/ConfirmationUserMail'
 import Database from '@ioc:Adonis/Lucid/Database'
 // const crypto = require('crypto')
 // const Kue = use('Kue')
@@ -64,7 +63,7 @@ export default class UserController {
       redirectUrl: schema.string()
     })
     try {
-      const { name, email, password, redirectUrl } = await request.validate({
+      const { name, email, password } = await request.validate({
         schema: controllerSchema
       })
       const type = 'c'
@@ -110,7 +109,7 @@ export default class UserController {
       // urlConvite: schema.string()
     })
     try {
-      const { email, password, companyName, tradingName, redirectUrl } = await request.validate({
+      const { email, password, companyName, tradingName } = await request.validate({
         schema: controllerSchema
       })
       const type = 'e'

@@ -59,7 +59,7 @@ export default class CurriculumController {
     }
   }
 
-  public async show({ auth, request, response }: HttpContextContract) {
+  public async show({ request, response }: HttpContextContract) {
     const controllerSchema = schema.create({
       curriculumId: schema.number()
     })
