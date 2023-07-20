@@ -4,6 +4,7 @@ import Database from '@ioc:Adonis/Lucid/Database'
 // const axios = require('axios')
 import { Exception } from '@adonisjs/core/build/standalone'
 
+import { camelCase } from 'Helpers/camelCase'
 import Business from 'App/Models/Business'
 
 export default class BusinessController {
@@ -35,13 +36,13 @@ export default class BusinessController {
         .select(
           'businesses.*',
           'cities.title as nomeCidade',
-          'setor_empresas.title as setorEmpresa',
-          'porte_empresas.size',
-          'porte_empresas.title as porteEmpresa'
+          'business_categories.title as setorEmpresa',
+          'company_sizes.size',
+          'company_sizes.title as porteEmpresa'
         )
         .leftJoin('cities', 'businesses.cidade_id', 'cities.id')
-        .leftJoin('setor_empresas', 'businesses.setor_empresa_id', 'setor_empresas.id')
-        .leftJoin('porte_empresas', 'businesses.porte_empresa_id', 'porte_empresas.id')
+        .leftJoin('business_categories', 'businesses.setor_empresa_id', 'business_categories.id')
+        .leftJoin('company_sizes', 'businesses.porte_empresa_id', 'company_sizes.id')
         .where('businesses.user_id', userId)
 
       return response.send(professional)
@@ -80,21 +81,29 @@ export default class BusinessController {
         throw new Exception('', 403, 'TOKEN_USER_INVALID')
       }
 
-      const professional = await Database.from('businesses')
+      let business = await Database.from('businesses')
         .select(
           'businesses.*',
-          'cities.id as cityId',
           'cities.title as cityTitle',
-          'setor_empresas.title as setorEmpresa',
-          'porte_empresas.size',
-          'porte_empresas.title as porteEmpresa'
+          'company_sizes.size as companySizeSize',
+          'company_sizes.title as companySizeTitle',
+          'business_categories.title as businessCategoryTitle',
+          'business_categories.state as businessCategoryState'
         )
         .leftJoin('cities', 'cities.id', 'businesses.city_id')
-        .leftJoin('setor_empresas', 'businesses.setor_empresa_id', 'setor_empresas.id')
-        .leftJoin('porte_empresas', 'businesses.porte_empresa_id', 'porte_empresas.id')
+        .leftJoin(
+          'business_categories',
+          'business_categories.id',
+          'businesses.business_category_id'
+        )
+        .leftJoin('company_sizes', 'company_sizes.id', 'businesses.company_size_id')
         .where('businesses.user_id', user.id)
 
-      return response.send(professional)
+      // business = business[0]
+      // business['created_at'] = `${business['created_at']}`
+      // business['updated_at'] = `${business['updated_at']}`
+
+      return response.status(200).send(camelCase(business[0]))
     } catch (err: any) {
       console.error(err)
       let status = 500

@@ -24,13 +24,16 @@ export default class AccessController {
       const { id, type, displayName } = user
 
       let profileId: number | null = null
-      const professional = await Professional.findBy('userId', id)
-      if (professional) {
-        profileId = professional.id
-      }
       const business = await Business.findBy('userId', id)
       if (business) {
-        profileId = business.id
+        if (business.responsibleName !== null) {
+          profileId = business.id
+        }
+      } else {
+        const professional = await Professional.findBy('userId', id)
+        if (professional) {
+          profileId = professional.id
+        }
       }
 
       return response.send({ authenticated: true, id, type, displayName, profileId })
@@ -260,12 +263,12 @@ export default class AccessController {
         asActiveInvite: boolean
         professionalId?: number | null
         businessId?: number | null
-        cityId: number | null
+        businessResponsibleName?: string | null
         profileId: number | null
       }
       let returnUser: ReturnUserTypes[] | ReturnUserTypes = await Database.from('users')
         .select(
-          'users.display_name',
+          'users.display_name as displayName',
           'users.type',
           'users.id',
           'users.validated',
@@ -274,7 +277,7 @@ export default class AccessController {
           'users.asActiveInvite',
           'professionals.id as professionalId',
           'businesses.id as businessId',
-          'businesses.city_id as cityId'
+          'businesses.responsible_name as businessResponsibleName'
         )
         .leftJoin('professionals', 'professionals.user_id', 'users.id')
         .leftJoin('businesses', 'businesses.user_id', 'users.id')
@@ -283,14 +286,14 @@ export default class AccessController {
       returnUser = returnUser[0]
 
       returnUser.profileId =
-        returnUser.businessId !== undefined && returnUser.businessId !== null
-          ? returnUser.businessId
-          : returnUser.professionalId !== undefined && returnUser.professionalId !== null
-          ? returnUser.professionalId
-          : null
+        returnUser.businessResponsibleName !== undefined &&
+        returnUser.businessResponsibleName !== null
+          ? returnUser.businessId ?? null
+          : returnUser.professionalId ?? null
 
       delete returnUser.businessId
       delete returnUser.professionalId
+      delete returnUser.businessResponsibleName
 
       if (returnUser.isInvited === true && returnUser.asActiveInvite === false) {
         user.asActiveInvite = true
