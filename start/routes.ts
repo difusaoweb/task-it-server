@@ -37,9 +37,9 @@ import './routes/Apply'
 import './routes/Business'
 
 Route.get('/', 'DadosCadastroController.index')
-Route.get('/porte_empresa', 'CompanySizeController.index')
+Route.get('/company-sizes', 'CompanySizeController.index')
 
-Route.get('/setor_empresa', 'BusinessCategoryController.index')
+Route.get('/business-categories', 'BusinessCategoryController.index')
 // Route.post('/setor_empresa', 'BusinessCategoryController')
 // Route.get('/setor_empresa', 'BusinessCategoryController')
 // Route.put('/setor_empresa', 'BusinessCategoryController')
@@ -51,8 +51,6 @@ Route.get('/vagas_empresa', 'VagasEmpresaController.index')
 
 // Route.resource('search_vaga', 'SearchVagaController').apiOnly()
 // Route.get('empresa_vaga/:id', 'EmpresaVagaController.show')
-
-// Route.resource('business', 'BusinessController').apiOnly()
 
 // Route.get('state', 'StateController.index')
 // Route.get('tipos_contratacao', 'TiposContratacaoController.index')

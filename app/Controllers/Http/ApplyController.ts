@@ -33,15 +33,15 @@ export default class ApplyController {
       }
 
       const candidateExists = await Professional.findBy('user_id', user.id)
-      if (!candidateExists) {
+      if (candidateExists === null) {
         throw new Exception('', 404, 'PROFESSIONAL_NOT_FOUND')
       }
 
-      const applyExists = await Apply.find({
-        candidateId: candidateExists.id,
-        vacancyId
-      })
-      if (applyExists) {
+      const applyExists = await Apply.query()
+        .where('candidate_id', candidateExists.id)
+        .where('vacancy_id', vacancyId)
+
+      if (applyExists.length > 0) {
         throw new Exception('', 400, 'APPLY_ALREADY_EXISTS')
       }
 

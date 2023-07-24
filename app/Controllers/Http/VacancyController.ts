@@ -267,8 +267,10 @@ export default class VacancyController {
       switch (failure.code) {
         case 'BUSINESS_NOT_FOUND':
           status = err.status
+          break
         case 'UNKNOWN':
           console.error(err)
+          break
         default:
           console.error(err)
           break
@@ -277,58 +279,129 @@ export default class VacancyController {
     }
   }
 
-  public async show({ request, response }) {
+  public async show({ auth, request, response }) {
     const controllerSchema = schema.create({
       id: schema.number()
     })
     try {
       const { id } = await request.validate({ schema: controllerSchema })
-      const vaga = await Database.from('vacancies')
-        .select(
-          'vacancies.id',
-          'businesses.company_name as businessCompanyName',
-          'company_sizes.title as companySizeTitle',
-          'business_categories.title as businessCategoryTitle',
-          'businesses.address as businessAddress',
-          'businesses.business_phone as businessPhone',
-          'businesses.description',
-          'vacancies.title',
-          'desired_jobs.title_function as desiredJobTitleFunction',
-          'vacancies.job_description as jobDescription',
-          'employment_regimes.title as employmentRegimeTitle',
-          'vacancies.requirements',
-          'job_workloads.title as jobWorkloadTitle',
-          'educational_levels.title as educationalLevelTitle',
-          'payment_types.title as paymentTypeTitle',
-          'vacancies.salary_value as salaryValue',
-          'vacancies.commission',
-          'cities.title as cityTitle',
-          'states.letter as stateAbbreviation',
-          'vacancies.workload',
-          'vacancies.benefits',
-          'vacancies.address'
-        )
-        .leftJoin('businesses', 'businesses.id', 'vacancies.business_id')
-        .leftJoin('company_sizes', 'company_sizes.id', 'businesses.company_size_id')
-        .leftJoin(
-          'business_categories',
-          'business_categories.id',
-          'businesses.business_category_id'
-        )
-        .leftJoin('desired_jobs', 'desired_jobs.id', 'vacancies.job_id')
-        .leftJoin('employment_regimes', 'employment_regimes.id', 'vacancies.employment_regime_id')
-        .leftJoin('job_workloads', 'job_workloads.id', 'vacancies.job_workload_id')
-        .leftJoin('educational_levels', 'educational_levels.id', 'vacancies.educational_level_id')
-        .leftJoin('payment_types', 'payment_types.id', 'vacancies.payment_type_id')
-        .leftJoin('cities', 'cities.id', 'vacancies.city_id')
-        .leftJoin('states', 'states.id', 'cities.state_id')
-        .where('vacancies.id', id)
-        .orderBy('vacancies.id', 'desc')
-      if (vaga.length === 0) {
-        throw new Exception('', 404, 'VACANCY_NOT_FOUND')
+
+      await auth.use('api').check()
+      const user = auth.use('api').user
+
+      interface VacancyTypes {
+        applicant: boolean | number
+      }
+      let vacancy: VacancyTypes | VacancyTypes[] | null = null
+
+      if (user === undefined) {
+        vacancy = await Database.from('vacancies')
+          .select(
+            'vacancies.id',
+            'businesses.company_name as businessCompanyName',
+            'company_sizes.title as companySizeTitle',
+            'business_categories.title as businessCategoryTitle',
+            'businesses.address as businessAddress',
+            'businesses.business_phone as businessPhone',
+            'businesses.description',
+            'vacancies.title',
+            'desired_jobs.title_function as desiredJobTitleFunction',
+            'vacancies.job_description as jobDescription',
+            'employment_regimes.title as employmentRegimeTitle',
+            'vacancies.requirements',
+            'job_workloads.title as jobWorkloadTitle',
+            'educational_levels.title as educationalLevelTitle',
+            'payment_types.title as paymentTypeTitle',
+            'vacancies.salary_value as salaryValue',
+            'vacancies.commission',
+            'cities.title as cityTitle',
+            'states.letter as stateAbbreviation',
+            'vacancies.workload',
+            'vacancies.benefits',
+            'vacancies.address'
+          )
+          .leftJoin('businesses', 'businesses.id', 'vacancies.business_id')
+          .leftJoin('company_sizes', 'company_sizes.id', 'businesses.company_size_id')
+          .leftJoin(
+            'business_categories',
+            'business_categories.id',
+            'businesses.business_category_id'
+          )
+          .leftJoin('desired_jobs', 'desired_jobs.id', 'vacancies.job_id')
+          .leftJoin('employment_regimes', 'employment_regimes.id', 'vacancies.employment_regime_id')
+          .leftJoin('job_workloads', 'job_workloads.id', 'vacancies.job_workload_id')
+          .leftJoin('educational_levels', 'educational_levels.id', 'vacancies.educational_level_id')
+          .leftJoin('payment_types', 'payment_types.id', 'vacancies.payment_type_id')
+          .leftJoin('cities', 'cities.id', 'vacancies.city_id')
+          .leftJoin('states', 'states.id', 'cities.state_id')
+          .where('vacancies.id', id)
+          .orderBy('vacancies.id', 'desc')
+
+        if (vacancy.length === 0) {
+          throw { status: 404, code: 'VACANCY_NOT_FOUND' }
+        }
+
+        vacancy = vacancy[0]
+        vacancy.applicant = false
+      } else {
+        vacancy = await Database.from('vacancies')
+          .select(
+            'vacancies.id',
+            'businesses.company_name as businessCompanyName',
+            'company_sizes.title as companySizeTitle',
+            'business_categories.title as businessCategoryTitle',
+            'businesses.address as businessAddress',
+            'businesses.business_phone as businessPhone',
+            'businesses.description',
+            'vacancies.title',
+            'desired_jobs.title_function as desiredJobTitleFunction',
+            'vacancies.job_description as jobDescription',
+            'employment_regimes.title as employmentRegimeTitle',
+            'vacancies.requirements',
+            'job_workloads.title as jobWorkloadTitle',
+            'educational_levels.title as educationalLevelTitle',
+            'payment_types.title as paymentTypeTitle',
+            'vacancies.salary_value as salaryValue',
+            'vacancies.commission',
+            'cities.title as cityTitle',
+            'states.letter as stateAbbreviation',
+            'vacancies.workload',
+            'vacancies.benefits',
+            'vacancies.address',
+            Database.from('applies')
+              .select(1)
+              .whereColumn('candidate_id', 'professionals.id')
+              .whereColumn('vacancy_id', 'vacancies.id')
+              .limit(1)
+              .as('applicant')
+          )
+          .leftJoin('businesses', 'businesses.id', 'vacancies.business_id')
+          .leftJoin('company_sizes', 'company_sizes.id', 'businesses.company_size_id')
+          .leftJoin(
+            'business_categories',
+            'business_categories.id',
+            'businesses.business_category_id'
+          )
+          .leftJoin('desired_jobs', 'desired_jobs.id', 'vacancies.job_id')
+          .leftJoin('employment_regimes', 'employment_regimes.id', 'vacancies.employment_regime_id')
+          .leftJoin('job_workloads', 'job_workloads.id', 'vacancies.job_workload_id')
+          .leftJoin('educational_levels', 'educational_levels.id', 'vacancies.educational_level_id')
+          .leftJoin('payment_types', 'payment_types.id', 'vacancies.payment_type_id')
+          .leftJoin('cities', 'cities.id', 'vacancies.city_id')
+          .leftJoin('states', 'states.id', 'cities.state_id')
+          .leftJoin('professionals', 'professionals.user_id', user.id)
+          .where('vacancies.id', id)
+          .orderBy('vacancies.id', 'desc')
+
+        if (vacancy.length === 0) {
+          throw { status: 404, code: 'VACANCY_NOT_FOUND' }
+        }
+
+        vacancy = vacancy[0]
+        vacancy.applicant = vacancy.applicant === 1
       }
 
-      return response.send(vaga[0])
+      return response.send(vacancy)
     } catch (err: any) {
       let status = 500
       let failure: any = { code: 'UNKNOWN' }
@@ -406,14 +479,20 @@ export default class VacancyController {
       console.error(err)
       let status = 500
       let failure: any = { code: 'UNKNOWN' }
+
+      if (err.status !== undefined) {
+        failure.status = err.status
+      }
+      if (err.code !== undefined) {
+        failure.code = err.code
+      }
+
       switch (err.code) {
         case 'E_VALIDATION_FAILURE':
           status = 403
           failure.code = 'INVALID_PARAMETERS'
           break
         case 'VACANCY_NOT_FOUND':
-          status = err.status
-          failure.code = err.code
           break
         default:
           console.error(err)

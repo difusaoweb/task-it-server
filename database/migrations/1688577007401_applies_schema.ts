@@ -22,6 +22,7 @@ export default class ApplySchema extends BaseSchema {
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
         .notNullable()
+      table.unique(['candidate_id', 'vacancy_id'])
       table.timestamp('created_at', { useTz: true }).notNullable()
       table.timestamp('updated_at', { useTz: true }).nullable()
     })

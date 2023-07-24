@@ -55,20 +55,26 @@ export default mailConfig({
 
     /*
     |--------------------------------------------------------------------------
-    | Mailgun
+    | SES
     |--------------------------------------------------------------------------
     |
-		| Uses Mailgun service for sending emails.
+    | Uses Amazon SES for sending emails. You will have to install the aws-sdk
+    | when using this driver.
     |
-    | If you are using an EU domain. Ensure to change the baseUrl to hit the
-    | europe endpoint (https://api.eu.mailgun.net/v3).
+    | ```
+    | npm i aws-sdk
+    | ```
     |
     */
-    mailgun: {
-      driver: 'mailgun',
-      baseUrl: 'https://api.mailgun.net/v3',
-      key: Env.get('MAILGUN_API_KEY'),
-      domain: Env.get('MAILGUN_DOMAIN')
+    ses: {
+      driver: 'ses',
+      apiVersion: '2010-12-01',
+      key: Env.get('SES_ACCESS_KEY'),
+      secret: Env.get('SES_ACCESS_SECRET'),
+      region: Env.get('SES_REGION'),
+      sslEnabled: true,
+      sendingRate: 10,
+      maxConnections: 5
     }
   }
 })
