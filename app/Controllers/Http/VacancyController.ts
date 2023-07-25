@@ -432,34 +432,27 @@ export default class VacancyController {
       const vaga = await Database.from('vacancies')
         .select(
           'vacancies.id',
-          'businesses.company_name as businessCompanyName',
-          'company_sizes.title as companySizeTitle',
-          'business_categories.title as businessCategoryTitle',
-          'businesses.address as businessAddress',
-          'businesses.business_phone as businessPhone',
-          'businesses.description',
-          'vacancies.title',
+          'desired_jobs.id as desiredJobId',
+          'desired_jobs.title_departament as desiredJobTitleDepartament',
           'desired_jobs.title_function as desiredJobTitleFunction',
-          'vacancies.job_description as jobDescription',
-          'employment_regimes.title as employmentRegimeTitle',
-          'vacancies.requirements',
+          'vacancies.title',
+          'cities.id as cityId',
+          'cities.title as cityTitle',
+          'job_workloads.id as jobWorkloadId',
           'job_workloads.title as jobWorkloadTitle',
+          'educational_levels.id as educationalLevelId',
           'educational_levels.title as educationalLevelTitle',
+          'payment_types.id as paymentTypeId',
           'payment_types.title as paymentTypeTitle',
+          'employment_regimes.id as employmentRegimeId',
+          'employment_regimes.title as employmentRegimeTitle',
           'vacancies.salary_value as salaryValue',
           'vacancies.commission',
-          'cities.title as cityTitle',
-          'states.letter as stateAbbreviation',
           'vacancies.workload',
-          'vacancies.benefits',
-          'vacancies.address'
-        )
-        .leftJoin('businesses', 'businesses.id', 'vacancies.business_id')
-        .leftJoin('company_sizes', 'company_sizes.id', 'businesses.company_size_id')
-        .leftJoin(
-          'business_categories',
-          'business_categories.id',
-          'businesses.business_category_id'
+          'vacancies.address',
+          'vacancies.job_description as jobDescription',
+          'vacancies.requirements',
+          'vacancies.benefits'
         )
         .leftJoin('desired_jobs', 'desired_jobs.id', 'vacancies.job_id')
         .leftJoin('employment_regimes', 'employment_regimes.id', 'vacancies.employment_regime_id')
@@ -467,7 +460,6 @@ export default class VacancyController {
         .leftJoin('educational_levels', 'educational_levels.id', 'vacancies.educational_level_id')
         .leftJoin('payment_types', 'payment_types.id', 'vacancies.payment_type_id')
         .leftJoin('cities', 'cities.id', 'vacancies.city_id')
-        .leftJoin('states', 'states.id', 'cities.state_id')
         .where('vacancies.id', id)
         .orderBy('vacancies.id', 'desc')
       if (vaga.length === 0) {
