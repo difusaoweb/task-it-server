@@ -17,6 +17,7 @@ export default class CurriculumController {
       const { desiredJobId, cityId, jobWorkloadId, page } = await request.validate({
         schema: controllerSchema
       })
+      const perPage = 2
 
       const curricula = Database.from('professionals')
         .select(
@@ -28,7 +29,6 @@ export default class CurriculumController {
         .innerJoin('cities', 'cities.id', 'professionals.city_id')
         .innerJoin('states', 'states.id', 'cities.state_id')
         .innerJoin('desired_jobs', 'desired_jobs.id', 'professionals.desired_job_id')
-        .forPage(page, 10)
 
       if (desiredJobId) {
         curricula.where('professionals.desired_job_id', desiredJobId)
@@ -42,7 +42,12 @@ export default class CurriculumController {
         curricula.where('professionals.job_workload_id', jobWorkloadId)
       }
 
-      return await curricula.paginate(page, 10)
+      const returnDb: any = await curricula.paginate(page, perPage)
+
+      return response.send({
+        data: returnDb.rows,
+        meta: { lastPage: returnDb.rows.length > 0 ? returnDb.lastPage : 0 }
+      })
     } catch (err: any) {
       let status = 500
       let failure: any = { code: 'UNKNOWN' }
