@@ -12,6 +12,7 @@ Route.group(() => {
   Route.group(() => {
     Route.get('/show-dashboard', 'VacancyController.showDashboard')
     Route.post('/', 'VacancyController.store')
+    Route.put('/:id', 'VacancyController.update')
   }).middleware('auth')
 
   Route.group(() => {

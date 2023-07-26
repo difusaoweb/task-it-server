@@ -576,19 +576,68 @@ export default class VacancyController {
     }
   }
 
-  // public async update({ auth, request, response }: HttpContextContract) {
-  //   const data = request.only(['area_profissional_id', 'tipo_salario', 'escolaridade_id',
-  //     'valor_comissao', 'benefits', 'job_description', 'cargo_id', 'salary_value', 'title', 'business_id',
-  //     'city_id', 'desc_carga_horaria', 'address', 'requirements', 'employment_regime_id', 'shift_pattern_id'])
+  public async update({ auth, request, response }: HttpContextContract) {
+    const controllerSchema = schema.create({
+      // id: schema.number(),
+      jobId: schema.number(),
+      title: schema.string(),
+      cityId: schema.number.nullable(),
+      jobWorkloadId: schema.number(),
+      educationalLevelId: schema.number(),
+      paymentTypeId: schema.number(),
+      employmentRegimeId: schema.number(),
+      salaryValue: schema.number.nullable(),
+      commission: schema.string.nullable(),
+      workload: schema.string(),
+      address: schema.string.nullable(),
+      jobDescription: schema.string(),
+      requirements: schema.string(),
+      benefits: schema.string()
+    })
+    try {
+      const id: number | null = request.param('id', null)
+      const data = await request.validate({
+        schema: controllerSchema
+      })
+      const user = auth.use('api').user
+      if (user === undefined) {
+        throw new Error('TOKEN_USER_INVALID')
+      }
 
-  //   const vaga = await Vagas.findOrFail(params.id)
+      const vacancy = await Vacancy.findOrFail(id)
 
-  //   vaga.merge(data)
+      console.log(vacancy.users)
 
-  //   await vaga.save()
+      // vacancy.merge(data)
+      // await vacancy.save()
 
-  //   return vaga
-  // }
+      return response.status(200).send({ updated: true })
+    } catch (err: any) {
+      let status = 500
+      let failure: any = { code: 'UNKNOWN' }
+
+      if (err.status !== undefined) {
+        failure.status = err.status
+      }
+      if (err.code !== undefined) {
+        failure.code = err.code
+      }
+
+      switch (err.code) {
+        case 'E_VALIDATION_FAILURE':
+          status = 400
+          failure.code = 'INVALID_PARAMETERS'
+          break
+        case 'TOKEN_USER_INVALID':
+          break
+        case 'UNKNOWN':
+          console.error(new Date(), 'app/Controllers/Http/VacancyController.ts')
+          console.error(err)
+          break
+      }
+      return response.status(status).send(failure)
+    }
+  }
 
   // public async show({ auth, request, response }: HttpContextContract) {
   //   const vaga = await Database.select('vacancies.*', 'cities.title as nomeCidade', 'educational_levels.title as escolaridade',

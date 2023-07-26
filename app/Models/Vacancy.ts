@@ -1,7 +1,9 @@
-import { column } from '@ioc:Adonis/Lucid/Orm'
+import { column, hasManyThrough, HasManyThrough } from '@ioc:Adonis/Lucid/Orm'
 import { DateTime } from 'luxon'
 
 import { CustomBaseModel } from 'App/Models/CustomBaseModel'
+import User from 'App/Models/User'
+import Business from 'App/Models/Business'
 
 export default class Vacancy extends CustomBaseModel {
   public static table = 'vacancies'
@@ -62,4 +64,12 @@ export default class Vacancy extends CustomBaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime | null
+
+  @hasManyThrough([() => User, () => Business], {
+    localKey: 'id',
+    foreignKey: 'BusinessId',
+    throughForeignKey: 'userId',
+    throughLocalKey: 'id'
+  })
+  public users: HasManyThrough<typeof User>
 }
