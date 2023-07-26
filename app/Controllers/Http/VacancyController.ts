@@ -612,8 +612,8 @@ export default class VacancyController {
 
       console.log(vacancy.users)
 
-      // vacancy.merge(data)
-      // await vacancy.save()
+      vacancy.merge(data)
+      await vacancy.save()
 
       return response.status(200).send({ updated: true })
     } catch (err: any) {
