@@ -15,10 +15,10 @@ export default class VacancyController {
   public async index({ request, response }: HttpContextContract) {
     const controllerSchema = schema.create({
       id: schema.number.nullableAndOptional(),
-      cargoId: schema.number.nullableAndOptional(),
+      desiredJobId: schema.number.nullableAndOptional(),
       cityId: schema.number.nullableAndOptional(),
       businessCategoryId: schema.number.nullableAndOptional(),
-      areaProfissional: schema.number.nullableAndOptional(),
+      jobWorkloadId: schema.number.nullableAndOptional(),
       companySizeId: schema.number.nullableAndOptional(),
       paymentTypeId: schema.number.nullableAndOptional(),
       page: schema.number()
@@ -26,15 +26,15 @@ export default class VacancyController {
     try {
       const {
         id,
-        cargoId,
+        desiredJobId,
         cityId,
         businessCategoryId,
-        areaProfissional,
+        jobWorkloadId,
         companySizeId,
         paymentTypeId,
         page
       } = await request.validate({ schema: controllerSchema })
-      const perPage = 10
+      const perPage = 2
 
       const vaga = Database.from('vacancies')
         .select(
@@ -57,8 +57,8 @@ export default class VacancyController {
         vaga.where('vacancies.id', id)
       }
 
-      if (cargoId) {
-        vaga.where('vacancies.cargo_id', cargoId)
+      if (desiredJobId) {
+        vaga.where('vacancies.job_id', desiredJobId)
       }
 
       if (cityId) {
@@ -69,8 +69,8 @@ export default class VacancyController {
         vaga.where('businesses.business_category_id', businessCategoryId)
       }
 
-      if (areaProfissional) {
-        vaga.where('vacancies.job_workload_id', areaProfissional)
+      if (jobWorkloadId) {
+        vaga.where('vacancies.job_workload_id', jobWorkloadId)
       }
 
       if (companySizeId) {
@@ -81,8 +81,12 @@ export default class VacancyController {
         vaga.where('vacancies.payment_type_id', paymentTypeId)
       }
 
-      const returnDb = await vaga.paginate(page, perPage)
-      return response.send(returnDb)
+      const returnDb: any = await vaga.paginate(page, perPage)
+
+      return response.send({
+        data: returnDb.rows,
+        meta: { lastPage: returnDb.rows.length > 0 ? returnDb.lastPage : 0 }
+      })
     } catch (err: any) {
       let status = 500
       let failure: any = { code: 'UNKNOWN' }
