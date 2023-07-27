@@ -155,7 +155,7 @@ export default class AccessController {
       })
 
       await auth.use('api').check()
-      const user = await auth.use('api').user
+      const user = auth.use('api').user
       if (user === undefined) {
         throw new Exception('', 403, 'TOKEN_INVALID_OR_ACCOUNT_ALREADY_ACTIVATED')
       }
@@ -163,7 +163,7 @@ export default class AccessController {
         return response.status(200).send({ validated: true, typeUser: user.type })
       }
 
-      const tokenContractObj = await auth.use('api').token
+      const tokenContractObj = auth.use('api').token
       if (tokenContractObj === undefined) {
         throw new Exception('', 403, 'TOKEN_INVALID_OR_ACCOUNT_ALREADY_ACTIVATED')
       }
@@ -347,13 +347,11 @@ export default class AccessController {
 
   public async logout({ auth, response }: HttpContextContract) {
     try {
-      await auth.use('api').revoke()
+      auth.use('api').revoke()
 
-      response.send({ success: { revoked: true } })
-      response.status(200)
-      return response
+      return response.status(200).send({ success: { revoked: true } })
     } catch (err: any) {
-      // console.error(err)
+      console.error(err)
       let status = 500
       let failure: any = { code: 'UNKNOWN' }
 
