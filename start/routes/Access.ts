@@ -10,4 +10,6 @@ Route.group(() => {
   Route.group(() => {
     Route.delete('/', 'AccessController.logout')
   }).middleware('auth')
+  Route.post('/forgot-password', 'AccessController.storeForgotPassword')
+  Route.put('/forgot-password', 'AccessController.updateForgotPassword')
 }).prefix('/accesses')

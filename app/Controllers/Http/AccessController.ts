@@ -3,13 +3,15 @@ import { schema } from '@ioc:Adonis/Core/Validator'
 import Database from '@ioc:Adonis/Lucid/Database'
 import Hash from '@ioc:Adonis/Core/Hash'
 import { Exception } from '@adonisjs/core/build/standalone'
+import { DateTime } from 'luxon'
 
 import ApiToken from 'App/Models/ApiToken'
 import User from 'App/Models/User'
-import JobConfirmation from 'App/Mailers/ConfirmationUserMail'
-import Job from 'App/Mailers/BoasVindasMail'
 import Professional from 'App/Models/Professional'
 import Business from 'App/Models/Business'
+import JobConfirmation from 'App/Mailers/ConfirmationUserMail'
+import Job from 'App/Mailers/BoasVindasMail'
+import ForgotPasswordMail from 'App/Mailers/ForgotPasswordMail'
 
 // const Kue = use('Kue')
 
@@ -157,7 +159,7 @@ export default class AccessController {
       await auth.use('api').check()
       const user = auth.use('api').user
       if (user === undefined) {
-        throw new Exception('', 403, 'TOKEN_INVALID_OR_ACCOUNT_ALREADY_ACTIVATED')
+        throw { code: 'TOKEN_INVALID_OR_ACCOUNT_ALREADY_ACTIVATED', status: 403 }
       }
       if (user.validated) {
         return response.status(200).send({ validated: true, typeUser: user.type })
@@ -165,12 +167,12 @@ export default class AccessController {
 
       const tokenContractObj = auth.use('api').token
       if (tokenContractObj === undefined) {
-        throw new Exception('', 403, 'TOKEN_INVALID_OR_ACCOUNT_ALREADY_ACTIVATED')
+        throw { code: 'TOKEN_INVALID_OR_ACCOUNT_ALREADY_ACTIVATED', status: 403 }
       }
 
       const token = await ApiToken.findOrFail(tokenContractObj.meta.id)
       if (token.name !== 'validate-email') {
-        throw new Exception('', 403, 'TOKEN_TYPE_INVALID')
+        throw { code: 'TOKEN_TYPE_INVALID', status: 403 }
       }
 
       if (noReply === true) {
@@ -371,4 +373,128 @@ export default class AccessController {
       return response.status(status).send(failure)
     }
   }
+
+  public async storeForgotPassword({ auth, request, response }: HttpContextContract) {
+    const controllerSchema = schema.create({
+      email: schema.string(),
+      redirectUrl: schema.string(),
+      business: schema.boolean()
+    })
+    try {
+      const { email, redirectUrl, business } = await request.validate({ schema: controllerSchema })
+
+      const user = await User.findByOrFail('email', email)
+
+      const { token } = await auth.use('api').generate(user, { name: 'forgot-password' })
+
+      await new ForgotPasswordMail({
+        email: user.email,
+        token,
+        link: `${redirectUrl}?token=${token}${business ? '&business' : ''}`
+      }).send()
+
+      return response.status(200).send({ send: true })
+    } catch (err: any) {
+      console.error(err)
+      let status = 500
+      let failure: any = { code: 'UNKNOWN' }
+
+      if (err.status !== undefined) {
+        status = err.status
+      }
+      if (err.code !== undefined) {
+        failure.code = err.code
+      }
+
+      switch (err.code) {
+        case 'UNKNOWN':
+          console.error(new Date(), 'app/Controllers/Http/AccessController.ts storeForgotPassword')
+          console.error(err)
+          break
+      }
+      return response.status(status).send(failure)
+    }
+  }
+
+  public async updateForgotPassword({ auth, request, response }: HttpContextContract) {
+    const controllerSchema = schema.create({
+      password: schema.string()
+    })
+    try {
+      const { password } = await request.validate({ schema: controllerSchema })
+
+      await auth.use('api').check()
+      const user = auth.use('api').user
+      if (user === undefined) {
+        throw { code: 'TOKEN_INVALID_OR_ACCOUNT_ALREADY_ACTIVATED', status: 403 }
+      }
+
+      const tokenContractObj = auth.use('api').token
+      if (tokenContractObj === undefined) {
+        throw { code: 'TOKEN_INVALID_OR_ACCOUNT_ALREADY_ACTIVATED', status: 403 }
+      }
+
+      const token = await ApiToken.findOrFail(tokenContractObj.meta.id)
+      if (token.name !== 'forgot-password') {
+        throw { code: 'TOKEN_TYPE_INVALID', status: 403 }
+      }
+
+      const diffInDaysObj = DateTime.now().diff(token.createdAt, 'days')
+      const diffInDays = diffInDaysObj.toObject().days ?? 3
+      if (diffInDays > 2) {
+        await token.delete()
+        throw { code: 'EXPIRED_TOKEN', status: 401 }
+      }
+
+      user.password = password
+      await user.save()
+      await token.delete()
+
+      return response.status(200).send({ updated: true })
+    } catch (err: any) {
+      let status = 500
+      let failure: any = { code: 'UNKNOWN' }
+
+      if (err.status !== undefined) {
+        status = err.status
+      }
+      if (err.code !== undefined) {
+        failure.code = err.code
+      }
+
+      switch (err.code) {
+        case 'TOKEN_INVALID_OR_ACCOUNT_ALREADY_ACTIVATED':
+          break
+        case 'TOKEN_TYPE_INVALID':
+          break
+        case 'EXPIRED_TOKEN':
+          break
+        case 'UNKNOWN':
+          console.error(new Date(), 'app/Controllers/Http/AccessController.ts updateForgotPassword')
+          console.error(err)
+          break
+      }
+      return response.status(status).send(failure)
+    }
+  }
+
+  // async show ({ params, request, response }) {
+  //   const { token } = request.all()
+
+  //   if (!token) {
+  //     return response
+  //       .status(500)
+  //       .send({
+  //         error: {
+  //           message: 'Token invalido'
+  //         }
+  //       })
+  //   }
+
+  //   const user = await Database.select('username', 'token')
+  //     .table('users')
+  //     .where('users.token', token)
+
+  //   return user
+  // }
 }
