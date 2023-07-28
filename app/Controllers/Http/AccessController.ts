@@ -407,6 +407,9 @@ export default class AccessController {
       }
 
       switch (err.code) {
+        case 'E_ROW_NOT_FOUND':
+          failure.code = 'EMAIL_NOT_FOUND'
+          break
         case 'UNKNOWN':
           console.error(new Date(), 'app/Controllers/Http/AccessController.ts storeForgotPassword')
           console.error(err)
