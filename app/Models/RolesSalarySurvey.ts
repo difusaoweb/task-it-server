@@ -8,10 +8,10 @@ export default class RolesSalarySurvey extends CustomBaseModel {
   public id: number
 
   @column()
-  public idSalarySurvey: number | null
+  public salarySurveyId: number | null
 
   @column()
-  public idCargo: number | null
+  public desiredJobId: number | null
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

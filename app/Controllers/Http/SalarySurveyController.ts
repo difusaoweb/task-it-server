@@ -13,15 +13,15 @@ export default class SalarySurveyController {
       telefoneContato: schema.string(),
       nomeEmpresa: schema.string(),
       areaAtuacao: schema.string(),
-      cityId: schema.number.nullableAndOptional(),
-      address: schema.string(),
-      cep: schema.string(),
+      cityId: schema.number.nullable(),
+      address: schema.string.nullable(),
+      cep: schema.string.nullable(),
       site: schema.string(),
       telefoneRamal: schema.string(),
-      cargosIds: schema.array().members(schema.number()),
+      desiredJobsId: schema.array().members(schema.number()),
+      paymentTypeId: schema.number(),
       salaryValue: schema.string(),
-      salaryValueColaboradores: schema.string(),
-      tipoSalarioId: schema.number.nullableAndOptional()
+      salaryValueColaboradores: schema.string()
     })
     try {
       const {
@@ -36,15 +36,15 @@ export default class SalarySurveyController {
         cep,
         site,
         telefoneRamal,
-        cargosIds,
+        desiredJobsId,
+        paymentTypeId,
         salaryValue,
-        salaryValueColaboradores,
-        tipoSalarioId
+        salaryValueColaboradores
       } = await request.validate({ schema: controllerSchema })
 
       const pesquisaExists = await SalarySurvey.findBy('email', email)
       if (pesquisaExists) {
-        return response.status(400).send({ error: 'Pesquisa already exists.' })
+        throw { code: 'SURVEY_ALREADY_EXISTS', status: 400 }
       }
 
       const pesquisaSalario = await SalarySurvey.create({
@@ -59,15 +59,15 @@ export default class SalarySurveyController {
         cep,
         site,
         telefoneRamal,
+        paymentTypeId,
         salaryValue,
-        salaryValueColaboradores,
-        tipoSalarioId
+        salaryValueColaboradores
       })
 
-      const cargosSalarySurvey = cargosIds.map((cargoId) => {
+      const cargosSalarySurvey = desiredJobsId.map((desiredJobId) => {
         const dados = {
-          idSalarySurvey: pesquisaSalario.id,
-          idCargo: cargoId
+          salarySurveyId: pesquisaSalario.id,
+          desiredJobId: desiredJobId
         }
 
         return dados
@@ -81,10 +81,27 @@ export default class SalarySurveyController {
       }
       response.send(returnResonse)
       return response
-    } catch (err) {
+    } catch (err: any) {
       console.error(err)
-      response.status(500)
-      return response
+      let status = 500
+      let failure = { code: 'UNKNOWN' }
+      if (err.code !== undefined) {
+        failure.code = err.code
+      }
+      if (err.status !== undefined) {
+        status = err.status
+      }
+
+      switch (failure.code) {
+        case 'SURVEY_ALREADY_EXISTS':
+          break
+        case 'UNKNOWN':
+          console.error(new Date(), 'app/Controllers/Http/SalarySurveyController.ts store')
+          console.error(err)
+          break
+      }
+
+      return response.status(status).send(failure)
     }
   }
 }

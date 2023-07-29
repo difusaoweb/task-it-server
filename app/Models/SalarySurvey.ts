@@ -26,10 +26,13 @@ export default class SalarySurvey extends CustomBaseModel {
   public areaAtuacao: string
 
   @column()
-  public address: string
+  public cityId: number | null
 
   @column()
-  public cep: string
+  public address: string | null
+
+  @column()
+  public cep: string | null
 
   @column()
   public site: string
@@ -38,16 +41,13 @@ export default class SalarySurvey extends CustomBaseModel {
   public telefoneRamal: string
 
   @column()
+  public paymentTypeId: number
+
+  @column()
   public salaryValue: string
 
   @column()
   public salaryValueColaboradores: string
-
-  @column()
-  public cityId: number | null
-
-  @column()
-  public tipoSalarioId: number | null
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

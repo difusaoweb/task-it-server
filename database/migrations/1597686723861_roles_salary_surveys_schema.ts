@@ -15,7 +15,7 @@ export default class RolesSalarySurveySchema extends BaseSchema {
         .onDelete('SET NULL')
         .nullable()
       table
-        .integer('desired_jobs_id')
+        .integer('desired_job_id')
         .unsigned()
         .references('id')
         .inTable('desired_jobs')

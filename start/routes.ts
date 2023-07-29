@@ -45,7 +45,7 @@ Route.get('/business-categories', 'BusinessCategoryController.index')
 // Route.put('/setor_empresa', 'BusinessCategoryController')
 // Route.delete('/setor_empresa', 'BusinessCategoryController')
 
-Route.post('/pesquisaSalario', 'SalarySurveyController.store')
+Route.post('/pesquisa-salario', 'SalarySurveyController.store').middleware('auth')
 
 Route.get('/vagas_empresa', 'VagasEmpresaController.index')
 
@@ -56,6 +56,4 @@ Route.get('/vagas_empresa', 'VagasEmpresaController.index')
 // Route.get('tipos_contratacao', 'TiposContratacaoController.index')
 // Route.get('periodo_trabalho', 'ShiftPatternController.index')
 
-// Route.post('passwords', 'ForgotPasswordController.store')
-// Route.put('passwords', 'ForgotPasswordController.update')
 // Route.get('passwords', 'ForgotPasswordController.show')
