@@ -2,54 +2,55 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schema } from '@ioc:Adonis/Core/Validator'
 
 import Disc from 'App/Models/Disc'
+import Professional from 'App/Models/Professional'
 
 export default class DiscController {
   public async store({ auth, request, response }: HttpContextContract) {
     const controllerSchema = schema.create({
-      aberto: schema.number(),
-      acomodado: schema.number(),
-      analitico: schema.number(),
-      assertivo: schema.number(),
-      aventureiro: schema.number(),
-      c: schema.number(),
-      competitivo: schema.number(),
-      confianteEmSi: schema.number(),
-      consistente: schema.number(),
-      contstater: schema.number(),
-      contido: schema.number(),
-      cuidadoso: schema.number(),
-      curioso: schema.number(),
-      d: schema.number(),
-      decisivo: schema.number(),
-      desafiador: schema.number(),
       direcionado: schema.number(),
-      educado: schema.number(),
-      emotivo: schema.number(),
-      entusiasmado: schema.number(),
-      equilibrado: schema.number(),
-      estavel: schema.number(),
-      experimentador: schema.number(),
-      facilDeConviver: schema.number(),
-      falador: schema.number(),
-      i: schema.number(),
-      impulsivel: schema.number(),
-      incansavel: schema.number(),
-      indeciso: schema.number(),
       influente: schema.number(),
-      logico: schema.number(),
-      modesto: schema.number(),
+      estavel: schema.number(),
+      cuidadoso: schema.number(),
+      confianteEmSi: schema.number(),
       otimista: schema.number(),
-      paciente: schema.number(),
-      perfeccionista: schema.number(),
-      persuasivo: schema.number(),
-      preciso: schema.number(),
+      indeciso: schema.number(),
+      contido: schema.number(),
+      aventureiro: schema.number(),
+      entusiasmado: schema.number(),
       previsivel: schema.number(),
+      logico: schema.number(),
+      decisivo: schema.number(),
+      aberto: schema.number(),
+      paciente: schema.number(),
+      analitico: schema.number(),
+      desafiador: schema.number(),
+      impulsivel: schema.number(),
+      equilibrado: schema.number(),
+      preciso: schema.number(),
+      incansavel: schema.number(),
+      emotivo: schema.number(),
       protetor: schema.number(),
-      rigoroso: schema.number(),
-      s: schema.number(),
+      contestador: schema.number(),
+      competitivo: schema.number(),
+      persuasivo: schema.number(),
+      acomodado: schema.number(),
+      curioso: schema.number(),
+      assertivo: schema.number(),
+      falador: schema.number(),
+      modesto: schema.number(),
+      educado: schema.number(),
+      experimentador: schema.number(),
       sedutor: schema.number(),
+      facilDeConviver: schema.number(),
+      consistente: schema.number(),
+      rigoroso: schema.number(),
       sensivel: schema.number(),
-      sincero: schema.number()
+      sincero: schema.number(),
+      perfeccionista: schema.number(),
+      d: schema.number(),
+      i: schema.number(),
+      s: schema.number(),
+      c: schema.number()
     })
     try {
       const {
@@ -76,7 +77,7 @@ export default class DiscController {
         incansavel,
         emotivo,
         protetor,
-        contstater,
+        contestador,
         competitivo,
         persuasivo,
         acomodado,
@@ -103,12 +104,17 @@ export default class DiscController {
 
       const user = auth.use('api').user
       if (user === undefined) {
-        throw new Error('TOKEN_USER_INVALID')
+        throw { code: 'TOKEN_USER_INVALID', status: 403 }
       }
 
-      const discExists = await Disc.findBy('professional_id', user.id)
+      const professional = await Professional.findBy('user_id', user.id)
+      if (professional === null) {
+        throw { code: 'PROFESSIONAL_NOT_FOUND', status: 404 }
+      }
+
+      const discExists = await Disc.findBy('professional_id', professional.id)
       if (discExists) {
-        return response.status(400).send({ error: 'Avaliação ja cadastrada.' })
+        throw { code: 'EVALUATION_ALREADY_EXISTS', status: 400 }
       }
 
       const disc = await Disc.create({
@@ -135,7 +141,7 @@ export default class DiscController {
         incansavel,
         emotivo,
         protetor,
-        contstater,
+        contestador,
         competitivo,
         persuasivo,
         acomodado,
@@ -214,17 +220,31 @@ export default class DiscController {
 
       return disc
     } catch (err: any) {
+      console.error(new Date(), 'app/Controllers/Http/DiscController.ts store')
       console.error(err)
       let status = 500
       let failure = { code: 'UNKNOWN' }
+      if (err.code !== undefined) {
+        failure.code = err.code
+      }
+      if (err.status !== undefined) {
+        status = err.status
+      }
+
       switch (err.code) {
         case 'E_VALIDATION_FAILURE':
           status = 403
           failure.code = 'INVALID_PARAMETERS'
           break
         case 'TOKEN_USER_INVALID':
-          status = 403
-          failure.code = 'TOKEN_USER_INVALID'
+          break
+        case 'PROFESSIONAL_NOT_FOUND':
+          break
+        case 'EVALUATION_ALREADY_EXISTS':
+          break
+        case 'UNKNOWN':
+          console.error(new Date(), 'app/Controllers/Http/DiscController.ts store')
+          console.error(err)
           break
       }
       return response.status(status).send(failure)

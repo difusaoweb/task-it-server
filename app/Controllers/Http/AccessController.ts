@@ -9,7 +9,7 @@ import ApiToken from 'App/Models/ApiToken'
 import User from 'App/Models/User'
 import Professional from 'App/Models/Professional'
 import Business from 'App/Models/Business'
-import JobConfirmation from 'App/Mailers/ConfirmationUserMail'
+import ConfirmationUserMail from 'App/Mailers/ConfirmationUserMail'
 import Job from 'App/Mailers/BoasVindasMail'
 import ForgotPasswordMail from 'App/Mailers/ForgotPasswordMail'
 
@@ -88,9 +88,14 @@ export default class AccessController {
 
       const { token } = await auth.use('api').generate(user, { name: 'validate-email' })
 
-      await new JobConfirmation({ email: user.email, token, redirectUrl, type: user.type }).send()
+      await new ConfirmationUserMail({
+        email: user.email,
+        token,
+        redirectUrl,
+        type: user.type
+      }).send()
       // Kue.dispatch(
-      //   JobConfirmation.key,
+      //   ConfirmationUserMail.key,
       //   { email: user.email, token, redirectUrl, type: user.type },
       //   { attempts: 3 }
       // )

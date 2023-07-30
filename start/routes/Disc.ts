@@ -4,4 +4,4 @@ Route.group(() => {
   Route.group(() => {
     Route.post('/', 'DiscController.store')
   }).middleware('auth')
-}).prefix('/disc')
+}).prefix('/discs')
