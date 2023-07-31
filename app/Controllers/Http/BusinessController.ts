@@ -78,10 +78,10 @@ export default class BusinessController {
     try {
       const user = auth.use('api').user
       if (user === undefined) {
-        throw new Exception('', 403, 'TOKEN_USER_INVALID')
+        throw { code: 'TOKEN_USER_INVALID', status: 403 }
       }
 
-      let business = await Database.from('businesses')
+      const business = await Database.from('businesses')
         .select(
           'businesses.*',
           'cities.title as cityTitle',
@@ -99,15 +99,11 @@ export default class BusinessController {
         .leftJoin('company_sizes', 'company_sizes.id', 'businesses.company_size_id')
         .where('businesses.user_id', user.id)
 
-      // business = business[0]
-      // business['created_at'] = `${business['created_at']}`
-      // business['updated_at'] = `${business['updated_at']}`
-
       return response.status(200).send(camelCase(business[0]))
     } catch (err: any) {
       console.error(err)
       let status = 500
-      let failure: any = { code: 'UNKNOWN' }
+      const failure = { code: 'UNKNOWN' }
       if (err?.code !== undefined) {
         failure.code = err.code
       }
@@ -121,10 +117,10 @@ export default class BusinessController {
           break
         case 'TOKEN_USER_INVALID':
           break
-        case 'UNKNOWN':
-          console.error(err)
+        case 'BUSINESS_NOT_FOUND':
           break
-        default:
+        case 'UNKNOWN':
+          console.error(new Date(), 'app/Controllers/Http/BusinessController.ts showDashboard')
           console.error(err)
           break
       }
