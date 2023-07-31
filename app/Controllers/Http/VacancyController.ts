@@ -664,4 +664,59 @@ export default class VacancyController {
 
   //   vaga.delete()
   // }
+
+  public async destroy({ auth, request, response }: HttpContextContract) {
+    try {
+      const id: number | null = request.param('id', null)
+      if (id === null) {
+        throw { code: 'INVALID_PARAMETERS', status: 400 }
+      }
+
+      const vacancy = await Vacancy.findOrFail(id)
+
+      const user = auth.use('api').user
+      if (user === undefined) {
+        throw { code: 'TOKEN_USER_INVALID' }
+      }
+      await user.load('business')
+      if (user.business === null) {
+        throw { code: 'BUSINESS_NOT_FOUND' }
+      }
+
+      if (vacancy.businessId !== user.business.id) {
+        throw { code: 'YOU_ARE_NOT_THE_OWNER' }
+      }
+
+      vacancy.delete()
+
+      return response.status(200).send({ deleted: true })
+    } catch (err: any) {
+      // console.error(err)
+      let status = 500
+      const failure = { code: 'UNKNOWN' }
+      if (err.code !== undefined) {
+        failure.code = err.code
+      }
+      if (err.status !== undefined) {
+        status = err.status
+      }
+
+      switch (err.code) {
+        case 'INVALID_PARAMETERS':
+          break
+        case 'BUSINESS_NOT_FOUND':
+          break
+        case 'YOU_ARE_NOT_THE_OWNER':
+          break
+        case 'E_ROW_NOT_FOUND':
+          failure.code = 'VACANCY_NOT_FOUND'
+          break
+        case 'UNKNOWN':
+          console.error(new Date(), 'app/Controllers/Http/VacancyController.ts destroy')
+          console.error(err)
+          break
+      }
+      return response.status(status).send(failure)
+    }
+  }
 }

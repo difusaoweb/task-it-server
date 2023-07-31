@@ -24,7 +24,7 @@ export default class Professional extends CustomBaseModel {
   public cityId: number | null
 
   @column()
-  public userId: number | null
+  public userId: number
 
   @column()
   public address: string
