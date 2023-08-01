@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "node ace serve --watch",
-    "build": "node ace build --production; cd build; yarn install --production; node ace migration:run --force",
+    "build": "node ace build --production; cp .env ./build; cd build; yarn install --production; node ace migration:run --force",
     "start": "cd build; node server.js",
     "test": "node ace test",
     "lint": "eslint . --ext=.ts",
