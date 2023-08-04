@@ -208,7 +208,8 @@ export default class VacancyController {
           'vacancies.payment_type_id as paymentTypeId',
           'applies.vacancy_id as vacancyId',
           'applies.candidate_id as candidateId',
-          'professionals.name as professionalName'
+          'professionals.name as professionalName',
+          'professionals.id as professionalId'
         )
         .innerJoin('vacancies', 'vacancies.id', 'applies.vacancy_id')
         .innerJoin('professionals', 'professionals.id', 'applies.candidate_id')
@@ -263,7 +264,7 @@ export default class VacancyController {
       return response.send(vacancies)
     } catch (err: any) {
       let status = 500
-      let failure: any = { code: 'UNKNOWN' }
+      const failure = { code: 'UNKNOWN' }
       if (err.code) {
         failure.code = err.code
       }

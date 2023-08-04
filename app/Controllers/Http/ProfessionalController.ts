@@ -4,6 +4,7 @@ import { Exception } from '@adonisjs/core/build/standalone'
 import { schema } from '@ioc:Adonis/Core/Validator'
 import { DateTime } from 'luxon'
 
+import { camelCase } from 'Helpers/camelCase'
 import Professional from 'App/Models/Professional'
 import Skill from 'App/Models/Skill'
 // const Database = use('Database')
@@ -17,16 +18,21 @@ export default class ProfessionalController {
     return professionals
   }
 
-  public async show({ auth, response }: HttpContextContract) {
+  public async show({ auth, request, response }: HttpContextContract) {
     try {
+      const id: number | null = request.param('id', null)
+      if (id === null) {
+        throw { code: 'INVALID_PARAMETERS', status: 400 }
+      }
+
       await auth.use('api').check()
 
       const user = auth.use('api').user
       if (user === undefined) {
-        throw new Exception('', undefined, 'TOKEN_USER_INVALID')
+        throw { code: 'TOKEN_USER_INVALID', status: 403 }
       }
 
-      const professional = await Database.from('professional')
+      const professional = await Database.from('professionals')
         .select(
           'professionals.*',
           'cities.title as nomeCidade',
@@ -43,8 +49,6 @@ export default class ProfessionalController {
         .innerJoin('sexos', 'professionals.sexo_id', 'sexes.id')
         .innerJoin('marital_statuses', 'professionals.marital_status_id', 'marital_statuses.id')
         .where('professionals.id', user.id)
-
-      console.log(professional)
 
       const skills = await Database.from('skills_professional as hp')
         .select('h.*')
@@ -65,10 +69,116 @@ export default class ProfessionalController {
         experiences,
         courses
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err)
-      response.status(500)
-      return response
+      let status = 500
+      const failure = { code: 'UNKNOWN' }
+      if (err.code) {
+        failure.code = err.code
+      }
+      if (err.status) {
+        status = err.status
+      }
+
+      switch (err.code) {
+        case 'E_VALIDATION_FAILURE':
+          status = 403
+          failure.code = 'INVALID_PARAMETERS'
+          break
+        case 'INVALID_PARAMETERS':
+          break
+        case 'PROFESSIONAL_ALREADY_EXISTS':
+          break
+        case 'UNKNOWN':
+          console.error(new Date(), 'app/Controllers/Http/ProfessionalController.ts show')
+          console.error(err)
+          break
+      }
+      return response.status(status).send(failure)
+    }
+  }
+
+  public async showCurriculum({ auth, request, response }: HttpContextContract) {
+    try {
+      const id: number | null = request.param('id', null)
+      if (id === null) {
+        throw { code: 'INVALID_PARAMETERS', status: 400 }
+      }
+
+      const user = auth.use('api').user
+      if (user === undefined) {
+        throw { code: 'TOKEN_USER_INVALID', status: 403 }
+      }
+
+      const professionals = await Database.from('professionals')
+        .select(
+          'professionals.*',
+          'cities.title as cityTitle',
+          'educational_levels.title as educationalLevelTitle',
+          'job_workloads.title as jobWorkloadTitle',
+          'desired_jobs.title_function as desiredJobTitleFunction',
+          'sexes.title as sexTitle',
+          'marital_statuses.title as maritalStatusTitle'
+        )
+        .innerJoin('cities', 'cities.id', 'professionals.city_id')
+        .innerJoin(
+          'educational_levels',
+          'educational_levels.id',
+          'professionals.educational_level_id'
+        )
+        .leftJoin('job_workloads', 'job_workloads.id', 'professionals.job_workload_id')
+        .innerJoin('desired_jobs', 'desired_jobs.id', 'professionals.desired_job_id')
+        .innerJoin('sexes', 'sexes.id', 'professionals.sex_id')
+        .innerJoin('marital_statuses', 'marital_statuses.id', 'professionals.marital_status_id')
+        .where('professionals.id', id)
+
+      const skills = await Database.from('skill_professional as hp')
+        .select('h.id', 'h.name')
+        .innerJoin('skills as h', 'h.id', 'hp.skill_id')
+        .where('hp.professional_id', id)
+
+      const experiences = await Database.from('experiences_of_professionals as ep')
+        .select('ep.business', 'ep.start_date', 'ep.end_date', 'ep.current', 'ep.role')
+        .where('ep.professional_id', id)
+
+      const courses = await Database.from('courses_of_professionals as cs')
+        .select('cs.institution', 'cs.start_date', 'cs.end_date', 'cs.course')
+        .where('cs.professional_id', id)
+
+      return response.status(200).send(
+        camelCase({
+          professional: professionals.length === 0 ? {} : professionals[0],
+          skills,
+          experiences,
+          courses
+        })
+      )
+    } catch (err: any) {
+      console.error(err)
+      let status = 500
+      const failure = { code: 'UNKNOWN' }
+      if (err.code) {
+        failure.code = err.code
+      }
+      if (err.status) {
+        status = err.status
+      }
+
+      switch (err.code) {
+        case 'E_VALIDATION_FAILURE':
+          status = 403
+          failure.code = 'INVALID_PARAMETERS'
+          break
+        case 'INVALID_PARAMETERS':
+          break
+        case 'PROFESSIONAL_ALREADY_EXISTS':
+          break
+        case 'UNKNOWN':
+          console.error(new Date(), 'app/Controllers/Http/ProfessionalController.ts show')
+          console.error(err)
+          break
+      }
+      return response.status(status).send(failure)
     }
   }
 
