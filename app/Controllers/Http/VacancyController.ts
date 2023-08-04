@@ -140,6 +140,39 @@ export default class VacancyController {
     }
   }
 
+  public async indexSearchHome({ request, response }: HttpContextContract) {
+    const controllerSchema = schema.create({
+      title: schema.string()
+    })
+    try {
+      const { title } = await request.validate({ schema: controllerSchema })
+
+      const returnDb = await Database.from('vacancies')
+        .select('id', 'title')
+        .limit(6)
+        .where('vacancies.title', 'ILIKE', '%' + title + '%')
+
+      response.send(returnDb)
+      return response
+    } catch (err: any) {
+      let status = 500
+      const failure = { code: 'UNKNOWN' }
+      if (err.code) {
+        failure.code = err.code
+      }
+      if (err.status) {
+        status = err.status
+      }
+      switch (err.code) {
+        case 'UNKNOWN':
+          console.error(new Date(), 'app/Controllers/Http/VacancyController.ts indexSearchHome')
+          console.error(err)
+          break
+      }
+      return response.status(status).send(failure)
+    }
+  }
+
   // public async index2({ request, response }: HttpContextContract) {
   //   const controllerSchema = schema.create({
   //     title: schema.string.nullableAndOptional()
@@ -267,6 +300,9 @@ export default class VacancyController {
       const failure = { code: 'UNKNOWN' }
       if (err.code) {
         failure.code = err.code
+      }
+      if (err.status) {
+        status = err.status
       }
 
       switch (failure.code) {

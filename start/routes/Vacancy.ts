@@ -3,6 +3,7 @@ import Route from '@ioc:Adonis/Core/Route'
 Route.group(() => {
   Route.get('/', 'VacancyController.index')
   Route.get('/last', 'VacancyController.last')
+  Route.get('/search-home', 'VacancyController.indexSearchHome')
   // Route.get('/2', 'VacancyController.index2')
   Route.get('/show', 'VacancyController.show')
   Route.get('/per-state', 'VacanciesPerStateController.index')
