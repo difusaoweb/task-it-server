@@ -34,7 +34,7 @@ export default class VacancyController {
         paymentTypeId,
         page
       } = await request.validate({ schema: controllerSchema })
-      const perPage = 2
+      const perPage = 10
 
       const vaga = Database.from('vacancies')
         .select(

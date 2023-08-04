@@ -28,4 +28,27 @@ export default class CityController {
       return response
     }
   }
+
+  public async show({ request, response }: HttpContextContract) {
+    try {
+      let id = request.param('id', null)
+      if (id === null) return
+      id = parseInt(id)
+
+      const city = await City.findOrFail(id)
+
+      return response.status(200).send(city)
+    } catch (err: any) {
+      console.error(err)
+      let status = 500
+      const failure = { code: 'UNKNOWN' }
+      switch (err.code) {
+        case 'UNKNOWN':
+          console.error(new Date(), 'app/Controllers/Http/CityController.ts show')
+          console.error(err)
+          break
+      }
+      return response.status(status).send(failure)
+    }
+  }
 }
