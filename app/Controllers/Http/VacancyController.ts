@@ -428,11 +428,10 @@ export default class VacancyController {
   }
 
   public async showDashboard({ request, response }) {
-    const controllerSchema = schema.create({
-      id: schema.number()
-    })
     try {
-      const { id } = await request.validate({ schema: controllerSchema })
+      let id = request.param('id', null)
+      if (id === null) return
+      id = parseInt(id)
 
       const vaga = await Database.from('vacancies')
         .select(
@@ -498,6 +497,28 @@ export default class VacancyController {
       return response.status(status).send(failure)
     }
   }
+
+  // public async show({ auth, request, response }: HttpContextContract) {
+  //   const vaga = await Database.select('vacancies.*', 'cities.title as nomeCidade', 'educational_levels.title as escolaridade',
+  //     'employment_regimes.title as tipoContratacao', 'shift_patterns.title as periodoTrabalho',
+  //     'area_professionals.title as area_profissional', 'payment_types.title as tipoSalario', 'desired_jobs.title_function as jobNameName')
+  //     .from('vacancies').where('vacancies.id', params.id)
+  //     .leftJoin('cities', 'vacancies.city_id', 'cities.id')
+  //     .leftJoin('educational_levels', 'educational_levels.id', 'vacancies.escolaridade_id')
+  //     .leftJoin('area_professional', 'vacancies.job_workload_id', 'job_workloads.id')
+  //     .leftJoin('payment_types', 'vacancies.payment_type_id', 'payment_types.id')
+  //     .leftJoin('vaga_desejadas', 'vacancies.cargo_id', 'vaga_desejadas.id')
+  //     .leftJoin('employment_regimes', 'vacancies.employment_regime_id', 'employment_regimes.id')
+  //     .leftJoin('shift_patterns', 'vacancies.shift_pattern_id', 'shift_patterns.id')
+
+  //   return vaga
+  // }
+
+  // public async destroy({ auth, request, response }: HttpContextContract) {
+  //   const vaga = await Vagas.findOrFail(params.id)
+
+  //   vaga.delete()
+  // }
 
   public async store({ auth, request, response }: HttpContextContract) {
     const controllerSchema = schema.create({
@@ -583,7 +604,6 @@ export default class VacancyController {
 
   public async update({ auth, request, response }: HttpContextContract) {
     const controllerSchema = schema.create({
-      // id: schema.number(),
       jobId: schema.number(),
       title: schema.string(),
       cityId: schema.number.nullable(),
@@ -600,18 +620,19 @@ export default class VacancyController {
       benefits: schema.string()
     })
     try {
-      const id: number | null = request.param('id', null)
+      let id = request.param('id', null)
+      if (id === null) return
+      id = parseInt(id)
+
       const data = await request.validate({
         schema: controllerSchema
       })
       const user = auth.use('api').user
       if (user === undefined) {
-        throw new Error('TOKEN_USER_INVALID')
+        throw { code: 'TOKEN_USER_INVALID', status: 403 }
       }
 
       const vacancy = await Vacancy.findOrFail(id)
-
-      console.log(vacancy.users)
 
       vacancy.merge(data)
       await vacancy.save()
@@ -619,13 +640,13 @@ export default class VacancyController {
       return response.status(200).send({ updated: true })
     } catch (err: any) {
       let status = 500
-      let failure: any = { code: 'UNKNOWN' }
+      const failure = { code: 'UNKNOWN' }
 
-      if (err.status !== undefined) {
-        failure.status = err.status
-      }
       if (err.code !== undefined) {
         failure.code = err.code
+      }
+      if (err.status !== undefined) {
+        status = err.status
       }
 
       switch (err.code) {
@@ -644,34 +665,11 @@ export default class VacancyController {
     }
   }
 
-  // public async show({ auth, request, response }: HttpContextContract) {
-  //   const vaga = await Database.select('vacancies.*', 'cities.title as nomeCidade', 'educational_levels.title as escolaridade',
-  //     'employment_regimes.title as tipoContratacao', 'shift_patterns.title as periodoTrabalho',
-  //     'area_professionals.title as area_profissional', 'payment_types.title as tipoSalario', 'desired_jobs.title_function as jobNameName')
-  //     .from('vacancies').where('vacancies.id', params.id)
-  //     .leftJoin('cities', 'vacancies.city_id', 'cities.id')
-  //     .leftJoin('educational_levels', 'educational_levels.id', 'vacancies.escolaridade_id')
-  //     .leftJoin('area_professional', 'vacancies.job_workload_id', 'job_workloads.id')
-  //     .leftJoin('payment_types', 'vacancies.payment_type_id', 'payment_types.id')
-  //     .leftJoin('vaga_desejadas', 'vacancies.cargo_id', 'vaga_desejadas.id')
-  //     .leftJoin('employment_regimes', 'vacancies.employment_regime_id', 'employment_regimes.id')
-  //     .leftJoin('shift_patterns', 'vacancies.shift_pattern_id', 'shift_patterns.id')
-
-  //   return vaga
-  // }
-
-  // public async destroy({ auth, request, response }: HttpContextContract) {
-  //   const vaga = await Vagas.findOrFail(params.id)
-
-  //   vaga.delete()
-  // }
-
   public async destroy({ auth, request, response }: HttpContextContract) {
     try {
-      const id: number | null = request.param('id', null)
-      if (id === null) {
-        throw { code: 'INVALID_PARAMETERS', status: 400 }
-      }
+      let id = request.param('id', null)
+      if (id === null) return
+      id = parseInt(id)
 
       const vacancy = await Vacancy.findOrFail(id)
 

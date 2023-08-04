@@ -10,7 +10,7 @@ Route.group(() => {
   Route.get('/workload', 'JobWorkloadController.index')
 
   Route.group(() => {
-    Route.get('/show-dashboard', 'VacancyController.showDashboard')
+    Route.get('/show-dashboard/:id', 'VacancyController.showDashboard')
     Route.post('/', 'VacancyController.store')
     Route.put('/:id', 'VacancyController.update')
     Route.delete('/:id', 'VacancyController.destroy')
