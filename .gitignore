@@ -8,3 +8,5 @@ coverage
 tmp
 .build
 yarn-error.log
+/.yarn
+.yarnrc.yml
