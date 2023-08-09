@@ -9,10 +9,41 @@ import Database from '@ioc:Adonis/Lucid/Database'
 // const Kue = use('Kue')
 
 export default class UserController {
+  public async index({ auth, request, response }: HttpContextContract) {
+    const controllerSchema = schema.create({
+      page: schema.number(),
+      perPage: schema.number()
+    })
+    try {
+      let { page, perPage } = await request.validate({
+        schema: controllerSchema
+      })
+      perPage = perPage === -1 ? 999999 : perPage
+
+      const returnDb: any = await User.query()
+        .preload('professional', (professionalQuery) => {
+          professionalQuery.select('id')
+        })
+        .paginate(page, perPage)
+
+      return response.status(200).send({
+        data: returnDb.rows,
+        meta: {
+          lastPage: returnDb.rows.length > 0 ? returnDb.lastPage : 0,
+          total: returnDb.rows.length > 0 ? returnDb.total : 0
+        }
+      })
+    } catch (err) {
+      console.error(err)
+      response.status(500)
+      return response
+    }
+  }
+
   // public async index({ auth, request, response }: HttpContextContract) {
   //   try {
-  //     const user = await Database.select('u.*', 'p.id as asCurriculo')
-  //       .from('users as u')
+  //     const user = await Database.from('users as u')
+  //       .select('u.*', 'p.id as asCurriculo')
   //       .leftJoin('professional as p', 'p.user_id', 'u.id')
 
   //     response.send(user)
@@ -190,21 +221,38 @@ export default class UserController {
     }
   }
 
-  // public async destroy({ auth, request, response }: HttpContextContract) {
-  //   const controllerSchema = schema.create({
-  //     id: schema.number()
-  //   })
-  //   try {
-  //     const { id } = await request.validate({ schema: controllerSchema })
-  //     const user = await User.findOrFail(id)
-  //     user.delete()
+  public async destroy({ auth, request, response }: HttpContextContract) {
+    try {
+      let id = request.param('id', null)
+      if (id === null) return
+      id = parseInt(id)
 
-  //     // response.send()
-  //     // return response
-  //   } catch (err) {
-  //     console.error(err)
-  //     response.status(500)
-  //     return response
-  //   }
-  // }
+      const user = await User.findOrFail(id)
+      user.delete()
+
+      return response.status(200).send({ deleted: true })
+    } catch (err: any) {
+      console.error(err)
+      let status = 500
+      const failure = { code: 'UNKNOWN' }
+      if (err.code !== undefined) {
+        failure.code = err.code
+      }
+      if (err.status !== undefined) {
+        status = err.status
+      }
+
+      switch (err.code) {
+        case 'E_ROW_NOT_FOUND':
+          failure.code = 'USER_NOT_FOUND'
+          status = 404
+          break
+        case 'UNKNOWN':
+          console.error(new Date(), 'app/Controllers/Http/UserController.ts destroy')
+          console.error(err)
+          break
+      }
+      return response.status(status).send(failure)
+    }
+  }
 }

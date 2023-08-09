@@ -253,11 +253,11 @@ export default class AccessController {
       const user = await User.findByOrFail('email', email)
 
       if (!(await Hash.verify(user.password, password))) {
-        throw new Exception('', 403, 'INCORRECT_PASSWORD')
+        throw { code: 'INCORRECT_PASSWORD', status: 403 }
       }
 
       if (user.validated === false) {
-        throw new Exception(JSON.stringify({ email }), 403, 'EMAIL_NOT_VALIDATED')
+        throw { code: 'EMAIL_NOT_VALIDATED', status: 403, email }
       }
 
       interface ReturnUserTypes {
@@ -267,7 +267,6 @@ export default class AccessController {
         validated: boolean
         email: string
         isInvited: boolean
-        asActiveInvite: boolean
         professionalId?: number | null
         businessId?: number | null
         businessResponsibleName?: string | null
@@ -280,8 +279,7 @@ export default class AccessController {
           'users.id',
           'users.validated',
           'users.email',
-          'users.isInvited',
-          'users.asActiveInvite',
+          'users.is_invited as isInvited',
           'professionals.id as professionalId',
           'businesses.id as businessId',
           'businesses.responsible_name as businessResponsibleName'
@@ -302,10 +300,10 @@ export default class AccessController {
       delete returnUser.professionalId
       delete returnUser.businessResponsibleName
 
-      if (returnUser.isInvited === true && returnUser.asActiveInvite === false) {
-        user.asActiveInvite = true
-        await user.save()
-      }
+      // if (returnUser.isInvited === true && returnUser.asActiveInvite === false) {
+      //   user.asActiveInvite = true
+      //   await user.save()
+      // }
 
       const { token, expiresAt } = await auth.use('api').generate(user, { name: 'login' })
 
@@ -317,10 +315,11 @@ export default class AccessController {
         ...returnUser
       }
 
-      return response.send(data)
+      return response.status(200).send(data)
     } catch (err: any) {
+      console.error(err)
       let status = 500
-      let failure: any = { code: 'UNKNOWN' }
+      const failure: { code: string; email?: string } = { code: 'UNKNOWN' }
 
       if (err.status !== undefined) {
         status = err.status
@@ -335,11 +334,7 @@ export default class AccessController {
           failure.code = 'USER_NOT_FOUND'
           break
         case 'EMAIL_NOT_VALIDATED':
-          const body: any = JSON.parse(err.message.replace(`${err.code}: `, ''))
-          const email: string | null = body?.email ?? null
-          if (email !== null) {
-            failure.email = email
-          }
+          failure.email = err.email
           break
         case 'INCORRECT_PASSWORD':
           break

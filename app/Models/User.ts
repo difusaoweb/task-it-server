@@ -28,9 +28,6 @@ export default class User extends CustomBaseModel {
   @column()
   public isInvited: boolean
 
-  @column()
-  public asActiveInvite: boolean
-
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
