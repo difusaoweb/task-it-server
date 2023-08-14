@@ -2,7 +2,6 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schema } from '@ioc:Adonis/Core/Validator'
 
 import Task from 'App/Models/Task'
-import Database from '@ioc:Adonis/Lucid/Database'
 
 export default class TaskController {
   public async index({ auth, request, response }: HttpContextContract) {
