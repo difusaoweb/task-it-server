@@ -3,9 +3,12 @@ import { DateTime } from 'luxon'
 
 import { CustomBaseModel } from 'App/Models/CustomBaseModel'
 
-export default class Professional extends CustomBaseModel {
+export default class Task extends CustomBaseModel {
   @column({ isPrimary: true })
   public id: number
+
+  @column()
+  public userId: number
 
   @column()
   public task: string

@@ -6,37 +6,6 @@ import User from 'App/Models/User'
 import Database from '@ioc:Adonis/Lucid/Database'
 
 export default class UserController {
-  public async index({ auth, request, response }: HttpContextContract) {
-    const controllerSchema = schema.create({
-      page: schema.number(),
-      perPage: schema.number()
-    })
-    try {
-      let { page, perPage } = await request.validate({
-        schema: controllerSchema
-      })
-      perPage = perPage === -1 ? 999999 : perPage
-
-      const returnDb: any = await User.query()
-        .preload('professional', (professionalQuery) => {
-          professionalQuery.select('id')
-        })
-        .paginate(page, perPage)
-
-      return response.status(200).send({
-        data: returnDb.rows,
-        meta: {
-          lastPage: returnDb.rows.length > 0 ? returnDb.lastPage : 0,
-          total: returnDb.rows.length > 0 ? returnDb.total : 0
-        }
-      })
-    } catch (err) {
-      console.error(err)
-      response.status(500)
-      return response
-    }
-  }
-
   public async show({ auth, response }: HttpContextContract) {
     try {
       await auth.use('api').check()
