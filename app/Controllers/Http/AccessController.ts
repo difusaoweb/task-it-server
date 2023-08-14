@@ -1,6 +1,7 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schema } from '@ioc:Adonis/Core/Validator'
 import { DateTime } from 'luxon'
+import Hash from '@ioc:Adonis/Core/Hash'
 
 import ApiToken from 'App/Models/ApiToken'
 import User from 'App/Models/User'
@@ -189,10 +190,8 @@ export default class AccessController {
 
       return response.status(200).send(data)
     } catch (err: any) {
-      console.error(err)
       let status = 500
       const failure: { code: string; email?: string } = { code: 'UNKNOWN' }
-
       if (err.status !== undefined) {
         status = err.status
       }
@@ -201,6 +200,9 @@ export default class AccessController {
       }
 
       switch (err.code) {
+				case 'E_VALIDATION_FAILURE':
+					failure.code = 'INVALID_PARAMETERS'
+					break
         case 'E_ROW_NOT_FOUND':
           status = 404
           failure.code = 'USER_NOT_FOUND'

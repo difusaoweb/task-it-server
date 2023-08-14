@@ -45,7 +45,7 @@ export default class UserController {
 
       const user = await User.create({ email, password })
 
-      return response.status(200).send(user)
+      return response.status(200).send({id: user.id})
     } catch (err: any) {
       let status = 500
       const failure = { code: 'UNKNOWN' }
