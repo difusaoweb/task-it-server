@@ -1,34 +1,36 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schema } from '@ioc:Adonis/Core/Validator'
-import Database from '@ioc:Adonis/Lucid/Database'
-import Hash from '@ioc:Adonis/Core/Hash'
-import { Exception } from '@adonisjs/core/build/standalone'
 import { DateTime } from 'luxon'
 
 import ApiToken from 'App/Models/ApiToken'
 import User from 'App/Models/User'
+import ConfirmationUserMail from 'App/Mailers/ConfirmationUserMail'
+import BoasVindasMailer from 'App/Mailers/BoasVindasMail'
+import ForgotPasswordMail from 'App/Mailers/ForgotPasswordMail'
 
 export default class AccessController {
   public async checkAuthentication({ auth, response }: HttpContextContract) {
     try {
       const user = auth.use('api').user
-      if (user === undefined) {
-        throw new Error('TOKEN_USER_INVALID')
-      }
+      if (user === undefined) return
 
       return response.send({ authenticated: true, id: user.id })
     } catch (err: any) {
       let status = 500
-      let failure: any = { code: 'UNKNOWN' }
-      switch (err.code) {
-        case 'TOKEN_USER_INVALID':
-          status = 403
-          failure.code = 'TOKEN_USER_INVALID'
-          break
-        default:
+      const failure = { code: 'UNKNOWN' }
+      if (err.code !== undefined) {
+        failure.code = err.code
+      }
+      if (err.status !== undefined) {
+        status = err.status
+      }
+
+      switch (failure.code) {
+        case 'UNKNOWN':
           console.error(err)
           break
       }
+
       return response.status(status).send(failure)
     }
   }
@@ -44,17 +46,7 @@ export default class AccessController {
       })
 
       const user = await User.findByOrFail('email', email)
-      if (user.validated) {
-        throw new Exception(
-          JSON.stringify({
-            message: 'Conta ja ativada',
-            ativo: true,
-            typeUser: user.type
-          }),
-          401,
-          'ACCOUNT_ALREADY_ACTIVATED'
-        )
-      }
+      if (user.validated) throw { code: 'ACCOUNT_ALREADY_ACTIVATED', status: 401 }
 
       const tokens = await ApiToken.query()
         .where('user_id', '=', user.id)
@@ -69,23 +61,13 @@ export default class AccessController {
       await new ConfirmationUserMail({
         email: user.email,
         token,
-        redirectUrl,
-        type: user.type
+        redirectUrl
       }).send()
-      // Kue.dispatch(
-      //   ConfirmationUserMail.key,
-      //   { email: user.email, token, redirectUrl, type: user.type },
-      //   { attempts: 3 }
-      // )
 
-      return response.status(200).send({
-        msg: 'Email enviado com sucesso!'
-      })
+      return response.status(200).send({ sent: true })
     } catch (err: any) {
-      console.log(err)
       let status = 500
-      let failure: any = { code: 'UNKNOWN' }
-
+      const failure = { code: 'UNKNOWN' }
       if (err.code !== undefined) {
         failure.code = err.code
       }
@@ -95,37 +77,12 @@ export default class AccessController {
 
       switch (failure.code) {
         case 'ACCOUNT_ALREADY_ACTIVATED':
-          const body: any = JSON.parse(err.message.replace(`${err.code}: `, ''))
-          const message: string | null = body?.message ?? null
-          if (message !== null) {
-            failure.message = message
-          }
-          const ativo: boolean | null = body?.ativo ?? null
-          if (ativo !== null) {
-            failure.ativo = ativo
-          }
-          const typeUser: string | null = body?.typeUser ?? null
-          if (typeUser !== null) {
-            failure.typeUser = typeUser
-          }
-          break
-        case 'WAIT_TO_TRAY':
           break
         case 'UNKNOWN':
-          console.error(
-            new Date(),
-            'app/Controllers/Http/AccessController.ts createEmailValidation'
-          )
-          console.error(err)
-          break
-        default:
-          console.error(
-            new Date(),
-            'app/Controllers/Http/AccessController.ts createEmailValidation'
-          )
           console.error(err)
           break
       }
+
       return response.status(status).send(failure)
     }
   }
@@ -168,29 +125,12 @@ export default class AccessController {
       user.validated = true
       await user.save()
 
-      if (user.type === 'e') {
-        await new Job({ email: user.email, user: user.displayName, type: 'e' }).send()
-        // Kue.dispatch(
-        //   Job.key,
-        //   { email: user.email, user: user.displayName, type: 'e' },
-        //   { attempts: 3 }
-        // )
-      }
-
-      if (user.type === 'c') {
-        await new Job({ email: user.email, user: user.displayName, type: 'e' }).send()
-        // Kue.dispatch(
-        //   Job.key,
-        //   { email: user.email, user: user.displayName, type: 'c' },
-        //   { attempts: 3 }
-        // )
-      }
+      await new BoasVindasMailer({ email: user.email }).send()
 
       await token.delete()
 
       return response.status(200).send({
-        validated: true,
-        typeUser: user.type
+        validated: true
       })
     } catch (err: any) {
       let status = 500
@@ -238,59 +178,13 @@ export default class AccessController {
         throw { code: 'EMAIL_NOT_VALIDATED', status: 403, email }
       }
 
-      interface ReturnUserTypes {
-        displayName: string
-        type: string
-        id: string
-        validated: boolean
-        email: string
-        isInvited: boolean
-        professionalId?: number | null
-        businessId?: number | null
-        businessResponsibleName?: string | null
-        profileId: number | null
-      }
-      let returnUser: ReturnUserTypes[] | ReturnUserTypes = await Database.from('users')
-        .select(
-          'users.display_name as displayName',
-          'users.type',
-          'users.id',
-          'users.validated',
-          'users.email',
-          'users.is_invited as isInvited',
-          'professionals.id as professionalId',
-          'businesses.id as businessId',
-          'businesses.responsible_name as businessResponsibleName'
-        )
-        .leftJoin('professionals', 'professionals.user_id', 'users.id')
-        .leftJoin('businesses', 'businesses.user_id', 'users.id')
-        .where('users.email', email)
-
-      returnUser = returnUser[0]
-
-      returnUser.profileId =
-        returnUser.businessResponsibleName !== undefined &&
-        returnUser.businessResponsibleName !== null
-          ? returnUser.businessId ?? null
-          : returnUser.professionalId ?? null
-
-      delete returnUser.businessId
-      delete returnUser.professionalId
-      delete returnUser.businessResponsibleName
-
-      // if (returnUser.isInvited === true && returnUser.asActiveInvite === false) {
-      //   user.asActiveInvite = true
-      //   await user.save()
-      // }
-
       const { token, expiresAt } = await auth.use('api').generate(user, { name: 'login' })
 
       const data = {
         token: {
           hash: token,
           expiresAt: expiresAt ?? null
-        },
-        ...returnUser
+        }
       }
 
       return response.status(200).send(data)
@@ -329,25 +223,23 @@ export default class AccessController {
     try {
       auth.use('api').revoke()
 
-      return response.status(200).send({ success: { revoked: true } })
+      return response.status(200).send({ revoked: true })
     } catch (err: any) {
-      console.error(err)
       let status = 500
-      let failure: any = { code: 'UNKNOWN' }
-
-      if (err.status !== undefined) {
-        status = err.status
-      }
+      const failure = { code: 'UNKNOWN' }
       if (err.code !== undefined) {
         failure.code = err.code
       }
+      if (err.status !== undefined) {
+        status = err.status
+      }
 
-      switch (err.code) {
+      switch (failure.code) {
         case 'UNKNOWN':
-          console.error(new Date(), 'app/Controllers/Http/AccessController.ts logout')
           console.error(err)
           break
       }
+
       return response.status(status).send(failure)
     }
   }
@@ -458,24 +350,4 @@ export default class AccessController {
       return response.status(status).send(failure)
     }
   }
-
-  // async show ({ params, request, response }) {
-  //   const { token } = request.all()
-
-  //   if (!token) {
-  //     return response
-  //       .status(500)
-  //       .send({
-  //         error: {
-  //           message: 'Token invalido'
-  //         }
-  //       })
-  //   }
-
-  //   const user = await Database.select('username', 'token')
-  //     .table('users')
-  //     .where('users.token', token)
-
-  //   return user
-  // }
 }

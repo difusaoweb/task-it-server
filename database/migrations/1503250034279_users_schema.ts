@@ -8,6 +8,7 @@ export default class UserSchema extends BaseSchema {
       table.increments('id').primary().notNullable()
       table.string('email', 254).unique().notNullable()
       table.string('password', 255).notNullable()
+      table.boolean('validated').defaultTo(false).nullable()
       table.timestamp('created_at', { useTz: true }).notNullable()
       table.timestamp('updated_at', { useTz: true }).nullable()
     })
