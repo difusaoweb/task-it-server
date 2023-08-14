@@ -7,13 +7,6 @@ import { DateTime } from 'luxon'
 
 import ApiToken from 'App/Models/ApiToken'
 import User from 'App/Models/User'
-import Professional from 'App/Models/Professional'
-import Business from 'App/Models/Business'
-import ConfirmationUserMail from 'App/Mailers/ConfirmationUserMail'
-import Job from 'App/Mailers/BoasVindasMail'
-import ForgotPasswordMail from 'App/Mailers/ForgotPasswordMail'
-
-// const Kue = use('Kue')
 
 export default class AccessController {
   public async checkAuthentication({ auth, response }: HttpContextContract) {
@@ -23,22 +16,7 @@ export default class AccessController {
         throw new Error('TOKEN_USER_INVALID')
       }
 
-      const { id, type, displayName } = user
-
-      let profileId: number | null = null
-      const business = await Business.findBy('userId', id)
-      if (business) {
-        if (business.responsibleName !== null) {
-          profileId = business.id
-        }
-      } else {
-        const professional = await Professional.findBy('userId', id)
-        if (professional) {
-          profileId = professional.id
-        }
-      }
-
-      return response.send({ authenticated: true, id, type, displayName, profileId })
+      return response.send({ authenticated: true, id: user.id })
     } catch (err: any) {
       let status = 500
       let failure: any = { code: 'UNKNOWN' }

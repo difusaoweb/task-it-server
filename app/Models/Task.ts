@@ -3,17 +3,12 @@ import { DateTime } from 'luxon'
 
 import { CustomBaseModel } from 'App/Models/CustomBaseModel'
 
-export default class BusinessCategory extends CustomBaseModel {
-  public static table = 'business_categories'
-
+export default class Professional extends CustomBaseModel {
   @column({ isPrimary: true })
   public id: number
 
   @column()
-  public title: string
-
-  @column()
-  public state: number
+  public task: string
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

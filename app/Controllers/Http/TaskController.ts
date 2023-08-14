@@ -2,10 +2,10 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schema } from '@ioc:Adonis/Core/Validator'
 import { Exception } from '@adonisjs/core/build/standalone'
 
-import User from 'App/Models/User'
+import Task from 'App/Models/Task'
 import Database from '@ioc:Adonis/Lucid/Database'
 
-export default class UserController {
+export default class TaskController {
   public async index({ auth, request, response }: HttpContextContract) {
     const controllerSchema = schema.create({
       page: schema.number(),
@@ -17,11 +17,7 @@ export default class UserController {
       })
       perPage = perPage === -1 ? 999999 : perPage
 
-      const returnDb: any = await User.query()
-        .preload('professional', (professionalQuery) => {
-          professionalQuery.select('id')
-        })
-        .paginate(page, perPage)
+      const returnDb: any = await Task.query().paginate(page, perPage)
 
       return response.status(200).send({
         data: returnDb.rows,
@@ -49,7 +45,7 @@ export default class UserController {
       const account = await Database.from('users as u')
         .select('u.id', 'u.display_name', 'u.email', 'u.type', 'c.name')
         .leftJoin('businesses as c', 'c.user_id', 'u.id')
-        .where('u.id', user.id)
+        .where('u.id', Task.id)
 
       return response.send(account[0])
     } catch (err: any) {
@@ -68,7 +64,7 @@ export default class UserController {
     }
   }
 
-  public async createProfessionalUser({ request, response }: HttpContextContract) {
+  public async create({ request, response }: HttpContextContract) {
     const controllerSchema = schema.create({
       email: schema.string(),
       password: schema.string()
@@ -78,12 +74,12 @@ export default class UserController {
         schema: controllerSchema
       })
 
-      const userExists = await User.findBy('email', email)
+      const userExists = await Task.findBy('email', email)
       if (userExists !== null) {
         throw new Exception('', undefined, 'USER_EXISTS')
       }
 
-      const user = await User.create({ email, password })
+      const user = await Task.create({ email, password })
 
       return response.send(user)
     } catch (err: any) {
@@ -119,8 +115,8 @@ export default class UserController {
         throw { code: 'TOKEN_USER_INVALID', status: 403 }
       }
 
-      user.merge(password !== undefined && password !== null ? { email, password } : { email })
-      await user.save()
+      Task.merge(password !== undefined && password !== null ? { email, password } : { email })
+      await Task.save()
 
       return response.send(user)
     } catch (err: any) {
@@ -149,8 +145,8 @@ export default class UserController {
       if (requestId === null) return
       const id = parseInt(requestId)
 
-      const user = await User.findOrFail(id)
-      user.delete()
+      const user = await Task.findOrFail(id)
+      Task.delete()
 
       return response.status(200).send({ deleted: true })
     } catch (err: any) {

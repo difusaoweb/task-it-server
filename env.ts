@@ -27,13 +27,5 @@ export default Env.rules({
   PG_PASSWORD: Env.schema.string.optional(),
   PG_DB_NAME: Env.schema.string(),
   DB_CONNECTION: Env.schema.string(),
-  HASH_DRIVER: Env.schema.enum(['scrypt', 'bcrypt', 'argon'] as const),
-  MAIL_DRIVER: Env.schema.enum(['smtp', 'ses'] as const),
-  SMTP_HOST: Env.schema.string({ format: 'host' }),
-  SMTP_PORT: Env.schema.number(),
-  SMTP_USERNAME: Env.schema.string(),
-  SMTP_PASSWORD: Env.schema.string(),
-  SES_ACCESS_KEY: Env.schema.string(),
-  SES_ACCESS_SECRET: Env.schema.string(),
-  SES_REGION: Env.schema.string()
+  HASH_DRIVER: Env.schema.enum(['scrypt', 'bcrypt', 'argon'] as const)
 })
